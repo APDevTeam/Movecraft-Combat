@@ -151,6 +151,9 @@ public class CannonDirectorManager extends DirectorManager {
     }
 
     private void processTNTContactExplosives() {
+        if(!Config.EnableContactExplosives) {
+            return;
+        }
         // now check to see if any has abruptly changed velocity, and should
         // explode
         for (TNTPrimed tnt : tracking.keySet()) {

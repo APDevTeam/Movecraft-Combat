@@ -37,6 +37,7 @@ public final class MovecraftCombat extends JavaPlugin {
         for(String s : getConfig().getStringList("AADirectorsAllowed")) {
             Config.AADirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
+        Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {

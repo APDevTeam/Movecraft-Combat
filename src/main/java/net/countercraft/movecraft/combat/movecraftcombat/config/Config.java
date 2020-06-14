@@ -14,6 +14,9 @@ public class Config {
     public static int AADirectorRange = 120;
     public static HashSet<CraftType> AADirectorsAllowed = new HashSet<>();
 
+    // Contact Explosives
+    public static boolean EnableContactExplosives = true;
+
     // Cannon Directors
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;

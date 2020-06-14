@@ -15,6 +15,9 @@ AADirectorsAllowed: # List of string names to craft types that are allowed to us
   - "MegaSubAirship"
   - "Duck"
 
+# Contact Explosives
+EnableContactExplosives: true # Enable TNT contact explosives
+
 # Cannon Directors
 CannonDirectorDistance: 100 # Max range at which TNT will be redirected
 CannonDirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
