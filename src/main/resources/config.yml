@@ -4,19 +4,35 @@ Debug: false
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
 AADirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 AADirectorsAllowed: # List of string names to craft types that are allowed to use AA Directors
+  - "GroundTurret"
+  - "LightAirship"
+  - "SubLightAirship"
   - "Airship"
+  - "SubAirship"
+  - "BigAirship"
+  - "BigSubAirship"
+  - "MegaAirship"
+  - "MegaSubAirship"
+  - "Duck"
 
 # Cannon Directors
 CannonDirectorDistance: 100 # Max range at which TNT will be redirected
 CannonDirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 CannonDirectorsAllowed: # List of string names to craft types that are allowed to use Cannon Directors
+  - "GroundTurret"
   - "Airship"
+  - "SubAirship"
+  - "MediumAirship"
+  - "MediumSubAirship"
+  - "BigAirship"
+  - "BigSubAirship"
+  - "MegaAirship"
+  - "MegaSubAirship"
+  - "Duck"
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
-  121: 85
   35: 0
-  206: 85
   42: 50
   43: 50
   44: 50
@@ -24,11 +40,13 @@ DurabilityOverride: # List of block IDs: ignore percent
   112: 50
   159: 50
   95: 50
+  121: 85
+  206: 85
   152: 25
 
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds
 
-# Tracers
+# TNT Tracers
 TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying TNT
 TrracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion

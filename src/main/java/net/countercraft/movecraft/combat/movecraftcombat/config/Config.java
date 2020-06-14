@@ -25,7 +25,7 @@ public class Config {
     // Fireball Lifespan
     public static int FireballLifespan = 6;
 
-    // Tracers
+    // TNT Tracers
     public static double TracerRateTicks = 5.0;
     public static long TracerMinDistanceSqrd = 360;
 }
