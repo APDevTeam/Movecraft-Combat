@@ -1,0 +1,9 @@
+name: Movecraft Combat
+version: ${project.version}
+main: java.net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat
+api-version: 1.15.2
+prefix: Movecraft-Combat
+depend: [Movecraft, WorldGuard]
+authors: [TylerS1066, BaccaYarro]
+description: Combat features of Movecraft
+website: https://github.com/APDevTeam
