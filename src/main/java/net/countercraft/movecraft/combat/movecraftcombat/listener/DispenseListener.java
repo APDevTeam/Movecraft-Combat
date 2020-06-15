@@ -20,28 +20,24 @@ public class DispenseListener implements Listener {
     }
 
     private void processTNT(EntitySpawnEvent e) {
-        if(!(e.getEntity() instanceof TNTPrimed)) {
+        if(!(e.getEntity() instanceof TNTPrimed))
             return;
-        }
         TNTPrimed tnt = (TNTPrimed) e.getEntity();
 
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
-        if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
+        if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
-        }
         TNTTracking.getInstance().dispensedTNT(craft.getNotificationPlayer(), tnt);
     }
 
     private void processFireball(EntitySpawnEvent e) {
-        if(!(e.getEntity() instanceof Fireball)) {
+        if(!(e.getEntity() instanceof Fireball))
             return;
-        }
         Fireball fireball = (Fireball) e.getEntity();
 
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
-        if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
+        if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
-        }
         FireballTracking.getInstance().dispensedFireball(craft.getNotificationPlayer(), fireball);
     }
 }

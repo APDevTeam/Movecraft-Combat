@@ -7,10 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,6 +19,7 @@ import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracking;
 
 
 public class ExplosionListener implements Listener {
@@ -29,21 +27,27 @@ public class ExplosionListener implements Listener {
     public void explodeEvent(EntityExplodeEvent e) {
         processDurabilityOverride(e);
         processTracers(e);
-        processTracking(e);
+        processTNTTracking(e);
+        processFireballTracking(e);
     }
 
 
     private void processDurabilityOverride(@NotNull EntityExplodeEvent e) {
-        if(Config.DurabilityOverride != null) {
-            // Sorry for the following monster conditional statement, it is necessary to avoid spalling.
-            // Basically it runs a random number based on the XYZ of the block and the system time if the block has explosion resistance
-            // And then it also removes the block if no adjacent blocks are air (IE: the explosion skipped a block)
-            e.blockList().removeIf(b -> (Config.DurabilityOverride.containsKey(b.getTypeId()) &&
-                    (new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) < Config.DurabilityOverride.get(b.getTypeId()))) ||
-                    !(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
-                            b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty()));
+        if (e.getEntity() == null)
+            return;
+        if (e.getEntityType() != EntityType.PRIMED_TNT)
+            return;
+        if(Config.DurabilityOverride == null)
+            return;
+
+        // Sorry for the following monster conditional statement, it is necessary to avoid spalling.
+        // Basically it runs a random number based on the XYZ of the block and the system time if the block has explosion resistance
+        // And then it also removes the block if no adjacent blocks are air (IE: the explosion skipped a block)
+        e.blockList().removeIf(b -> (Config.DurabilityOverride.containsKey(b.getTypeId()) &&
+                (new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) < Config.DurabilityOverride.get(b.getTypeId()))) ||
+                !(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
+                        b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty()));
 //                    (new Random( new Random(b.getX()).nextInt(100)+ new Random(b.getY()).nextInt(100) + new Random(b.getZ()).nextInt(100)+
-        }
     }
 
     private void processTracers(@NotNull EntityExplodeEvent e) {
@@ -80,12 +84,11 @@ public class ExplosionListener implements Listener {
         }
     }
 
-    private void processTracking(@NotNull EntityExplodeEvent e) {
+    private void processTNTTracking(@NotNull EntityExplodeEvent e) {
         if (e.getEntity() == null)
             return;
-        if (e.getEntityType() != EntityType.PRIMED_TNT) {
+        if (e.getEntityType() != EntityType.PRIMED_TNT)
             return;
-        }
 
         TNTPrimed tnt = (TNTPrimed) e.getEntity();
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
@@ -96,5 +99,24 @@ public class ExplosionListener implements Listener {
             }
         }
         TNTTracking.getInstance().explodedTNT(tnt);
+    }
+
+    private void processFireballTracking(@NotNull EntityExplodeEvent e) {
+        if(!Config.EnableFireballTracking)
+            return;
+        if(e.getEntity() == null)
+            return;
+        if(!(e.getEntity() instanceof Fireball))
+            return;
+
+        Fireball fireball = (Fireball) e.getEntity();
+        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        for(Block b : e.blockList()) {
+            if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
+                FireballTracking.getInstance().damagedCraft(craft, fireball);
+                return;
+            }
+        }
+        FireballTracking.getInstance().expiredFireball(fireball);
     }
 }

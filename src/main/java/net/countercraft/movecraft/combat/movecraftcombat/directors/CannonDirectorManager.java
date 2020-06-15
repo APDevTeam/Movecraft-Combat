@@ -94,9 +94,8 @@ public class CannonDirectorManager extends DirectorManager {
     private void processDirectors() {
         // see if there is any new rapid moving TNT in the worlds
         for (World w : Bukkit.getWorlds()) {
-            if (w == null) {
+            if (w == null)
                 continue;
-            }
             for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
@@ -151,9 +150,8 @@ public class CannonDirectorManager extends DirectorManager {
     }
 
     private void processTNTContactExplosives() {
-        if(!Config.EnableContactExplosives) {
+        if(!Config.EnableContactExplosives)
             return;
-        }
         // now check to see if any has abruptly changed velocity, and should
         // explode
         for (TNTPrimed tnt : tracking.keySet()) {

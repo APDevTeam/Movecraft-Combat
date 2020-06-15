@@ -34,7 +34,7 @@ public class FireballTracking {
         Player cause = tracking.get(fireball);
         tracking.remove(fireball);
 
-        TrackingManager.getInstance().addRecord(craft, cause, DamageType.CANNON);
+        TrackingManager.getInstance().addRecord(craft, cause, DamageType.FIREBALL);
     }
 
     public void expiredFireball(@NotNull Fireball fireball) {

@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -13,6 +12,7 @@ import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracking;
 
 
 public class AADirectorManager extends DirectorManager {
@@ -32,9 +32,8 @@ public class AADirectorManager extends DirectorManager {
 
     private void processDirectors() {
         for (World w : Bukkit.getWorlds()) {
-            if (w == null) {
+            if (w == null)
                 continue;
-            }
             for (SmallFireball fireball : w.getEntitiesByClass(SmallFireball.class)) {
                 if (!(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
                         && w.getPlayers().size() > 0
@@ -101,15 +100,12 @@ public class AADirectorManager extends DirectorManager {
     private void processDespawning() {
         int timeLimit = 20 * Config.FireballLifespan * 50;
         // then, removed any fireballs out of range from tracking
-        Iterator<SmallFireball> fireballI = tracking.keySet().iterator();
-        while (fireballI.hasNext()) {
-            SmallFireball fireball = fireballI.next();
-            if (fireball == null) {
+        for(SmallFireball fireball : tracking.keySet()) {
+            if (fireball == null)
                 continue;
-            }
             if (System.currentTimeMillis() - tracking.get(fireball) > timeLimit) {
                 fireball.remove();
-                fireballI.remove();
+                FireballTracking.getInstance().expiredFireball(fireball);
             }
         }
     }
