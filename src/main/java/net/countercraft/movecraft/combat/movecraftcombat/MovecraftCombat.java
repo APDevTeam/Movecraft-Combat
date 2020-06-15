@@ -11,14 +11,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
+import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.TrackingManager;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.*;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
 public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance;
-    private CannonDirectorManager cannonDirectors;
     private AADirectorManager aaDirectors;
+    private CannonDirectorManager cannonDirectors;
+    private TrackingManager damageTracking;
     public HashSet<Material> transparent = new HashSet<>();
 
     public static synchronized MovecraftCombat getInstance() {
@@ -55,13 +58,19 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
 
+
+        getServer().getPluginManager().registerEvents(new DispenseListener(), this);
+        getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
+
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);
+        damageTracking = new TrackingManager();
+        damageTracking.runTaskTimer(this, 0, 20);
     }
 
     @Override

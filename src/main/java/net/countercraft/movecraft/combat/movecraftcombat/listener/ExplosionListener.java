@@ -5,16 +5,22 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import net.countercraft.movecraft.Movecraft;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.utils.MathUtils;
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
@@ -23,6 +29,7 @@ public class ExplosionListener implements Listener {
     public void explodeEvent(EntityExplodeEvent e) {
         processDurabilityOverride(e);
         processTracers(e);
+        processTracking(e);
     }
 
 
@@ -71,5 +78,23 @@ public class ExplosionListener implements Listener {
                 }
             }
         }
+    }
+
+    private void processTracking(@NotNull EntityExplodeEvent e) {
+        if (e.getEntity() == null)
+            return;
+        if (e.getEntityType() != EntityType.PRIMED_TNT) {
+            return;
+        }
+
+        TNTPrimed tnt = (TNTPrimed) e.getEntity();
+        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        for(Block b : e.blockList()) {
+            if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
+                TNTTracking.getInstance().damagedCraft(craft, tnt);
+                return;
+            }
+        }
+        TNTTracking.getInstance().explodedTNT(tnt);
     }
 }
