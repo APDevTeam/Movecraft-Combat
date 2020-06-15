@@ -11,11 +11,13 @@ import net.countercraft.movecraft.craft.Craft;
 public class TrackingManager extends BukkitRunnable {
     private static TrackingManager instance;
     private TNTTracking tntTracking;
+    private FireballTracking fireballTracking;
     private final HashMap<Craft, HashSet<DamageRecord>> damageRecords = new HashMap<>();
 
     public TrackingManager() {
         instance = this;
         tntTracking = new TNTTracking();
+        fireballTracking = new FireballTracking();
     }
 
     public static TrackingManager getInstance() {

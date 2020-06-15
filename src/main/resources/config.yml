@@ -52,4 +52,7 @@ FireballLifespan: 6 # Lifespan of fireballs in seconds
 
 # TNT Tracers
 TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying TNT
-TrracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
+TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
+
+# Damage Tracking
+EnableFireballTracking: false # Enable tracking and recording of fireball damage

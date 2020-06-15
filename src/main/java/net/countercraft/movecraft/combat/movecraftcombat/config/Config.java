@@ -31,4 +31,7 @@ public class Config {
     // TNT Tracers
     public static double TracerRateTicks = 5.0;
     public static long TracerMinDistanceSqrd = 360;
+
+    // Damage Tracking
+    public static boolean EnableFireballTracking = false;
 }

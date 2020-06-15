@@ -57,6 +57,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
+        Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
 
 
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
