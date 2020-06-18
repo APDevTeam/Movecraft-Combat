@@ -10,7 +10,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import net.countercraft.movecraft.Movecraft;
@@ -23,8 +22,8 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracki
 
 
 public class ExplosionListener implements Listener {
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void explodeEvent(EntityExplodeEvent e) {
+    @EventHandler
+    public void entityExplodeEvent(EntityExplodeEvent e) {
         processDurabilityOverride(e);
         processTracers(e);
         processTNTTracking(e);
@@ -111,6 +110,10 @@ public class ExplosionListener implements Listener {
 
         Fireball fireball = (Fireball) e.getEntity();
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
+            FireballTracking.getInstance().damagedCraft(craft, fireball);
+            return;
+        }
         for(Block b : e.blockList()) {
             if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
                 FireballTracking.getInstance().damagedCraft(craft, fireball);
