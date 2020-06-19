@@ -4,16 +4,8 @@ Debug: false
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
 AADirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 AADirectorsAllowed: # List of string names to craft types that are allowed to use AA Directors
-  - "GroundTurret"
-  - "LightAirship"
-  - "SubLightAirship"
   - "Airship"
   - "SubAirship"
-  - "BigAirship"
-  - "BigSubAirship"
-  - "MegaAirship"
-  - "MegaSubAirship"
-  - "Duck"
 
 # Contact Explosives
 EnableContactExplosives: true # Enable TNT contact explosives
@@ -22,16 +14,8 @@ EnableContactExplosives: true # Enable TNT contact explosives
 CannonDirectorDistance: 100 # Max range at which TNT will be redirected
 CannonDirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 CannonDirectorsAllowed: # List of string names to craft types that are allowed to use Cannon Directors
-  - "GroundTurret"
   - "Airship"
   - "SubAirship"
-  - "MediumAirship"
-  - "MediumSubAirship"
-  - "BigAirship"
-  - "BigSubAirship"
-  - "MegaAirship"
-  - "MegaSubAirship"
-  - "Duck"
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
@@ -58,3 +42,8 @@ TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned 
 EnableFireballTracking: false # Enable tracking and recording of fireball
 EnableTNTTracking: true # Enable tracking and recording of TNT damage
 EnableTorpedoTracking: false # Enable tracking and recording of Torpedo damage
+DamageTimeout: 300 # Timeout for damages in seconds
+
+# Combat Release Tracking
+EnableCombatReleaseTracking: false # Enable tracking of combat releasing
+CombatReleaseBanLength: 3600 # Length of combat release ban in seconds

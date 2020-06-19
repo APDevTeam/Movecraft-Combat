@@ -61,10 +61,17 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
         Config.EnableTNTTracking = getConfig().getBoolean("EnableTNTTracking", true);
         Config.EnableTorpedoTracking = getConfig().getBoolean("EnableTorpedoTracking", false);
+        Config.DamageTimeout = getConfig().getInt("DamageTimeout", 300);
+        Config.EnableCombatReleaseTracking = getConfig().getBoolean("EnableCombatReleaseTracking", false);
+        Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 3600);
 
 
+        getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
+        getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
@@ -74,7 +81,7 @@ public final class MovecraftCombat extends JavaPlugin {
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);
         damageTracking = new TrackingManager();
-        damageTracking.runTaskTimer(this, 0, 20);
+        damageTracking.runTaskTimer(this, 0, 1200);
     }
 
     @Override

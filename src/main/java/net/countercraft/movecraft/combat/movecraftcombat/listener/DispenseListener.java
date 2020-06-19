@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
@@ -51,6 +52,7 @@ public class DispenseListener implements Listener {
         TNTTracking.getInstance().dispensedTNT(craft.getNotificationPlayer(), tnt);
     }
 
+    @NotNull
     private Vector getTNTVector() {
         Vector v = new Vector(0, 0.2, 0);
         double angle = Math.random() * 2 * Math.PI;
@@ -59,7 +61,7 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtract(Dispenser d, ItemStack item) {
+    private boolean subtract(@NotNull Dispenser d, @NotNull ItemStack item) {
         for(int i = 0; i < d.getInventory().getSize(); i++) {
             ItemStack temp = d.getInventory().getItem(i);
             if(temp == null || !item.isSimilar(temp))

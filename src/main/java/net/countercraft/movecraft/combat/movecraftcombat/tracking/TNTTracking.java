@@ -30,7 +30,7 @@ public class TNTTracking {
 
         if(cause == null)
             return;
-        TrackingManager.getInstance().addRecord(craft, cause, DamageType.CANNON);
+        TrackingManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
     }
 
     public void explodedTNT(@NotNull TNTPrimed tnt) {

@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Fireball;
 import net.countercraft.movecraft.craft.Craft;
@@ -25,8 +24,6 @@ public class FireballTracking {
     public void dispensedFireball(Player pilot, Fireball fireball) {
         if(!Config.EnableFireballTracking)
             return;
-        if(Config.Debug)
-            Bukkit.broadcast(pilot.getDisplayName() + " dispensed fireball at: " + fireball.getLocation(), "movecraft.combat.debug");
         tracking.put(fireball, pilot);
     }
 
@@ -38,9 +35,7 @@ public class FireballTracking {
         if(cause == null)
             return;
 
-        if(Config.Debug)
-            Bukkit.broadcast(craft.getNotificationPlayer().getDisplayName() + "'s craft was fireballed by " + cause.getDisplayName(), "movecraft.combat.debug");
-        TrackingManager.getInstance().addRecord(craft, cause, DamageType.FIREBALL);
+        TrackingManager.getInstance().addDamageRecord(craft, cause, DamageType.FIREBALL);
     }
 
     public void expiredFireball(@NotNull Fireball fireball) {

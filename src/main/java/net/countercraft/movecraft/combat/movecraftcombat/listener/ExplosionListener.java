@@ -109,7 +109,6 @@ public class ExplosionListener implements Listener {
             return;
         if(!(e.getEntity() instanceof Fireball))
             return;
-
         Fireball fireball = (Fireball) e.getEntity();
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
         if(craft == null)

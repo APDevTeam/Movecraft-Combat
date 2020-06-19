@@ -36,4 +36,9 @@ public class Config {
     public static boolean EnableFireballTracking = false;
     public static boolean EnableTNTTracking = true;
     public static boolean EnableTorpedoTracking = false;
+    public static int DamageTimeout = 300;
+
+    // Combat Releasing
+    public static boolean EnableCombatReleaseTracking = false;
+    public static long CombatReleaseBanLength = 3600;
 }
