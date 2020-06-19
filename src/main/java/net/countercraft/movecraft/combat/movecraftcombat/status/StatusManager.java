@@ -3,19 +3,19 @@ package net.countercraft.movecraft.combat.movecraftcombat.status;
 import java.util.Date;
 import java.util.HashMap;
 
-import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
+import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
 
 
 public class StatusManager extends BukkitRunnable {
@@ -36,7 +36,7 @@ public class StatusManager extends BukkitRunnable {
             if(records.get(player) < Config.DamageTimeout)
                 continue;
             records.remove(player);
-            endCombat(player);
+            stopCombat(player);
         }
     }
 
@@ -58,17 +58,20 @@ public class StatusManager extends BukkitRunnable {
     public void craftReleased(@NotNull Craft craft) {
         if(!Config.EnableCombatReleaseTracking)
             return;
-        if(craft.getNotificationPlayer() == null || craft.getSinking())
+        if(craft.getNotificationPlayer() == null)
             return;
-        Player player = craft.getNotificationPlayer();
 
-        if(!records.containsKey(player))
-            return;
-        if(System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000)
+        Player player = craft.getNotificationPlayer();
+        if(craft.getSinking()) {
+            records.remove(player);
+            stopCombat(player);
+        }
+
+        if(!isInCombat(player) || isInAirspace(craft))
             return;
         records.remove(player);
 
-        CombatReleaseEvent event = new CombatReleaseEvent(craft, craft.getNotificationPlayer());
+        CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
@@ -83,8 +86,12 @@ public class StatusManager extends BukkitRunnable {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now entered combat."));
     }
 
-    private void endCombat(@NotNull Player player) {
+    private void stopCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now left combat."));
+    }
+
+    private boolean isInAirspace(@NotNull Craft craft) {
+        return false;
     }
 }
