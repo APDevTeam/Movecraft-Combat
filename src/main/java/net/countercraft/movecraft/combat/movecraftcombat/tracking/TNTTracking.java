@@ -28,6 +28,8 @@ public class TNTTracking {
         Player cause = tracking.get(tnt);
         tracking.remove(tnt);
 
+        if(cause == null)
+            return;
         TrackingManager.getInstance().addRecord(craft, cause, DamageType.CANNON);
     }
 

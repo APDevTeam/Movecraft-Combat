@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,6 +59,8 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
         Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
+        Config.EnableTNTTracking = getConfig().getBoolean("EnableTNTTracking", true);
+        Config.EnableTorpedoTracking = getConfig().getBoolean("EnableTorpedoTracking", false);
 
 
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
@@ -88,6 +91,7 @@ public final class MovecraftCombat extends JavaPlugin {
         return aaDirectors;
     }
 
+    @Nullable
     public static Craft fastNearestCraftToLoc(@NotNull Location loc) {
         //TODO: Replace with Movecraft's version
         Craft ret = null;

@@ -34,4 +34,6 @@ public class Config {
 
     // Damage Tracking
     public static boolean EnableFireballTracking = false;
+    public static boolean EnableTNTTracking = true;
+    public static boolean EnableTorpedoTracking = false;
 }

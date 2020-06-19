@@ -32,7 +32,7 @@ public class TrackingManager extends BukkitRunnable {
 
     public void addRecord(@NotNull Craft craft, @NotNull Player cause, @NotNull DamageType type) {
         if(Config.Debug)
-            Bukkit.broadcast((craft.getNotificationPlayer() != null ? craft.getNotificationPlayer().getName() : "None ") + "'s craft was damaged by a " + type, "movecraft.combat.debug");
+            Bukkit.broadcast((craft.getNotificationPlayer() != null ? craft.getNotificationPlayer().getDisplayName() : "None ") + "'s craft was damaged by a " + type + " by " + cause.getDisplayName(), "movecraft.combat.debug");
         if(damageRecords.containsKey(craft)) {
             HashSet<DamageRecord> craftRecords = damageRecords.get(craft);
             if(craftRecords == null)

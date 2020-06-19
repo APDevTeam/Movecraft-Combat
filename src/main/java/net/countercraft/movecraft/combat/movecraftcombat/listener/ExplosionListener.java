@@ -91,6 +91,8 @@ public class ExplosionListener implements Listener {
 
         TNTPrimed tnt = (TNTPrimed) e.getEntity();
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        if(craft == null)
+            return;
         for(Block b : e.blockList()) {
             if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
                 TNTTracking.getInstance().damagedCraft(craft, tnt);
@@ -110,6 +112,8 @@ public class ExplosionListener implements Listener {
 
         Fireball fireball = (Fireball) e.getEntity();
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        if(craft == null)
+            return;
         if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
             FireballTracking.getInstance().damagedCraft(craft, fireball);
             return;

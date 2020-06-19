@@ -55,4 +55,6 @@ TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying T
 TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
 
 # Damage Tracking
-EnableFireballTracking: false # Enable tracking and recording of fireball damage
+EnableFireballTracking: false # Enable tracking and recording of fireball
+EnableTNTTracking: true # Enable tracking and recording of TNT damage
+EnableTorpedoTracking: false # Enable tracking and recording of Torpedo damage
