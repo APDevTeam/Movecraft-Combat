@@ -15,6 +15,7 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
+import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
@@ -50,6 +51,7 @@ public class DispenseListener implements Listener {
 
         // Report to tracking
         TNTTracking.getInstance().dispensedTNT(craft.getNotificationPlayer(), tnt);
+        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 
     @NotNull

@@ -6,17 +6,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.event.HandlerList;
 import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.events.CraftEvent;
 
 
-public class CombatReleaseEvent extends CraftEvent implements Cancellable {
+public class CombatReleaseEvent extends CombatEvent implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
     private boolean cancelled = false;
-    private Player player = null;
+    private Craft craft;
 
     public CombatReleaseEvent(@NotNull Craft craft, @Nullable Player player) {
-        super(craft);
-        this.player = player;
+        super(player);
+        this.craft = craft;
     }
 
     @Override
@@ -39,8 +38,7 @@ public class CombatReleaseEvent extends CraftEvent implements Cancellable {
         this.cancelled = cancel;
     }
 
-    @Nullable
-    public Player getPlayer() {
-        return this.player;
+    public Craft getCraft() {
+        return craft;
     }
 }

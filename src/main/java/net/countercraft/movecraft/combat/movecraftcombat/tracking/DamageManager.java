@@ -1,29 +1,26 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.jetbrains.annotations.NotNull;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
-import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 
 
-public class TrackingManager extends BukkitRunnable {
-    private static TrackingManager instance;
+public class DamageManager extends BukkitRunnable {
+    private static DamageManager instance;
     private final HashMap<Craft, HashSet<DamageRecord>> damageRecords = new HashMap<>();
 
-    public TrackingManager() {
+    public DamageManager() {
         instance = this;
         new TNTTracking();
         new FireballTracking();
     }
 
-    public static TrackingManager getInstance() {
+    public static DamageManager getInstance() {
         return instance;
     }
 
@@ -73,34 +70,7 @@ public class TrackingManager extends BukkitRunnable {
     }
 
     public void craftReleased(@NotNull Craft craft) {
-        if(!Config.EnableCombatReleaseTracking) {
-            damageRecords.remove(craft);
-            return;
-        }
-        if(craft.getNotificationPlayer() == null || craft.getSinking())
-            return;
-        if(!damageRecords.containsKey(craft))
-            return;
-
-        HashSet<DamageRecord> records = damageRecords.get(craft);
         damageRecords.remove(craft);
-        long currentTime = System.currentTimeMillis();
-        for(DamageRecord r : records) {
-            if(currentTime - r.getTime() > Config.DamageTimeout * 1000)
-                records.remove(r);
-        }
-        if(records.size() < 1)
-            return;
-
-        CombatReleaseEvent event = new CombatReleaseEvent(craft, craft.getNotificationPlayer());
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        if(event.isCancelled())
-            return;
-
-        Player player = craft.getNotificationPlayer();
-        Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), "Combat release", expiry, "Movecraft-Combat AutoBan");
-        player.kickPlayer("Combat release!");
     }
 
     private String causesToString(@NotNull Player sunk, @NotNull HashSet<Player> causes) {

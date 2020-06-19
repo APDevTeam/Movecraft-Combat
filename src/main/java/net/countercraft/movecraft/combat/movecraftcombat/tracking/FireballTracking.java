@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Fireball;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
@@ -35,7 +36,8 @@ public class FireballTracking {
         if(cause == null)
             return;
 
-        TrackingManager.getInstance().addDamageRecord(craft, cause, DamageType.FIREBALL);
+        DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.FIREBALL);
+        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 
     public void expiredFireball(@NotNull Fireball fireball) {

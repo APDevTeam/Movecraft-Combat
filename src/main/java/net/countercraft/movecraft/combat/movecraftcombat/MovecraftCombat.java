@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.Location;
@@ -13,7 +14,8 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
 import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
-import net.countercraft.movecraft.combat.movecraftcombat.tracking.TrackingManager;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
+import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.*;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
@@ -22,7 +24,8 @@ public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance;
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
-    private TrackingManager damageTracking;
+    private DamageManager damageTracking;
+    private StatusManager statusTracking;
     public HashSet<Material> transparent = new HashSet<>();
 
     public static synchronized MovecraftCombat getInstance() {
@@ -80,8 +83,10 @@ public final class MovecraftCombat extends JavaPlugin {
         aaDirectors.runTaskTimer(this, 0, 1);
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);
-        damageTracking = new TrackingManager();
-        damageTracking.runTaskTimer(this, 0, 1200);
+        damageTracking = new DamageManager();
+        damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
+        statusTracking = new StatusManager();
+        statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
     }
 
     @Override

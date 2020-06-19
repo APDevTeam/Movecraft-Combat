@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 
 
 public class TNTTracking {
@@ -30,7 +31,8 @@ public class TNTTracking {
 
         if(cause == null)
             return;
-        TrackingManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
+        DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
+        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 
     public void explodedTNT(@NotNull TNTPrimed tnt) {
