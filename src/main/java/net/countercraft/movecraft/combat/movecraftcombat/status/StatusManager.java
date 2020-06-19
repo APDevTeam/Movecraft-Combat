@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.status;
 
 import java.util.Date;
 import java.util.HashMap;
-
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +15,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
+import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
 
 public class StatusManager extends BukkitRunnable {
@@ -32,11 +32,12 @@ public class StatusManager extends BukkitRunnable {
 
 
     public void run() {
+        long currentTime = System.currentTimeMillis();
         for(Player player : records.keySet()) {
-            if(records.get(player) < Config.DamageTimeout)
-                continue;
-            records.remove(player);
-            stopCombat(player);
+            if((currentTime - records.get(player)) > Config.DamageTimeout * 1000) {
+                records.remove(player);
+                stopCombat(player);
+            }
         }
     }
 
@@ -44,13 +45,13 @@ public class StatusManager extends BukkitRunnable {
     public boolean isInCombat(Player player) {
         if(!records.containsKey(player))
             return false;
-        return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout;
+        return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000;
     }
 
     public void registerEvent(@Nullable Player player) {
         if(player == null)
             return;
-        if(!records.containsKey(player) || records.get(player) > Config.DamageTimeout)
+        if(!records.containsKey(player) || records.get(player) > Config.DamageTimeout * 1000)
             startCombat(player);
         records.put(player, System.currentTimeMillis());
     }
@@ -84,11 +85,13 @@ public class StatusManager extends BukkitRunnable {
     private void startCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now entered combat."));
+        Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has entered combat.");
     }
 
     private void stopCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now left combat."));
+        Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has left combat.");
     }
 
     private boolean isInAirspace(@NotNull Craft craft) {

@@ -57,11 +57,11 @@ public class DamageManager extends BukkitRunnable {
             return;
         }
 
-        HashSet<Player> causes = new HashSet<>();
+        HashSet<DamageRecord> causes = new HashSet<>();
         long currentTime = System.currentTimeMillis();
         for(DamageRecord r : damageRecords.get(craft)) {
-            if(currentTime - r.getTime() < Config.DamageTimeout)
-                causes.add(r.getCause());
+            if(currentTime - r.getTime() < Config.DamageTimeout * 1000)
+                causes.add(r);
         }
         if(causes.size() == 0)
             return;
@@ -73,12 +73,27 @@ public class DamageManager extends BukkitRunnable {
         damageRecords.remove(craft);
     }
 
-    private String causesToString(@NotNull Player sunk, @NotNull HashSet<Player> causes) {
+    private String causesToString(@NotNull Player sunk, @NotNull HashSet<DamageRecord> causes) {
+        DamageRecord latestDamage = null;
+        HashSet<Player> players = new HashSet<>();
+        for(DamageRecord r : causes) {
+            players.add(r.getCause());
+            if(latestDamage == null || r.getTime() > latestDamage.getTime())
+                latestDamage = r;
+        }
+        causes.remove(latestDamage);
+        players.remove(latestDamage.getCause());
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(sunk.getDisplayName());
         stringBuilder.append(" was sunk by ");
-        for(Player p : causes) {
-            stringBuilder.append(p.getDisplayName());
+        stringBuilder.append(latestDamage.getCause().getDisplayName());
+        if(causes.size() < 1)
+            return stringBuilder.toString();
+
+        stringBuilder.append(" with assists from: ");
+        for(DamageRecord r : causes) {
+            stringBuilder.append(r.getCause().getDisplayName());
             stringBuilder.append(", ");
         }
         return stringBuilder.substring(0, stringBuilder.length() - 2);

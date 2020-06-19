@@ -87,6 +87,25 @@ public final class MovecraftCombat extends JavaPlugin {
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
+
+        transparent.add(Material.AIR);
+        transparent.add(Material.GLASS);
+        transparent.add(Material.THIN_GLASS);
+        transparent.add(Material.STAINED_GLASS);
+        transparent.add(Material.STAINED_GLASS_PANE);
+        transparent.add(Material.IRON_FENCE);
+        transparent.add(Material.REDSTONE_WIRE);
+        transparent.add(Material.IRON_TRAPDOOR);
+        transparent.add(Material.TRAP_DOOR);
+        transparent.add(Material.NETHER_BRICK_STAIRS);
+        transparent.add(Material.LEVER);
+        transparent.add(Material.STONE_BUTTON);
+        transparent.add(Material.WOOD_BUTTON);
+        transparent.add(Material.STEP);
+        transparent.add(Material.SMOOTH_STAIRS);
+        transparent.add(Material.SIGN);
+        transparent.add(Material.SIGN_POST);
+        transparent.add(Material.WALL_SIGN);
     }
 
     @Override
