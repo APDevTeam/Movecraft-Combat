@@ -67,6 +67,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.DamageTimeout = getConfig().getInt("DamageTimeout", 300);
         Config.EnableCombatReleaseTracking = getConfig().getBoolean("EnableCombatReleaseTracking", false);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 3600);
+        Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
 
 
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);

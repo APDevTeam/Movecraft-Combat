@@ -11,6 +11,6 @@ public class CraftReleaseListener implements Listener {
     @EventHandler
     public void releaseListener(CraftReleaseEvent e) {
         DamageManager.getInstance().craftReleased(e.getCraft());
-        StatusManager.getInstance().craftReleased(e.getCraft());
+        StatusManager.getInstance().craftReleased(e.getCraft(), e.getReason());
     }
 }

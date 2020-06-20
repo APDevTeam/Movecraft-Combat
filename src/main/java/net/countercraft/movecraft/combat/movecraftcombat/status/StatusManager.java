@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
@@ -58,26 +59,34 @@ public class StatusManager extends BukkitRunnable {
         records.put(player, System.currentTimeMillis());
     }
 
-    public void craftReleased(@NotNull Craft craft) {
+    public void craftReleased(@NotNull Craft craft, @NotNull CraftReleaseEvent.Reason reason) {
         if(!Config.EnableCombatReleaseTracking)
+            return;
+        if(reason == CraftReleaseEvent.Reason.SUB_CRAFT || craft.getType().getMustBeSubcraft())
             return;
         if(craft.getNotificationPlayer() == null)
             return;
 
         Player player = craft.getNotificationPlayer();
-        if(craft.getSinking()) {
+        if(craft.getSinking() || reason == CraftReleaseEvent.Reason.FORCE) {
             records.remove(player);
             stopCombat(player);
+            return;
         }
 
         if(!isInCombat(player) || isInAirspace(craft))
             return;
+
         records.remove(player);
+        stopCombat(player);
 
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
+
+        if(Config.CombatReleaseScuttle)
+            craft.sink();
 
         Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
         Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), "Combat release!", expiry, "Movecraft-Combat AutoBan");

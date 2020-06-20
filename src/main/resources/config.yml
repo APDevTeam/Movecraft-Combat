@@ -37,4 +37,5 @@ DamageTimeout: 300 # Timeout for damages in seconds
 
 # Combat Release Tracking
 EnableCombatReleaseTracking: false # Enable tracking of combat releasing
-CombatReleaseBanLength: 3600 # Length of combat release ban in seconds
+CombatReleaseBanLength: 60 # Length of combat release ban in seconds
+CombatReleaseScuttle: true # Enable scuttling of crafts when combat released

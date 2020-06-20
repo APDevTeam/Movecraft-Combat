@@ -41,4 +41,5 @@ public class Config {
     // Combat Releasing
     public static boolean EnableCombatReleaseTracking = false;
     public static long CombatReleaseBanLength = 3600;
+    public static boolean CombatReleaseScuttle = true;
 }
