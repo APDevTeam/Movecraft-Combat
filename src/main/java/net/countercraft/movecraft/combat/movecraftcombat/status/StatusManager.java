@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
+import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
@@ -85,12 +86,16 @@ public class StatusManager extends BukkitRunnable {
         if(event.isCancelled())
             return;
 
-        if(Config.CombatReleaseScuttle)
+        if(Config.CombatReleaseScuttle) {
+            CraftManager.getInstance().removeReleaseTask(craft);
             craft.sink();
-
-        Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), "Combat release!", expiry, "Movecraft-Combat AutoBan");
-        player.kickPlayer("Combat release!");
+        }
+        if(Config.CombatReleaseBanLength > 0) {
+            Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
+            Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), "Combat release!", expiry, "Movecraft-Combat AutoBan");
+        }
+        if(Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick)
+            player.kickPlayer("Combat release!");
     }
 
     public void craftSunk(@NotNull Craft craft) {
