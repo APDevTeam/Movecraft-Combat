@@ -53,7 +53,7 @@ public class StatusManager extends BukkitRunnable {
     public void registerEvent(@Nullable Player player) {
         if(player == null)
             return;
-        if(!records.containsKey(player) || records.get(player) > Config.DamageTimeout * 1000)
+        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000)
             startCombat(player);
         records.put(player, System.currentTimeMillis());
     }
