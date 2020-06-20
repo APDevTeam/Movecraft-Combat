@@ -2,20 +2,18 @@ package net.countercraft.movecraft.combat.movecraftcombat.status;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
-import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
 
 public class StatusManager extends BukkitRunnable {
@@ -33,11 +31,15 @@ public class StatusManager extends BukkitRunnable {
 
     public void run() {
         long currentTime = System.currentTimeMillis();
+        HashSet<Player> removeSet = new HashSet<>();
         for(Player player : records.keySet()) {
             if((currentTime - records.get(player)) > Config.DamageTimeout * 1000) {
-                records.remove(player);
-                stopCombat(player);
+                removeSet.add(player);
             }
+        }
+        for(Player player : removeSet) {
+            stopCombat(player);
+            records.remove(player);
         }
     }
 
@@ -84,13 +86,13 @@ public class StatusManager extends BukkitRunnable {
 
     private void startCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now entered combat."));
+        player.sendMessage("You have now entered combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has entered combat.");
     }
 
     private void stopCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("You have now left combat."));
+        player.sendMessage("You have now left combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has left combat.");
     }
 

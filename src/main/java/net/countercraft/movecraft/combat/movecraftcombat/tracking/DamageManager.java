@@ -81,19 +81,18 @@ public class DamageManager extends BukkitRunnable {
             if(latestDamage == null || r.getTime() > latestDamage.getTime())
                 latestDamage = r;
         }
-        causes.remove(latestDamage);
         players.remove(latestDamage.getCause());
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(sunk.getDisplayName());
         stringBuilder.append(" was sunk by ");
         stringBuilder.append(latestDamage.getCause().getDisplayName());
-        if(causes.size() < 1)
+        if(players.size() < 1)
             return stringBuilder.toString();
 
         stringBuilder.append(" with assists from: ");
-        for(DamageRecord r : causes) {
-            stringBuilder.append(r.getCause().getDisplayName());
+        for(Player p : players) {
+            stringBuilder.append(p.getDisplayName());
             stringBuilder.append(", ");
         }
         return stringBuilder.substring(0, stringBuilder.length() - 2);

@@ -19,17 +19,8 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
-  35: 0
-  42: 50
-  43: 50
-  44: 50
-  109: 50
-  112: 50
-  159: 50
-  95: 50
-  121: 85
-  206: 85
-  152: 25
+  121: 70
+  206: 70
 
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds
