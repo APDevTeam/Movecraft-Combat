@@ -93,13 +93,26 @@ public class StatusManager extends BukkitRunnable {
         player.kickPlayer("Combat release!");
     }
 
+    public void craftSunk(@NotNull Craft craft) {
+        if(craft.getNotificationPlayer() == null)
+            return;
+
+        Player player = craft.getNotificationPlayer();
+        records.remove(player);
+        stopCombat(player);
+    }
+
     private void startCombat(@NotNull Player player) {
+        if(isInCombat(player))
+            return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
         player.sendMessage("You have now entered combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has entered combat.");
     }
 
     private void stopCombat(@NotNull Player player) {
+        if(!isInCombat(player))
+            return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.sendMessage("You have now left combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has left combat.");
