@@ -49,6 +49,8 @@ public class DamageManager extends BukkitRunnable {
     public void craftSunk(@NotNull Craft craft) {
         if(craft.getNotificationPlayer() == null)
             return;
+        if(craft.getType().getCruiseOnPilot())
+            return;
         if(!damageRecords.containsKey(craft)) {
             return;
         }
