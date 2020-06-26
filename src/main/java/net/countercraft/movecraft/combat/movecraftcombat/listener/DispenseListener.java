@@ -1,6 +1,9 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
@@ -40,7 +43,13 @@ public class DispenseListener implements Listener {
         // Spawn TNT
         Location l = e.getVelocity().toLocation(d.getLocation().getWorld());
         TNTPrimed tnt = (TNTPrimed) l.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
-        tnt.setVelocity(getTNTVector());
+        Vector velocity = getTNTVector();
+        tnt.setVelocity(velocity);
+        Bukkit.broadcastMessage("Spawned custom TNT!: " + l + ", " + velocity);
+
+        for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+            p.playSound(l, Sound.ENTITY_TNT_PRIMED, 2.5f, 1.5f);
+        }
 
         // Find nearest craft
         Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getBlock().getLocation());
