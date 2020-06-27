@@ -47,12 +47,16 @@ public class StatusManager extends BukkitRunnable {
 
 
     public boolean isInCombat(Player player) {
+        if(!Config.EnableCombatReleaseTracking)
+            return false;
         if(!records.containsKey(player))
             return false;
         return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000;
     }
 
     public void registerEvent(@Nullable Player player) {
+        if(!Config.EnableCombatReleaseTracking)
+            return;
         if(player == null)
             return;
         if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000)
@@ -60,26 +64,32 @@ public class StatusManager extends BukkitRunnable {
         records.put(player, System.currentTimeMillis());
     }
 
-    public void craftReleased(@NotNull Craft craft, @NotNull CraftReleaseEvent.Reason reason) {
+    public void craftReleased(@NotNull CraftReleaseEvent e) {
         if(!Config.EnableCombatReleaseTracking)
             return;
-        if(reason == CraftReleaseEvent.Reason.SUB_CRAFT || craft.getType().getMustBeSubcraft())
+        Craft craft = e.getCraft();
+        if(craft.getSinking() && e.getReason() == CraftReleaseEvent.Reason.DISCONNECT) {
+            e.setCancelled(true);
             return;
+        }
         if(craft.getNotificationPlayer() == null)
             return;
 
         Player player = craft.getNotificationPlayer();
-        if(craft.getSinking() || reason == CraftReleaseEvent.Reason.FORCE) {
-            records.remove(player);
-            stopCombat(player);
+        if(!isInCombat(player))
             return;
-        }
-
-        if(!isInCombat(player) || isInAirspace(craft))
-            return;
-
         records.remove(player);
+
+        CraftReleaseEvent.Reason reason = e.getReason();
+        if(reason == CraftReleaseEvent.Reason.SUB_CRAFT || craft.getType().getMustBeSubcraft())
+            return;
+        if(craft.getType().getCruiseOnPilot())
+            return;
+
         stopCombat(player);
+
+        if(craft.getSinking() || isInAirspace(craft))
+            return;
 
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -87,7 +97,7 @@ public class StatusManager extends BukkitRunnable {
             return;
 
         if(Config.CombatReleaseScuttle) {
-            CraftManager.getInstance().removeReleaseTask(craft);
+            e.setCancelled(true);
             craft.sink();
         }
         if(Config.CombatReleaseBanLength > 0) {
@@ -99,7 +109,11 @@ public class StatusManager extends BukkitRunnable {
     }
 
     public void craftSunk(@NotNull Craft craft) {
+        if(!Config.EnableCombatReleaseTracking)
+            return;
         if(craft.getNotificationPlayer() == null)
+            return;
+        if(craft.getType().getCruiseOnPilot())
             return;
 
         Player player = craft.getNotificationPlayer();

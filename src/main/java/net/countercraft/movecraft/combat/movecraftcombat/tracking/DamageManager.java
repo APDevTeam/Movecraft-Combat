@@ -51,9 +51,8 @@ public class DamageManager extends BukkitRunnable {
             return;
         if(craft.getType().getCruiseOnPilot())
             return;
-        if(!damageRecords.containsKey(craft)) {
+        if(!damageRecords.containsKey(craft))
             return;
-        }
         if(damageRecords.get(craft).isEmpty()) {
             damageRecords.remove(craft);
             return;
