@@ -45,10 +45,12 @@ public class DispenseListener implements Listener {
         TNTPrimed tnt = (TNTPrimed) l.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
-        Bukkit.broadcastMessage("Spawned custom TNT!: " + l + ", " + velocity);
+
+        if(Config.Debug)
+            Bukkit.broadcastMessage("Spawned custom TNT!: " + l + ", " + velocity);
 
         for(Player p : Bukkit.getServer().getOnlinePlayers()) {
-            p.playSound(l, Sound.ENTITY_TNT_PRIMED, 2.5f, 1.5f);
+            p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);
         }
 
         // Find nearest craft
