@@ -61,7 +61,7 @@ public class DamageManager extends BukkitRunnable {
         HashSet<DamageRecord> causes = new HashSet<>();
         long currentTime = System.currentTimeMillis();
         for(DamageRecord r : damageRecords.get(craft)) {
-            if(currentTime - r.getTime() < Config.DamageTimeout * 1000)
+            if(currentTime - r.getTime() < Config.DamageTimeout * 1000 && r.getCause() != craft.getNotificationPlayer())
                 causes.add(r);
         }
         if(causes.size() == 0)
