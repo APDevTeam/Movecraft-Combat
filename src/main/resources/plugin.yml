@@ -7,3 +7,7 @@ depend: [Movecraft, WorldGuard]
 authors: [TylerS1066, BaccaYarro]
 description: Combat features of Movecraft
 website: https://github.com/APDevTeam
+commands:
+  scuttle:
+    description: Sinks piloted craft
+    usage: /scuttle

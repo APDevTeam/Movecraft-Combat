@@ -79,7 +79,7 @@
             <artifactId>Movecraft</artifactId>
             <version>7.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/Movecraft.jar</systemPath>
+            <systemPath>${project.basedir}/../Movecraft/target/Movecraft.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

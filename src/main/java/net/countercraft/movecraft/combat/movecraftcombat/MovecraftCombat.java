@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.Location;
@@ -18,6 +17,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.*;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import net.countercraft.movecraft.combat.movecraftcombat.commands.ScuttleCommand;
 
 
 public final class MovecraftCombat extends JavaPlugin {
@@ -79,6 +79,8 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
+
+        this.getCommand("scuttle").setExecutor(new ScuttleCommand());
 
 
         aaDirectors = new AADirectorManager();
