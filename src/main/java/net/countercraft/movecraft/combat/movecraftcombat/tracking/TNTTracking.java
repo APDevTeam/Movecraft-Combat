@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
+import net.countercraft.movecraft.combat.movecraftcombat.directors.CannonDirectorManager;
 
 
 public class TNTTracking {
@@ -21,8 +22,11 @@ public class TNTTracking {
     }
 
 
-    public void dispensedTNT(Player pilot, TNTPrimed tnt) {
-        tracking.put(tnt, pilot);
+    public void dispensedTNT(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
+        if(CannonDirectorManager.getInstance().hasDirector(craft))
+            tracking.put(tnt, CannonDirectorManager.getInstance().getDirector(craft));
+        else
+            tracking.put(tnt, craft.getNotificationPlayer());
     }
 
     public void damagedCraft(@NotNull Craft craft, @NotNull TNTPrimed tnt) {

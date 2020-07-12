@@ -61,7 +61,7 @@ public class DispenseListener implements Listener {
             return;
 
         // Report to tracking
-        TNTTracking.getInstance().dispensedTNT(craft.getNotificationPlayer(), tnt);
+        TNTTracking.getInstance().dispensedTNT(craft, tnt);
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 

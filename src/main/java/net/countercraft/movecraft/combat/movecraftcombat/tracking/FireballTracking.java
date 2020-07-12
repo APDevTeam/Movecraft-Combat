@@ -1,6 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.HashMap;
+
+import net.countercraft.movecraft.combat.movecraftcombat.directors.AADirectorManager;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Fireball;
@@ -22,10 +24,14 @@ public class FireballTracking {
     }
 
 
-    public void dispensedFireball(Player pilot, Fireball fireball) {
+    public void dispensedFireball(@NotNull Craft craft, @NotNull Fireball fireball) {
         if(!Config.EnableFireballTracking)
             return;
-        tracking.put(fireball, pilot);
+
+        if(AADirectorManager.getInstance().hasDirector(craft))
+            tracking.put(fireball, AADirectorManager.getInstance().getDirector(craft));
+        else
+            tracking.put(fireball, craft.getNotificationPlayer());
     }
 
     public void damagedCraft(@NotNull Craft craft, @NotNull Fireball fireball) {

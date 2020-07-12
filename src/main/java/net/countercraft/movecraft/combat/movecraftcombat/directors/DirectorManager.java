@@ -9,6 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class DirectorManager extends BukkitRunnable {
     private final HashBiMap<Craft, Player> directors = HashBiMap.create();
+    static DirectorManager instance;
+
+    public static DirectorManager getInstance() {
+        return instance;
+    }
+
+    public DirectorManager() {
+        instance = this;
+    }
 
     public void run() {
 
