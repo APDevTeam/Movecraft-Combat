@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import net.countercraft.movecraft.combat.movecraftcombat.directors.CannonDirectorManager;
 import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
 
@@ -53,16 +53,16 @@ public class CannonDirectorSign implements Listener {
             return;
         }
 
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK && MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)){
-            MovecraftCombat.getInstance().getCannonDirectors().removeDirector(event.getPlayer());
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK && CannonDirectorManager.getInstance().isDirector(player)){
+            CannonDirectorManager.getInstance().removeDirector(event.getPlayer());
             player.sendMessage("Cannon Director signs not allowed on this craft!");
             return;
         }
 
-        MovecraftCombat.getInstance().getCannonDirectors().addDirector(foundCraft, event.getPlayer());
+        CannonDirectorManager.getInstance().addDirector(foundCraft, event.getPlayer());
         player.sendMessage("You are now directing the cannons of this craft");
-        if (MovecraftCombat.getInstance().getAADirectors().isDirector(player)) {
-            MovecraftCombat.getInstance().getAADirectors().removeDirector(player);
+        if (CannonDirectorManager.getInstance().isDirector(player)) {
+            CannonDirectorManager.getInstance().removeDirector(player);
         }
     }
 }

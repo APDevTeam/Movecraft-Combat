@@ -23,8 +23,6 @@ public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance;
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
-    private DamageManager damageTracking;
-    private StatusManager statusTracking;
     public HashSet<Material> transparent = new HashSet<>();
 
     public static synchronized MovecraftCombat getInstance() {
@@ -84,9 +82,9 @@ public final class MovecraftCombat extends JavaPlugin {
         aaDirectors.runTaskTimer(this, 0, 1);
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);
-        damageTracking = new DamageManager();
+        DamageManager damageTracking = new DamageManager();
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
-        statusTracking = new StatusManager();
+        StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
 
         transparent.add(Material.AIR);
@@ -114,14 +112,6 @@ public final class MovecraftCombat extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-
-    public CannonDirectorManager getCannonDirectors() {
-        return cannonDirectors;
-    }
-
-    public AADirectorManager getAADirectors() {
-        return aaDirectors;
-    }
 
     @Nullable
     public static Craft fastNearestCraftToLoc(@NotNull Location loc) {

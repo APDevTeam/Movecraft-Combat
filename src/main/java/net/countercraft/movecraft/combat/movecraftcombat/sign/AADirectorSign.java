@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import net.countercraft.movecraft.combat.movecraftcombat.directors.AADirectorManager;
 import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
 
@@ -53,16 +53,16 @@ public class AADirectorSign implements Listener {
             return;
         }
         
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK && MovecraftCombat.getInstance().getAADirectors().isDirector(player)){
-            MovecraftCombat.getInstance().getAADirectors().removeDirector(event.getPlayer());
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK && AADirectorManager.getInstance().isDirector(player)){
+            AADirectorManager.getInstance().removeDirector(event.getPlayer());
             player.sendMessage("You are no longer directing the AA of this craft.");
             return;
         }
 
-        MovecraftCombat.getInstance().getAADirectors().addDirector(foundCraft, event.getPlayer());
+        AADirectorManager.getInstance().addDirector(foundCraft, event.getPlayer());
         player.sendMessage("You are now directing the AA of this craft");
-        if (MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)) {
-            MovecraftCombat.getInstance().getCannonDirectors().removeDirector(player);
+        if (AADirectorManager.getInstance().isDirector(player)) {
+            AADirectorManager.getInstance().removeDirector(player);
         }
     }
 }
