@@ -11,7 +11,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.localisation.I18nSupport;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
@@ -45,23 +44,23 @@ public class CannonDirectorSign implements Listener {
             }
         }
         if (foundCraft == null) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("CannonDirector - Must Be Part Of Craft"));
+            player.sendMessage(ERROR_PREFIX + "Sign must be part of a piloted craft!");
             return;
         }
 
         if (!Config.CannonDirectorsAllowed.contains(foundCraft.getType())) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("CannonDirector - Not Allowed On Craft"));
+            player.sendMessage(ERROR_PREFIX + "Cannon Director signs not allowed on this craft!");
             return;
         }
 
         if(event.getAction() == Action.LEFT_CLICK_BLOCK && MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)){
             MovecraftCombat.getInstance().getCannonDirectors().removeDirector(event.getPlayer());
-            player.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - No Longer Directing"));
+            player.sendMessage("Cannon Director signs not allowed on this craft!");
             return;
         }
 
         MovecraftCombat.getInstance().getCannonDirectors().addDirector(foundCraft, event.getPlayer());
-        player.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
+        player.sendMessage("You are now directing the cannons of this craft");
         if (MovecraftCombat.getInstance().getAADirectors().isDirector(player)) {
             MovecraftCombat.getInstance().getAADirectors().removeDirector(player);
         }

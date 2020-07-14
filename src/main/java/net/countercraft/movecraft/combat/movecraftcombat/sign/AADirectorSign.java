@@ -11,7 +11,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.localisation.I18nSupport;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
@@ -45,23 +44,23 @@ public class AADirectorSign implements Listener {
             }
         }
         if (foundCraft == null) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("AADirector - Must Be Part Of Craft"));
+            player.sendMessage(ERROR_PREFIX + "Sign must be part of a piloted craft!");
             return;
         }
 
         if (!Config.AADirectorsAllowed.contains(foundCraft.getType())) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
+            player.sendMessage(ERROR_PREFIX + "AA Director signs not allowed on this craft!");
             return;
         }
         
         if(event.getAction() == Action.LEFT_CLICK_BLOCK && MovecraftCombat.getInstance().getAADirectors().isDirector(player)){
             MovecraftCombat.getInstance().getAADirectors().removeDirector(event.getPlayer());
-            player.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Longer Directing"));
+            player.sendMessage("You are no longer directing the AA of this craft.");
             return;
         }
 
         MovecraftCombat.getInstance().getAADirectors().addDirector(foundCraft, event.getPlayer());
-        player.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
+        player.sendMessage("You are now directing the AA of this craft");
         if (MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)) {
             MovecraftCombat.getInstance().getCannonDirectors().removeDirector(player);
         }
