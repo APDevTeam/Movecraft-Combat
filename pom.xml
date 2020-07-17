@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>0.4.26</version>
+    <version>0.4.27</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
@@ -16,7 +16,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>https://github.com/TylerS1066/MC-Combat</url>
+    <url>https://github.com/TylerS1066/Movecraft-Combat</url>
 
     <build>
         <plugins>
