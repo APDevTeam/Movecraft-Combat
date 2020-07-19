@@ -63,7 +63,9 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
 
 
+        getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);

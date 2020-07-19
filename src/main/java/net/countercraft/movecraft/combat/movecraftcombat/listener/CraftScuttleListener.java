@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import net.countercraft.movecraft.events.CraftScuttleEvent;
@@ -11,6 +12,9 @@ import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 public class CraftScuttleListener implements Listener {
     @EventHandler
     public void scuttleListener(CraftScuttleEvent e) {
+        if(!Config.EnableCombatReleaseTracking)
+            return;
+
         if(e.getCraft().getNotificationPlayer() != e.getCause())
             return; //  Always let /scuttle [player] run.
 
