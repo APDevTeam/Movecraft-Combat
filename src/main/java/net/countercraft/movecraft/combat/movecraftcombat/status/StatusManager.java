@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
-import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
