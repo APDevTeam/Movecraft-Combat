@@ -30,7 +30,6 @@ public class CraftCollisionExplosionListener implements Listener {
         if(craft == null)
             return;
         if(craft == e.getCraft()) {
-            Bukkit.broadcastMessage("uh oh, found same craft!");
             return;
         }
         if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
@@ -38,7 +37,6 @@ public class CraftCollisionExplosionListener implements Listener {
 
         DamageManager.getInstance().addDamageRecord(craft, e.getCraft().getNotificationPlayer(), DamageType.TORPEDO);
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
-        Bukkit.broadcastMessage("Torp hit craft!");
     }
 
     @Nullable
