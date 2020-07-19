@@ -1,6 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
+
+import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -38,7 +40,7 @@ public class AADirectorManager extends DirectorManager {
                 if (!(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
                         && w.getPlayers().size() > 0
                         && !tracking.containsKey(fireball)) {
-                    Craft c = MovecraftCombat.fastNearestCraftToLoc(fireball.getLocation());
+                    Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
                     tracking.put(fireball, System.currentTimeMillis());
                     Player p = null;
                     if (c == null)

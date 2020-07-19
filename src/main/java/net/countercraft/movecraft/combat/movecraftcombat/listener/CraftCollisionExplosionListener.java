@@ -1,13 +1,13 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
+import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageType;
@@ -21,7 +21,7 @@ public class CraftCollisionExplosionListener implements Listener {
         if(e.getCraft().getNotificationPlayer() == null)
             return;
 
-        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
         if(craft == null)
             return;
         if(craft == e.getCraft()) {

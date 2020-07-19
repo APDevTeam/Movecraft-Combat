@@ -1,6 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import java.util.Random;
+
+import net.countercraft.movecraft.craft.CraftManager;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -90,7 +92,7 @@ public class ExplosionListener implements Listener {
             return;
 
         TNTPrimed tnt = (TNTPrimed) e.getEntity();
-        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
         if(craft == null)
             return;
         for(Block b : e.blockList()) {
@@ -110,7 +112,7 @@ public class ExplosionListener implements Listener {
         if(!(e.getEntity() instanceof Fireball))
             return;
         Fireball fireball = (Fireball) e.getEntity();
-        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getLocation());
+        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
         if(craft == null)
             return;
         if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {

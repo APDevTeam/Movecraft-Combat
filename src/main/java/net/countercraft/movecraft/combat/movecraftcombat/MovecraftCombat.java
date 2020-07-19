@@ -1,15 +1,10 @@
 package net.countercraft.movecraft.combat.movecraftcombat;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
 import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
@@ -110,25 +105,5 @@ public final class MovecraftCombat extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-    }
-
-
-    @Nullable
-    public static Craft fastNearestCraftToLoc(@NotNull Location loc) {
-        //TODO: Replace with Movecraft's version
-        Craft ret = null;
-        long closestDistSquared = Long.MAX_VALUE;
-        Set<Craft> craftsList = CraftManager.getInstance().getCraftsInWorld(loc.getWorld());
-        for (Craft i : craftsList) {
-            int midX = (i.getHitBox().getMaxX() + i.getHitBox().getMinX()) >> 1;
-//				int midY=(i.getMaxY()+i.getMinY())>>1; don't check Y because it is slow
-            int midZ = (i.getHitBox().getMaxZ() + i.getHitBox().getMinZ()) >> 1;
-            long distSquared = (long) (Math.pow(midX -  loc.getX(), 2) + Math.pow(midZ - (int) loc.getZ(), 2));
-            if (distSquared < closestDistSquared) {
-                closestDistSquared = distSquared;
-                ret = i;
-            }
-        }
-        return ret;
     }
 }

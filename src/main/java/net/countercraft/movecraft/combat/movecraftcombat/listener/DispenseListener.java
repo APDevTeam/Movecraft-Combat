@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import net.countercraft.movecraft.craft.CraftManager;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -54,7 +55,7 @@ public class DispenseListener implements Listener {
         }
 
         // Find nearest craft
-        Craft craft = MovecraftCombat.fastNearestCraftToLoc(e.getBlock().getLocation());
+        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getBlock().getLocation());
         if(craft == null)
             return;
         if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))

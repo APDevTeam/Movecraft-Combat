@@ -1,6 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
+
+import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -99,7 +101,7 @@ public class CannonDirectorManager extends DirectorManager {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
-                Craft c = MovecraftCombat.fastNearestCraftToLoc(tnt.getLocation());
+                Craft c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
                 tracking.put(tnt, tnt.getVelocity().lengthSquared());
                 if (c == null) {
                     continue;
