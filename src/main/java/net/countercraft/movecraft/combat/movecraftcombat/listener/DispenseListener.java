@@ -38,7 +38,7 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtract(d, e.getItem()))
+        if(!subtractItem(e.getBlock(), e.getItem()))
             return;
 
         // Spawn TNT
@@ -75,18 +75,40 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtract(@NotNull Dispenser d, @NotNull ItemStack item) {
+    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
+        displayItems(d);
         for(int i = 0; i < d.getInventory().getSize(); i++) {
             ItemStack temp = d.getInventory().getItem(i);
-            if(temp == null || !item.isSimilar(temp))
+            if(temp == null)
                 continue;
+            if(!item.isSimilar(temp))
+                continue;
+            displayItems(d);
             int count = temp.getAmount();
-            if(count < 1)
-                continue;;
-            temp.setAmount(--count);
+            if(count <= 0)   //  Quantities are off by 1, a quantity of 1 means 2 items are in the stack
+                continue;
+            count -= 1;
+            temp.setAmount(count);
+            displayItems(d);
             d.getInventory().setItem(i, temp);
+            displayItems(d);
+            Bukkit.broadcastMessage("Returning true");
             return true;
         }
+        Bukkit.broadcastMessage("Returning false");
         return false;
+    }
+
+    private void displayItems(@NotNull Dispenser d) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < d.getInventory().getSize(); i++) {
+            ItemStack temp = d.getInventory().getItem(i);
+            if(temp == null) {
+                sb.append(i).append(":e ");
+                continue;
+            }
+            sb.append(i).append(":").append(temp.getType()).append(",").append(temp.getAmount()).append(" ");
+        }
+        Bukkit.broadcastMessage(sb.toString());
     }
 }
