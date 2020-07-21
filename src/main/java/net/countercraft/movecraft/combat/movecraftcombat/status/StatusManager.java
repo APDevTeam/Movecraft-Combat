@@ -11,9 +11,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.utils.HitBox;
-import net.countercraft.movecraft.utils.MathUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
@@ -133,7 +133,7 @@ public class StatusManager extends BukkitRunnable {
         if(isInCombat(player))
             return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
-        player.sendMessage("You have now entered combat.");
+        player.sendMessage(ChatColor.RED + "You have now entered combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has entered combat.");
     }
 
@@ -141,10 +141,11 @@ public class StatusManager extends BukkitRunnable {
         if(!isInCombat(player))
             return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
-        player.sendMessage("You have now left combat.");
+        player.sendMessage(ChatColor.RED + "You have now left combat.");
         Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has left combat.");
     }
 
+    // TODO: Replace this functionality with a listener in MCWG
     private boolean isInAirspace(@NotNull Craft craft) {
         if(MovecraftCombat.getInstance().getWGPlugin() == null)
             return false;
@@ -159,6 +160,7 @@ public class StatusManager extends BukkitRunnable {
         return false;
     }
 
+    // TODO: Move this to HitBox or somewhere in Utils of MC
     private ArrayList<MovecraftLocation> getHitboxCorners(@NotNull HitBox hitbox) {
         ArrayList<MovecraftLocation> corners = new ArrayList<>();
         corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMinZ()));
