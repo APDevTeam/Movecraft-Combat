@@ -1,8 +1,17 @@
 package net.countercraft.movecraft.combat.movecraftcombat.status;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.utils.HitBox;
+import net.countercraft.movecraft.utils.MathUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -137,6 +146,29 @@ public class StatusManager extends BukkitRunnable {
     }
 
     private boolean isInAirspace(@NotNull Craft craft) {
+        if(MovecraftCombat.getInstance().getWGPlugin() == null)
+            return false;
+
+        for(MovecraftLocation l : getHitboxCorners(craft.getHitBox())) {
+            ApplicableRegionSet regions = MovecraftCombat.getInstance().getWGPlugin().getRegionManager(craft.getW()).getApplicableRegions(l.toBukkit(craft.getW()));
+            for(ProtectedRegion r : regions.getRegions()) {
+                if(r.getFlag(DefaultFlag.TNT) == StateFlag.State.DENY || r.getFlag(DefaultFlag.PVP) == StateFlag.State.DENY)
+                    return true;
+            }
+        }
         return false;
+    }
+
+    private ArrayList<MovecraftLocation> getHitboxCorners(@NotNull HitBox hitbox) {
+        ArrayList<MovecraftLocation> corners = new ArrayList<>();
+        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMinZ()));
+        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMaxZ()));
+        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMaxY(), hitbox.getMinZ()));
+        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMaxY(), hitbox.getMaxZ()));
+        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMinY(), hitbox.getMinZ()));
+        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMinY(), hitbox.getMaxZ()));
+        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMinZ()));
+        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMaxZ()));
+        return corners;
     }
 }

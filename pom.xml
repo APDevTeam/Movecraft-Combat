@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>0.5.11</version>
+    <version>0.5.12</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
@@ -60,6 +60,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
@@ -85,6 +89,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations-java5</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>6.1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

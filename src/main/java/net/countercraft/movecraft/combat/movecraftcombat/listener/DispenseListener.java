@@ -38,7 +38,7 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtractItem(e.getBlock(), e.getItem()))
+        if(!subtractItem(d, e.getItem()))
             return;
 
         // Spawn TNT

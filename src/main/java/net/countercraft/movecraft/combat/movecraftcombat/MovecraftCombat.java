@@ -3,8 +3,11 @@ package net.countercraft.movecraft.combat.movecraftcombat;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
 import org.bukkit.Material;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
 import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
@@ -16,8 +19,11 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance;
+    private static WorldGuardPlugin wgPlugin;
+
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
+
     public HashSet<Material> transparent = new HashSet<>();
 
     public static synchronized MovecraftCombat getInstance() {
@@ -61,6 +67,17 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
+
+
+        Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
+        if(wg == null || !(wg instanceof WorldGuardPlugin)) {
+            getLogger().log(Level.FINE, "Movecraft Combat did not find a compatible version of WorldGuard. Disabling WorldGuard integration.");
+            wgPlugin = null;
+        }
+        else {
+            getLogger().log(Level.INFO, "Found a compatible version of WorldGuard. Enabling WorldGuard integration.");
+            wgPlugin = (WorldGuardPlugin) wg;
+        }
 
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
@@ -107,5 +124,9 @@ public final class MovecraftCombat extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public WorldGuardPlugin getWGPlugin() {
+        return wgPlugin;
     }
 }
