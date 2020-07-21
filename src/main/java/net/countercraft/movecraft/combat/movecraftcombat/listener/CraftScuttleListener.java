@@ -22,6 +22,6 @@ public class CraftScuttleListener implements Listener {
             return;
 
         e.setCancelled(true);
-        e.getCause().sendMessage(ERROR_PREFIX + "You may not scuttle while in combat!");
+        e.getCause().sendMessage(ERROR_PREFIX + " You may not scuttle while in combat!");
     }
 }

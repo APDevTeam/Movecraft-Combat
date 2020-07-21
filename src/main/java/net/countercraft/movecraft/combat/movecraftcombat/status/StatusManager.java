@@ -89,13 +89,10 @@ public class StatusManager extends BukkitRunnable {
         records.remove(player);
 
         CraftReleaseEvent.Reason reason = e.getReason();
-        if(reason == CraftReleaseEvent.Reason.SUB_CRAFT || craft.getType().getMustBeSubcraft()) {
-            MovecraftCombat.getInstance().getLogger().info("Released subcraft in combat");
+        if(craft.getType().getMustBeSubcraft())
             return;
-        }
-        else {
-            MovecraftCombat.getInstance().getLogger().info("Released non-subcraft in combat, reason: " + reason + ", type: " + craft.getType() + ", subcraft" + craft.getType().getMustBeSubcraft());
-        }
+        if(reason != CraftReleaseEvent.Reason.PLAYER)
+            return;
         if(craft.getType().getCruiseOnPilot())
             return;
 
@@ -104,6 +101,7 @@ public class StatusManager extends BukkitRunnable {
         if(craft.getSinking() || isInAirspace(craft))
             return;
 
+        MovecraftCombat.getInstance().getLogger().severe("Combat release! reason:" + reason);
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
