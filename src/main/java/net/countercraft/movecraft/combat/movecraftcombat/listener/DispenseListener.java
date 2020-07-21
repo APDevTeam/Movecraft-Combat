@@ -92,23 +92,27 @@ public class DispenseListener implements Listener {
             displayItems(d);
             d.getInventory().setItem(i, temp);
             displayItems(d);
-            Bukkit.broadcastMessage("Returning true");
+            if(Config.Debug)
+                Bukkit.broadcastMessage("Returning true");
             return true;
         }
-        Bukkit.broadcastMessage("Returning false");
+        if(Config.Debug)
+            Bukkit.broadcastMessage("Returning false");
         return false;
     }
 
     private void displayItems(@NotNull Dispenser d) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < d.getInventory().getSize(); i++) {
-            ItemStack temp = d.getInventory().getItem(i);
-            if(temp == null) {
-                sb.append(i).append(":e ");
-                continue;
+        if(Config.Debug) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < d.getInventory().getSize(); i++) {
+                ItemStack temp = d.getInventory().getItem(i);
+                if (temp == null) {
+                    sb.append(i).append(":e ");
+                    continue;
+                }
+                sb.append(i).append(":").append(temp.getType()).append(",").append(temp.getAmount()).append(" ");
             }
-            sb.append(i).append(":").append(temp.getType()).append(",").append(temp.getAmount()).append(" ");
+            Bukkit.broadcastMessage(sb.toString());
         }
-        Bukkit.broadcastMessage(sb.toString());
     }
 }
