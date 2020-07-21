@@ -56,7 +56,7 @@ public class AADirectorManager extends DirectorManager {
                             Vector fv = fireball.getVelocity();
                             double speed = fv.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
                             fv = fv.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
-                            Block targetBlock = p.getTargetBlock(MovecraftCombat.getInstance().transparent, Config.AADirectorRange); //TODO: use movecraft's transparencies
+                            Block targetBlock = p.getTargetBlock(Config.Transparent, Config.AADirectorRange);
                             Vector targetVector;
                             if (targetBlock == null) { // the player is looking at nothing, shoot in that general direction
                                 targetVector = p.getLocation().getDirection();

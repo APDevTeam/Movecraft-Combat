@@ -2,7 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.config;
 
 import java.util.HashMap;
 import java.util.HashSet;
-
+import org.bukkit.Material;
 import net.countercraft.movecraft.craft.CraftType;
 
 
@@ -21,6 +21,9 @@ public class Config {
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;
     public static HashSet<CraftType> CannonDirectorsAllowed = new HashSet<>();
+
+    // Directors
+    public static HashSet<Material> Transparent = new HashSet<>();
 
     // Durability Override
     public static HashMap<Integer, Integer> DurabilityOverride;

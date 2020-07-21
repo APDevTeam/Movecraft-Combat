@@ -14,6 +14,27 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
   - "Airship"
   - "SubAirship"
 
+# Directors
+TransparentBlocks:
+  - AIR
+  - GLASS
+  - THIN_GLASS
+  - STAINED_GLASS
+  - STAINED_GLASS_PANE
+  - IRON_FENCE
+  - REDSTONE_WIRE
+  - IRON_TRAPDOOR
+  - TRAP_DOOR
+  - NETHER_BRICK_STAIRS
+  - LEVER
+  - STONE_BUTTON
+  - WOOD_BUTTON
+  - STEP
+  - SMOOTH_STAIRS
+  - SIGN
+  - SIGN_POST
+  - WALL_SIGN
+
 # Contact Explosives
 EnableContactExplosives: true # Enable TNT contact explosives
 

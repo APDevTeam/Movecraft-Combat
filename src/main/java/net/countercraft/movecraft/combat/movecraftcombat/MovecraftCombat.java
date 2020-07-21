@@ -24,8 +24,6 @@ public final class MovecraftCombat extends JavaPlugin {
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
 
-    public HashSet<Material> transparent = new HashSet<>();
-
     public static synchronized MovecraftCombat getInstance() {
         return instance;
     }
@@ -47,6 +45,14 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
+        }
+        for(Object o : getConfig().getList("TransparentBlocks")) {
+            if(o instanceof Integer)
+                Config.Transparent.add(Material.getMaterial((int) o));
+            else if(o instanceof String)
+                Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
+            else
+                getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
         }
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
@@ -100,25 +106,6 @@ public final class MovecraftCombat extends JavaPlugin {
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
-
-        transparent.add(Material.AIR);
-        transparent.add(Material.GLASS);
-        transparent.add(Material.THIN_GLASS);
-        transparent.add(Material.STAINED_GLASS);
-        transparent.add(Material.STAINED_GLASS_PANE);
-        transparent.add(Material.IRON_FENCE);
-        transparent.add(Material.REDSTONE_WIRE);
-        transparent.add(Material.IRON_TRAPDOOR);
-        transparent.add(Material.TRAP_DOOR);
-        transparent.add(Material.NETHER_BRICK_STAIRS);
-        transparent.add(Material.LEVER);
-        transparent.add(Material.STONE_BUTTON);
-        transparent.add(Material.WOOD_BUTTON);
-        transparent.add(Material.STEP);
-        transparent.add(Material.SMOOTH_STAIRS);
-        transparent.add(Material.SIGN);
-        transparent.add(Material.SIGN_POST);
-        transparent.add(Material.WALL_SIGN);
     }
 
     @Override
