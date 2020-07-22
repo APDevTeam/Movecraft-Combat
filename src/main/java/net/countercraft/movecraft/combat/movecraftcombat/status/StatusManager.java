@@ -76,17 +76,8 @@ public class StatusManager extends BukkitRunnable {
         if(!Config.EnableCombatReleaseTracking)
             return;
         Craft craft = e.getCraft();
-        if(craft.getSinking() && e.getReason() == CraftReleaseEvent.Reason.DISCONNECT) {
-            e.setCancelled(true);
+        if(craft.getSinking() || craft.getNotificationPlayer() == null)
             return;
-        }
-        if(craft.getNotificationPlayer() == null)
-            return;
-
-        Player player = craft.getNotificationPlayer();
-        if(!isInCombat(player))
-            return;
-        records.remove(player);
 
         CraftReleaseEvent.Reason reason = e.getReason();
         if(craft.getType().getMustBeSubcraft())
@@ -96,9 +87,14 @@ public class StatusManager extends BukkitRunnable {
         if(craft.getType().getCruiseOnPilot())
             return;
 
+        Player player = craft.getNotificationPlayer();
+        if(!isInCombat(player))
+            return;
+        records.remove(player);
+
         stopCombat(player);
 
-        if(craft.getSinking() || isInAirspace(craft))
+        if(isInAirspace(craft))
             return;
 
         MovecraftCombat.getInstance().getLogger().severe("Combat release! reason:" + reason);
