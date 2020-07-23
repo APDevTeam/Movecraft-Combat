@@ -40,11 +40,9 @@ public class StatusManager extends BukkitRunnable {
 
 
     public void run() {
-        MovecraftCombat.getInstance().getLogger().info("Running task");
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
         for(Player player : records.keySet()) {
-            MovecraftCombat.getInstance().getLogger().info("Checking player: " + player.getDisplayName() + ", " + records.get(player));
             if((currentTime - records.get(player)) > Config.DamageTimeout * 1000) {
                 removeSet.add(player);
             }
@@ -136,15 +134,13 @@ public class StatusManager extends BukkitRunnable {
             return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
         player.sendMessage(ChatColor.RED + "You have now entered combat.");
-        Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has entered combat.");
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + " has left combat.");
     }
 
     private void stopCombat(@NotNull Player player) {
-        if(!isInCombat(player))
-            return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.sendMessage(ChatColor.RED + "You have now left combat.");
-        Bukkit.getLogger().info("[Movecraft-Combat] " + player.getName() + " has left combat.");
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + " has left combat.");
     }
 
     // TODO: Replace this functionality with a listener in MCWG
