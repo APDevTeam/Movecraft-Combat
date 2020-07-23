@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.sign;
 
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -53,16 +54,17 @@ public class CannonDirectorSign implements Listener {
             return;
         }
 
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK && CannonDirectorManager.getInstance().isDirector(player)){
-            CannonDirectorManager.getInstance().removeDirector(event.getPlayer());
+        CannonDirectorManager cannons = MovecraftCombat.getInstance().getCannonDirectors();
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK && cannons.isDirector(player)){
+            cannons.removeDirector(event.getPlayer());
             player.sendMessage("Cannon Director signs not allowed on this craft!");
             return;
         }
 
-        CannonDirectorManager.getInstance().addDirector(foundCraft, event.getPlayer());
+        cannons.addDirector(foundCraft, event.getPlayer());
         player.sendMessage("You are now directing the cannons of this craft");
-        if (CannonDirectorManager.getInstance().isDirector(player)) {
-            CannonDirectorManager.getInstance().removeDirector(player);
+        if (MovecraftCombat.getInstance().getAADirectors().isDirector(player)) {
+            MovecraftCombat.getInstance().getAADirectors().removeDirector(player);
         }
     }
 }

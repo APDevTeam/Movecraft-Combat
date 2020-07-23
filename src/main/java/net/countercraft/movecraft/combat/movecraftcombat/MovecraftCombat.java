@@ -140,4 +140,12 @@ public final class MovecraftCombat extends JavaPlugin {
     public WorldGuardPlugin getWGPlugin() {
         return wgPlugin;
     }
+
+    public CannonDirectorManager getCannonDirectors() {
+        return cannonDirectors;
+    }
+
+    public AADirectorManager getAADirectors() {
+        return aaDirectors;
+    }
 }

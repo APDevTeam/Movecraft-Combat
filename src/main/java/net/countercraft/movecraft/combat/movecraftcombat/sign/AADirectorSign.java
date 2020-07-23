@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.sign;
 
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,17 +53,18 @@ public class AADirectorSign implements Listener {
             player.sendMessage(ERROR_PREFIX + "AA Director signs not allowed on this craft!");
             return;
         }
-        
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK && AADirectorManager.getInstance().isDirector(player)){
-            AADirectorManager.getInstance().removeDirector(event.getPlayer());
+
+        AADirectorManager aa = MovecraftCombat.getInstance().getAADirectors();
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK && aa.isDirector(player)){
+            aa.removeDirector(event.getPlayer());
             player.sendMessage("You are no longer directing the AA of this craft.");
             return;
         }
 
-        AADirectorManager.getInstance().addDirector(foundCraft, event.getPlayer());
+        aa.addDirector(foundCraft, event.getPlayer());
         player.sendMessage("You are now directing the AA of this craft");
-        if (AADirectorManager.getInstance().isDirector(player)) {
-            AADirectorManager.getInstance().removeDirector(player);
+        if (MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)) {
+            MovecraftCombat.getInstance().getCannonDirectors().removeDirector(player);
         }
     }
 }

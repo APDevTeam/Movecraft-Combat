@@ -1,6 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.HashMap;
+
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -23,8 +25,8 @@ public class TNTTracking {
 
 
     public void dispensedTNT(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
-        if(CannonDirectorManager.getInstance().hasDirector(craft))
-            tracking.put(tnt, CannonDirectorManager.getInstance().getDirector(craft));
+        if(MovecraftCombat.getInstance().getCannonDirectors().hasDirector(craft))
+            tracking.put(tnt, MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft));
         else
             tracking.put(tnt, craft.getNotificationPlayer());
     }
