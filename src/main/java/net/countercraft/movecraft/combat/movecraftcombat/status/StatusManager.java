@@ -40,14 +40,17 @@ public class StatusManager extends BukkitRunnable {
 
 
     public void run() {
+        MovecraftCombat.getInstance().getLogger().info("Running task");
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
         for(Player player : records.keySet()) {
+            MovecraftCombat.getInstance().getLogger().info("Checking player: " + player.getDisplayName() + ", " + records.get(player));
             if((currentTime - records.get(player)) > Config.DamageTimeout * 1000) {
                 removeSet.add(player);
             }
         }
         for(Player player : removeSet) {
+            MovecraftCombat.getInstance().getLogger().info("Removing player: " + player.getDisplayName());
             stopCombat(player);
             records.remove(player);
         }
