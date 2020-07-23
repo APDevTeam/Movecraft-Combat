@@ -76,14 +76,14 @@ public class DispenseListener implements Listener {
     }
 
     private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
-        displayItems(d);
+        //displayItems(d);
         for(int i = 0; i < d.getInventory().getSize(); i++) {
             ItemStack temp = d.getInventory().getItem(i);
             if(temp == null)
                 continue;
             if(!item.isSimilar(temp))
                 continue;
-            displayItems(d);
+            //displayItems(d);
             int count = temp.getAmount();
             if(count <= 0)   //  Quantities are off by 1, a quantity of 1 means 2 items are in the stack
                 continue;
