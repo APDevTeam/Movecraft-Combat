@@ -48,7 +48,6 @@ public final class MovecraftCombat extends JavaPlugin {
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
-        /*
         for(Object o : getConfig().getList("TransparentBlocks")) {
             if(o instanceof Integer)
                 transparent.add(Material.getMaterial((int) o));
@@ -57,7 +56,6 @@ public final class MovecraftCombat extends JavaPlugin {
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
         }
-        */
 
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
