@@ -48,7 +48,7 @@ public class DispenseListener implements Listener {
         tnt.setVelocity(velocity);
 
         if(Config.Debug)
-            Bukkit.broadcastMessage("Spawned custom TNT!: " + l + ", " + velocity);
+            MovecraftCombat.getInstance().getLogger().info("Spawned custom TNT!: " + l + ", " + velocity);
 
         for(Player p : Bukkit.getServer().getOnlinePlayers()) {
             p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);
@@ -89,15 +89,15 @@ public class DispenseListener implements Listener {
                 continue;
             count -= 1;
             temp.setAmount(count);
-            displayItems(d);
-            d.getInventory().setItem(i, temp);
-            displayItems(d);
-            if(Config.Debug)
-                Bukkit.broadcastMessage("Returning true");
+            //displayItems(d);
+            //d.getInventory().setItem(i, temp);
+            //displayItems(d);
+            //if(Config.Debug)
+                //Bukkit.broadcastMessage("Returning true");
             return true;
         }
-        if(Config.Debug)
-            Bukkit.broadcastMessage("Returning false");
+        //if(Config.Debug)
+            //Bukkit.broadcastMessage("Returning false");
         return false;
     }
 

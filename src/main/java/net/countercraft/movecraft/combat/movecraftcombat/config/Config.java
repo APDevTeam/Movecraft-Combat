@@ -22,9 +22,6 @@ public class Config {
     public static int CannonDirectorRange = 120;
     public static HashSet<CraftType> CannonDirectorsAllowed = new HashSet<>();
 
-    // Directors
-    public static HashSet<Material> Transparent = new HashSet<>();
-
     // Durability Override
     public static HashMap<Integer, Integer> DurabilityOverride;
 

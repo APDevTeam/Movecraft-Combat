@@ -24,6 +24,8 @@ public final class MovecraftCombat extends JavaPlugin {
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
 
+    public static HashSet<Material> transparent = new HashSet<>();
+
     public static synchronized MovecraftCombat getInstance() {
         return instance;
     }
@@ -46,32 +48,34 @@ public final class MovecraftCombat extends JavaPlugin {
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
+        /*
         for(Object o : getConfig().getList("TransparentBlocks")) {
             if(o instanceof Integer)
-                Config.Transparent.add(Material.getMaterial((int) o));
+                transparent.add(Material.getMaterial((int) o));
             else if(o instanceof String)
-                Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
+                transparent.add(Material.getMaterial(((String) o).toUpperCase()));
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
         }
-        Config.Transparent.add(Material.AIR);
-        Config.Transparent.add(Material.GLASS);
-        Config.Transparent.add(Material.THIN_GLASS);
-        Config.Transparent.add(Material.STAINED_GLASS);
-        Config.Transparent.add(Material.STAINED_GLASS_PANE);
-        Config.Transparent.add(Material.IRON_FENCE);
-        Config.Transparent.add(Material.REDSTONE_WIRE);
-        Config.Transparent.add(Material.IRON_TRAPDOOR);
-        Config.Transparent.add(Material.TRAP_DOOR);
-        Config.Transparent.add(Material.NETHER_BRICK_STAIRS);
-        Config.Transparent.add(Material.LEVER);
-        Config.Transparent.add(Material.STONE_BUTTON);
-        Config.Transparent.add(Material.WOOD_BUTTON);
-        Config.Transparent.add(Material.STEP);
-        Config.Transparent.add(Material.SMOOTH_STAIRS);
-        Config.Transparent.add(Material.SIGN);
-        Config.Transparent.add(Material.SIGN_POST);
-        Config.Transparent.add(Material.WALL_SIGN);
+        */
+        transparent.add(Material.AIR);
+        transparent.add(Material.GLASS);
+        transparent.add(Material.THIN_GLASS);
+        transparent.add(Material.STAINED_GLASS);
+        transparent.add(Material.STAINED_GLASS_PANE);
+        transparent.add(Material.IRON_FENCE);
+        transparent.add(Material.REDSTONE_WIRE);
+        transparent.add(Material.IRON_TRAPDOOR);
+        transparent.add(Material.TRAP_DOOR);
+        transparent.add(Material.NETHER_BRICK_STAIRS);
+        transparent.add(Material.LEVER);
+        transparent.add(Material.STONE_BUTTON);
+        transparent.add(Material.WOOD_BUTTON);
+        transparent.add(Material.STEP);
+        transparent.add(Material.SMOOTH_STAIRS);
+        transparent.add(Material.SIGN);
+        transparent.add(Material.SIGN_POST);
+        transparent.add(Material.WALL_SIGN);
 
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
