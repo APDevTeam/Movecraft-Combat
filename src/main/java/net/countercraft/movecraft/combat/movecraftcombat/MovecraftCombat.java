@@ -54,6 +54,25 @@ public final class MovecraftCombat extends JavaPlugin {
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
         }
+        Config.Transparent.add(Material.AIR);
+        Config.Transparent.add(Material.GLASS);
+        Config.Transparent.add(Material.THIN_GLASS);
+        Config.Transparent.add(Material.STAINED_GLASS);
+        Config.Transparent.add(Material.STAINED_GLASS_PANE);
+        Config.Transparent.add(Material.IRON_FENCE);
+        Config.Transparent.add(Material.REDSTONE_WIRE);
+        Config.Transparent.add(Material.IRON_TRAPDOOR);
+        Config.Transparent.add(Material.TRAP_DOOR);
+        Config.Transparent.add(Material.NETHER_BRICK_STAIRS);
+        Config.Transparent.add(Material.LEVER);
+        Config.Transparent.add(Material.STONE_BUTTON);
+        Config.Transparent.add(Material.WOOD_BUTTON);
+        Config.Transparent.add(Material.STEP);
+        Config.Transparent.add(Material.SMOOTH_STAIRS);
+        Config.Transparent.add(Material.SIGN);
+        Config.Transparent.add(Material.SIGN_POST);
+        Config.Transparent.add(Material.WALL_SIGN);
+
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
