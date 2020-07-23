@@ -24,7 +24,7 @@ public final class MovecraftCombat extends JavaPlugin {
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
 
-    public static HashSet<Material> transparent = new HashSet<>();
+    public HashSet<Material> transparent = new HashSet<>();
 
     public static synchronized MovecraftCombat getInstance() {
         return instance;
