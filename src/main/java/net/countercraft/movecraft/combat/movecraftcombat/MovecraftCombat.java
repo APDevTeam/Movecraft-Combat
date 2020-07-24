@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.movecraftcombat;
 import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.bukkit.Material;
@@ -88,7 +89,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
-
 
 
         Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
