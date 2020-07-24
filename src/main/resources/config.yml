@@ -61,3 +61,6 @@ EnableCombatReleaseTracking: false # Enable tracking of combat releasing
 EnableCombatReleaseKick: true # Enable combat release kick, overriden to true if CombatReleaseBanLength isn't 0
 CombatReleaseBanLength: 60 # Length of combat release ban in seconds, set to 0 to disable
 CombatReleaseScuttle: true # Enable scuttling of crafts when combat released
+
+# Localisation
+Locale: "en"

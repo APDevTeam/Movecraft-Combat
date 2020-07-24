@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.config;
 
 import java.util.HashMap;
 import java.util.HashSet;
+
 import org.bukkit.Material;
 import net.countercraft.movecraft.craft.CraftType;
 
@@ -46,4 +47,7 @@ public class Config {
     public static boolean EnableCombatReleaseKick = true;
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
+
+    //Localisation
+    public static String Locale = "en";
 }

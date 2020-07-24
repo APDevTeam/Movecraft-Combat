@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -86,12 +87,12 @@ public class DamageManager extends BukkitRunnable {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(sunk.getDisplayName());
-        stringBuilder.append(" was sunk by ");
+        stringBuilder.append(" " + I18nSupport.getInternationalisedString("Killfeed - Sunk By") + " ");
         stringBuilder.append(latestDamage.getCause().getDisplayName());
         if(players.size() < 1)
             return stringBuilder.toString();
 
-        stringBuilder.append(" with assists from: ");
+        stringBuilder.append(" " + I18nSupport.getInternationalisedString("Killfeed - With Assists") + " ");
         for(Player p : players) {
             stringBuilder.append(p.getDisplayName());
             stringBuilder.append(", ");

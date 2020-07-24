@@ -10,6 +10,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -97,7 +98,7 @@ public class StatusManager extends BukkitRunnable {
         if(isInAirspace(craft))
             return;
 
-        MovecraftCombat.getInstance().getLogger().info("Combat release! " + player.getName());
+        MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
@@ -109,10 +110,10 @@ public class StatusManager extends BukkitRunnable {
         }
         if(Config.CombatReleaseBanLength > 0) {
             Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-            Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), "Combat release!", expiry, "Movecraft-Combat AutoBan");
+            Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
         }
         if(Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick)
-            player.kickPlayer("Combat release!");
+            player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
     }
 
     public void craftSunk(@NotNull Craft craft) {
@@ -132,14 +133,14 @@ public class StatusManager extends BukkitRunnable {
         if(isInCombat(player))
             return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
-        player.sendMessage(ChatColor.RED + "You have now entered combat.");
-        MovecraftCombat.getInstance().getLogger().info(player.getName() + " has left combat.");
+        player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Enter Combat"));
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + I18nSupport.getInternationalisedString("Log - Enter Combat"));
     }
 
     private void stopCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
-        player.sendMessage(ChatColor.RED + "You have now left combat.");
-        MovecraftCombat.getInstance().getLogger().info(player.getName() + " has left combat.");
+        player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Leave Combat"));
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + I18nSupport.getInternationalisedString("Log - Leave Combat"));
     }
 
     // TODO: Replace this functionality with a listener in MCWG
