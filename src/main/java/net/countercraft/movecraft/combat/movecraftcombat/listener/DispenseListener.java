@@ -76,43 +76,6 @@ public class DispenseListener implements Listener {
     }
 
     private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
-        //displayItems(d);
-        for(int i = 0; i < d.getInventory().getSize(); i++) {
-            ItemStack temp = d.getInventory().getItem(i);
-            if(temp == null)
-                continue;
-            if(!item.isSimilar(temp))
-                continue;
-            //displayItems(d);
-            int count = temp.getAmount();
-            if(count <= 0)   //  Quantities are off by 1, a quantity of 1 means 2 items are in the stack
-                continue;
-            count -= 1;
-            temp.setAmount(count);
-            //displayItems(d);
-            //d.getInventory().setItem(i, temp);
-            //displayItems(d);
-            //if(Config.Debug)
-                //Bukkit.broadcastMessage("Returning true");
-            return true;
-        }
-        //if(Config.Debug)
-            //Bukkit.broadcastMessage("Returning false");
-        return false;
-    }
-
-    private void displayItems(@NotNull Dispenser d) {
-        if(Config.Debug) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < d.getInventory().getSize(); i++) {
-                ItemStack temp = d.getInventory().getItem(i);
-                if (temp == null) {
-                    sb.append(i).append(":e ");
-                    continue;
-                }
-                sb.append(i).append(":").append(temp.getType()).append(",").append(temp.getAmount()).append(" ");
-            }
-            Bukkit.broadcastMessage(sb.toString());
-        }
+        return d.getInventory().removeItem(item).isEmpty();
     }
 }
