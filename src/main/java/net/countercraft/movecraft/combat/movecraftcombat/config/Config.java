@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.config;
 
 import java.util.HashMap;
 import java.util.HashSet;
-
 import org.bukkit.Material;
 import net.countercraft.movecraft.craft.CraftType;
 
