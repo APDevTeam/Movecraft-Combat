@@ -46,12 +46,12 @@ public class AADirectorSign implements Listener {
             }
         }
         if (foundCraft == null) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
+            player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
             return;
         }
 
         if (!Config.AADirectorsAllowed.contains(foundCraft.getType())) {
-            player.sendMessage(ERROR_PREFIX + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
+            player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
             return;
         }
 
