@@ -48,7 +48,6 @@ public class StatusManager extends BukkitRunnable {
             }
         }
         for(Player player : removeSet) {
-            MovecraftCombat.getInstance().getLogger().info("Removing player: " + player.getDisplayName());
             stopCombat(player);
             records.remove(player);
         }
@@ -98,7 +97,7 @@ public class StatusManager extends BukkitRunnable {
         if(isInAirspace(craft))
             return;
 
-        MovecraftCombat.getInstance().getLogger().severe("Combat release! reason:" + reason);
+        MovecraftCombat.getInstance().getLogger().info("Combat release! " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
