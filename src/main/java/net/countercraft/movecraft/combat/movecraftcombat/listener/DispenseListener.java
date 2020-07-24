@@ -76,6 +76,29 @@ public class DispenseListener implements Listener {
     }
 
     private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
-        return d.getInventory().removeItem(item).isEmpty();
+        for(int i = 0; i < d.getInventory().getSize(); i++) {
+            ItemStack temp = d.getInventory().getItem(i);
+            if(temp == null || !temp.isSimilar(item))
+                continue;
+
+            int count = temp.getAmount();
+
+            if(count == 1) { // Dispensers with 2 items are weird, handle carefully!  Also item counts are 1 below what they should be...
+                count -= 2;
+                temp.setAmount(count);
+                Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
+                    if(d.getLocation().getBlock().getType() != Material.DISPENSER)
+                        return;
+                    d.getInventory().addItem(item);
+                });
+                return true;
+            }
+            else if (count >= 0) {
+                count -= 1;
+                temp.setAmount(count);
+                return true;
+            }
+        }
+        return false;
     }
 }
