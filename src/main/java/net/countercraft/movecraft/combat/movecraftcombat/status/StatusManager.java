@@ -134,13 +134,13 @@ public class StatusManager extends BukkitRunnable {
             return;
         Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Enter Combat"));
-        MovecraftCombat.getInstance().getLogger().info(player.getName() + I18nSupport.getInternationalisedString("Log - Enter Combat"));
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Enter Combat"));
     }
 
     private void stopCombat(@NotNull Player player) {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Leave Combat"));
-        MovecraftCombat.getInstance().getLogger().info(player.getName() + I18nSupport.getInternationalisedString("Log - Leave Combat"));
+        MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Leave Combat"));
     }
 
     // TODO: Replace this functionality with a listener in MCWG
