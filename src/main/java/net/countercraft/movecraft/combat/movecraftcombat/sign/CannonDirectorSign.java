@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.sign;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,24 +46,24 @@ public class CannonDirectorSign implements Listener {
             }
         }
         if (foundCraft == null) {
-            player.sendMessage(ERROR_PREFIX + "Sign must be part of a piloted craft!");
+            player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
             return;
         }
 
         if (!Config.CannonDirectorsAllowed.contains(foundCraft.getType())) {
-            player.sendMessage(ERROR_PREFIX + "Cannon Director signs not allowed on this craft!");
+            player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Not Allowed On Craft"));
             return;
         }
 
         CannonDirectorManager cannons = MovecraftCombat.getInstance().getCannonDirectors();
         if(event.getAction() == Action.LEFT_CLICK_BLOCK && cannons.isDirector(player)){
             cannons.removeDirector(event.getPlayer());
-            player.sendMessage("Cannon Director signs not allowed on this craft!");
+            player.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - No Longer Directing"));
             return;
         }
 
         cannons.addDirector(foundCraft, event.getPlayer());
-        player.sendMessage("You are now directing the cannons of this craft");
+        player.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
         if (MovecraftCombat.getInstance().getAADirectors().isDirector(player)) {
             MovecraftCombat.getInstance().getAADirectors().removeDirector(player);
         }

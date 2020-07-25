@@ -46,4 +46,7 @@ public class Config {
     public static boolean EnableCombatReleaseKick = true;
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
+
+    //Localisation
+    public static String Locale = "en";
 }

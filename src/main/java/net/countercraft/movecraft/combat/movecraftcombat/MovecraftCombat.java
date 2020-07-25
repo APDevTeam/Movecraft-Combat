@@ -1,9 +1,11 @@
 package net.countercraft.movecraft.combat.movecraftcombat;
 
+import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +36,15 @@ public final class MovecraftCombat extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
+
+        //TODO other languages
+        String[] languages = {"en"};
+        for (String s : languages) {
+            if (!new File(getDataFolder()  + "/localisation/mcclang_"+ s +".properties").exists()) {
+                this.saveResource("localisation/mcclang_"+ s +".properties", false);
+            }
+        }
+
         Config.Debug = getConfig().getBoolean("Debug", false);
         Config.AADirectorDistance = getConfig().getInt("AADirectorDistance", 50);
         Config.AADirectorRange = getConfig().getInt("AADirectorRange", 120);
@@ -43,6 +54,10 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
+        Config.Locale = getConfig().getString("Locale", "en");
+
+        I18nSupport.init();
+
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
