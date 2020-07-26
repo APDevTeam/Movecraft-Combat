@@ -1,4 +1,4 @@
-Debug: false
+Debug: false # Used only for internal testing, recommend leaving this OFF
 
 # AA Directors
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
@@ -15,7 +15,7 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
   - "SubAirship"
 
 # Directors
-TransparentBlocks:
+TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
   - AIR
   - GLASS
   - THIN_GLASS
@@ -34,6 +34,7 @@ TransparentBlocks:
   - SIGN
   - SIGN_POST
   - WALL_SIGN
+  - CARPET
 
 # Contact Explosives
 EnableContactExplosives: true # Enable TNT contact explosives
@@ -51,8 +52,8 @@ TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying T
 TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
 
 # Damage Tracking
-EnableFireballTracking: false # Enable tracking and recording of fireball
-EnableTNTTracking: true # Enable tracking and recording of TNT damage
+EnableFireballTracking: false # Enable tracking and recording of fireballs (higher lag than other tracking methods)
+EnableTNTTracking: false # Enable tracking and recording of TNT damage (please read the wiki page before enabling!)
 EnableTorpedoTracking: false # Enable tracking and recording of Torpedo damage
 DamageTimeout: 300 # Timeout for damages in seconds
 
@@ -63,4 +64,4 @@ CombatReleaseBanLength: 60 # Length of combat release ban in seconds, set to 0 t
 CombatReleaseScuttle: true # Enable scuttling of crafts when combat released
 
 # Localisation
-Locale: "en"
+Locale: "en" # Language file to load, currently the plugin comes with en and no, but you can add your own custom language as well.
