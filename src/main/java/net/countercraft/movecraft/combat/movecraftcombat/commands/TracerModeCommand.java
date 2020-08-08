@@ -21,11 +21,11 @@ public class TracerModeCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
             return true;
         }
         if(args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Uou must specify a mode.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must specify a mode.");
             return true;
         }
 
@@ -36,6 +36,7 @@ public class TracerModeCommand implements CommandExecutor {
         }
 
         MovecraftCombat.getInstance().getPlayerManager().setMode(player, mode);
+        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Tracers now set to: " + mode);
         return true;
     }
 }

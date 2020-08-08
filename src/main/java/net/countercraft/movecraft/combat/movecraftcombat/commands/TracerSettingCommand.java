@@ -21,7 +21,7 @@ public class TracerSettingCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
             return true;
         }
         if(args.length != 1) {
@@ -36,6 +36,7 @@ public class TracerSettingCommand implements CommandExecutor {
         }
 
         MovecraftCombat.getInstance().getPlayerManager().setSetting(player, setting);
+        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Tracers now set to: " + setting);
         return true;
     }
 }

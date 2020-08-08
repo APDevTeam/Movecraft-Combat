@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import java.util.Random;
 
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
@@ -60,11 +61,17 @@ public class ExplosionListener implements Listener {
             maxDistSquared = maxDistSquared * maxDistSquared;
 
             for (Player p : e.getEntity().getWorld().getPlayers()) {
+                if(MovecraftCombat.getInstance().getPlayerManager().getSetting(p).equals("OFF")) {
+                    continue;
+                }
+
                 // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
                 if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared && p.getLocation().distanceSquared(tnt.getLocation()) >= Config.TracerMinDistanceSqrd) {  // we use squared because its faster
                     final Location loc = tnt.getLocation();
                     final Player fp = p;
                     final World fw = e.getEntity().getWorld();
+
+
                     // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
                     new BukkitRunnable() {
                         @Override
