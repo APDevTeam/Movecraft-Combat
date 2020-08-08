@@ -17,17 +17,27 @@ import java.util.logging.Level;
 
 public class PlayerConfig extends YamlConfiguration {
     private File configFile = null;
-    public final UUID owner = null;
-    public String mode = "HIGH_BLOCKS";
+    private UUID owner = null;
+    private String mode = "HIGH_BLOCKS";
 
     private final byte[] bytebuffer = new byte[1024];
 
     public PlayerConfig(UUID owner) {
         super();
-        configFile = new File(MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/players/" + owner + ".yml");
+        configFile = new File(MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/userdata/" + owner + ".yml");
+        this.owner = owner;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getMode() {
+        return mode;
     }
 
     public void load() {
+        MovecraftCombat.getInstance().getLogger().info("Loading " + owner);
         try {
             try(FileInputStream inputStream = new FileInputStream(configFile)) {
                 long startSize = configFile.length();
@@ -71,6 +81,10 @@ public class PlayerConfig extends YamlConfiguration {
                 super.loadFromString(data.subSequence(0, end).toString());
             }
         }
+        catch (FileNotFoundException ex) {
+            MovecraftCombat.getInstance().getLogger().info("Unable to find config for " + owner + ", creating a new one.");
+            save();
+        }
         catch (IOException ex) {
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -79,17 +93,32 @@ public class PlayerConfig extends YamlConfiguration {
             configFile.renameTo(broken);
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, "The file " + configFile.toString() + " is broken, it has been renamed to " + broken.toString(), ex.getCause());
         }
+        mode = getString("mode");
+        MovecraftCombat.getInstance().getLogger().info("Loaded " + owner);
     }
 
     public void save() {
+        MovecraftCombat.getInstance().getLogger().info("Saving " + owner);
+        set("mode", mode);
         String data = saveToString();
         try (FileOutputStream fos = new FileOutputStream(configFile)) {
             try (OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
                 writer.write(data);
             }
         }
+        catch (FileNotFoundException ex) {
+            try {
+                save(configFile);
+            }
+            catch (IOException e) {
+                MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+                return;
+            }
+        }
         catch (IOException e) {
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
+            return;
         }
+        MovecraftCombat.getInstance().getLogger().info("Saved " + owner);
     }
 }

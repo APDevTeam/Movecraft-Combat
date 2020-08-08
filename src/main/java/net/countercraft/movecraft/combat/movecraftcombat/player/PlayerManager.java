@@ -33,7 +33,7 @@ public class PlayerManager {
         if(config == null)
             return null;
 
-        return config.mode;
+        return config.getMode();
     }
 
     public void setMode(Player player, String mode) {
@@ -41,7 +41,7 @@ public class PlayerManager {
         if(config == null)
             config = new PlayerConfig(player.getUniqueId());
 
-        config.mode = mode;
+        config.setMode(mode);
         onlinePlayers.put(player, config);
     }
 

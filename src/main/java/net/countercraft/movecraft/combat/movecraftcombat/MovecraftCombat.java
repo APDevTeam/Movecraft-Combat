@@ -44,6 +44,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
         if (!folder.exists()) {
+            getLogger().info("Created userdata directory");
             folder.mkdirs();
         }
 
@@ -119,6 +120,8 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);

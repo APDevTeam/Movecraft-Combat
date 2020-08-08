@@ -15,10 +15,15 @@ public class TracersCommand implements CommandExecutor {
             return false;
 
         if(!(commandSender instanceof Player)) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " You must be a player to use that command.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must be a player to use that command.");
             return true;
         }
         Player player = (Player) commandSender;
+
+        if(args.length == 0) {
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "you must specify a mode and setting or OFF.");
+            return true;
+        }
 
         String mode = args[1].toUpperCase();
         if(mode.equals("OFF")) {
@@ -27,18 +32,18 @@ public class TracersCommand implements CommandExecutor {
         }
 
         if(args.length != 2) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " you must specify a mode and setting.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "you must specify a mode and setting.");
             return true;
         }
 
         if(!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " please specify a valid mode.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "please specify a valid mode.");
             return true;
         }
 
         String setting = args[2].toUpperCase();
         if(!setting.equals("LOW") && !setting.equals("MEDIUM") && !setting.equals("HIGH")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + " please specify a valid setting.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "please specify a valid setting.");
             return true;
         }
 
