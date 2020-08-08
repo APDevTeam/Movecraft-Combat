@@ -5,8 +5,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
+
+import net.countercraft.movecraft.combat.movecraftcombat.commands.TracersCommand;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
+import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -25,6 +29,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
+    private PlayerManager playerManager;
 
     public static synchronized MovecraftCombat getInstance() {
         return instance;
@@ -36,6 +41,11 @@ public final class MovecraftCombat extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
+
+        File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
 
         //TODO other languages
         String[] languages = {"en"};
@@ -101,6 +111,7 @@ public final class MovecraftCombat extends JavaPlugin {
             wgPlugin = (WorldGuardPlugin) wg;
         }
 
+        getCommand("tracers").setExecutor(new TracersCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
@@ -115,9 +126,10 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
         aaDirectors = new AADirectorManager();
-        aaDirectors.runTaskTimer(this, 0, 1);
+        aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
         cannonDirectors = new CannonDirectorManager();
-        cannonDirectors.runTaskTimer(this, 0, 1);
+        cannonDirectors.runTaskTimer(this, 0, 1);       // Every tick
+        playerManager = new PlayerManager();
         DamageManager damageTracking = new DamageManager();
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         StatusManager statusTracking = new StatusManager();
@@ -126,7 +138,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        playerManager.shutDown();
     }
 
     public WorldGuardPlugin getWGPlugin() {
@@ -139,5 +151,9 @@ public final class MovecraftCombat extends JavaPlugin {
 
     public AADirectorManager getAADirectors() {
         return aaDirectors;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
     }
 }

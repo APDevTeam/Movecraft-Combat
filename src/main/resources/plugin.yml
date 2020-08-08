@@ -8,3 +8,7 @@ softdepend: [WorldGuard]
 authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
 website: https://github.com/APDevTeam
+commands:
+  tracers:
+    description: Configure tracer settings
+    usage: /tracers [OFF | BLOCKS | PARTICLES] [HIGH | MEDIUM | LOW]
