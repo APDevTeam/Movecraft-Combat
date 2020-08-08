@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
+import org.bukkit.Particle;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -71,21 +72,31 @@ public class ExplosionListener implements Listener {
                     final Player fp = p;
                     final World fw = e.getEntity().getWorld();
 
-
-                    // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            fp.sendBlockChange(loc, 89, (byte) 0);
-                        }
-                    }.runTaskLater(Movecraft.getInstance(), 5);
-                    // then remove it
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            fp.sendBlockChange(loc, 0, (byte) 0);
-                        }
-                    }.runTaskLater(Movecraft.getInstance(), 160);
+                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                    if(mode.equals("BLOCKS")) {
+                        // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.sendBlockChange(loc, 89, (byte) 0);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 5);
+                        // then remove it
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.sendBlockChange(loc, 0, (byte) 0);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 160);
+                    }
+                    else if (mode.equals("PARTICLES")) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 5);
+                    }
                 }
             }
         }
