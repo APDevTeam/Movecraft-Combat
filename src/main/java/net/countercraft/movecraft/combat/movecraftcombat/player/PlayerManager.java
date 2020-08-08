@@ -28,6 +28,24 @@ public class PlayerManager {
     }
 
     @Nullable
+    public String getSetting(Player player) {
+        PlayerConfig config = onlinePlayers.get(player);
+        if(config == null)
+            return null;
+
+        return config.getSetting();
+    }
+
+    public void setSetting(Player player, String setting) {
+        PlayerConfig config = onlinePlayers.get(player);
+        if(config == null)
+            config = new PlayerConfig(player.getUniqueId());
+
+        config.setSetting(setting);
+        onlinePlayers.put(player, config);
+    }
+
+    @Nullable
     public String getMode(Player player) {
         PlayerConfig config = onlinePlayers.get(player);
         if(config == null)

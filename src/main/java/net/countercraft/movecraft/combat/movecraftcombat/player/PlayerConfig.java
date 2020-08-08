@@ -18,7 +18,8 @@ import java.util.logging.Level;
 public class PlayerConfig extends YamlConfiguration {
     private File configFile = null;
     private UUID owner = null;
-    private String mode = "HIGH_BLOCKS";
+    private String setting = "HIGH";
+    private String mode = "BLOCKS";
 
     private final byte[] bytebuffer = new byte[1024];
 
@@ -28,6 +29,14 @@ public class PlayerConfig extends YamlConfiguration {
         this.owner = owner;
     }
 
+    public void setSetting(String setting) {
+        this.setting = setting;
+    }
+
+    public String getSetting() {
+        return setting;
+    }
+
     public void setMode(String mode) {
         this.mode = mode;
     }
@@ -35,6 +44,7 @@ public class PlayerConfig extends YamlConfiguration {
     public String getMode() {
         return mode;
     }
+
 
     public void load() {
         MovecraftCombat.getInstance().getLogger().info("Loading " + owner);
@@ -93,12 +103,14 @@ public class PlayerConfig extends YamlConfiguration {
             configFile.renameTo(broken);
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, "The file " + configFile.toString() + " is broken, it has been renamed to " + broken.toString(), ex.getCause());
         }
+        setting = getString("setting");
         mode = getString("mode");
         MovecraftCombat.getInstance().getLogger().info("Loaded " + owner);
     }
 
     public void save() {
         MovecraftCombat.getInstance().getLogger().info("Saving " + owner);
+        set("setting", setting);
         set("mode", mode);
         String data = saveToString();
         try (FileOutputStream fos = new FileOutputStream(configFile)) {

@@ -3,14 +3,13 @@ package net.countercraft.movecraft.combat.movecraftcombat;
 import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.logging.Level;
 
-import net.countercraft.movecraft.combat.movecraftcombat.commands.TracersCommand;
+import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerModeCommand;
+import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -112,7 +111,8 @@ public final class MovecraftCombat extends JavaPlugin {
             wgPlugin = (WorldGuardPlugin) wg;
         }
 
-        getCommand("tracers").setExecutor(new TracersCommand());
+        getCommand("tracersetting").setExecutor(new TracerSettingCommand());
+        getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
