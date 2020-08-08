@@ -2,9 +2,11 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
 
+import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
@@ -49,6 +51,14 @@ public class CannonDirectorManager extends DirectorManager {
                     for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                         if (tnt.getVelocity().lengthSquared() > 0.25) {
                             for (Player p : w.getPlayers()) {
+                                String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+                                if(setting.equals("OFF") || setting.equals("LOW")) {
+                                    continue;
+                                }
+                                else if(setting.equals("MEDIUM") && ticksElapsed < Config.TracerRateTicks * 2) {
+                                    continue;   // Medium merely spawns half the particles/cobwebs
+                                }
+
                                 // is the TNT within the view distance (rendered
                                 // world) of the player?
                                 long maxDistSquared = Bukkit.getServer().getViewDistance() * 16;
@@ -63,25 +73,36 @@ public class CannonDirectorManager extends DirectorManager {
                                     // faster
                                     final Location loc = tnt.getLocation();
                                     final Player fp = p;
-                                    // then make a cobweb to look like smoke,
-                                    // place it a little later so it isn't right
-                                    // in the middle of the volley
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            fp.sendBlockChange(loc, 30, (byte) 0);
-                                        }
-                                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                                    // then remove it
-                                    new BukkitRunnable() {
-                                        @Override
-                                        public void run() {
-                                            // fp.sendBlockChange(loc,
-                                            // fw.getBlockAt(loc).getType(),
-                                            // fw.getBlockAt(loc).getData());
-                                            fp.sendBlockChange(loc, 0, (byte) 0);
-                                        }
-                                    }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                                    if (mode.equals("BLOCKS")) {
+                                        // then make a cobweb to look like smoke,
+                                        // place it a little later so it isn't right
+                                        // in the middle of the volley
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                fp.sendBlockChange(loc, 30, (byte) 0);
+                                            }
+                                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                                        // then remove it
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                // fp.sendBlockChange(loc,
+                                                // fw.getBlockAt(loc).getType(),
+                                                // fw.getBlockAt(loc).getData());
+                                                fp.sendBlockChange(loc, 0, (byte) 0);
+                                            }
+                                        }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                                    }
+                                    else if (mode.equals("PARTICLES")) {
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                fp.spawnParticle(Particle.EXPLOSION_HUGE, loc, 9);
+                                            }
+                                        }.runTaskLater(Movecraft.getInstance(), 5);
+                                    }
                                 }
                             }
                         }

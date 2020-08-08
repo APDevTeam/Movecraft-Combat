@@ -73,7 +73,7 @@ public class ExplosionListener implements Listener {
                     final World fw = e.getEntity().getWorld();
 
                     String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
-                    if(mode.equals("BLOCKS")) {
+                    if (mode.equals("BLOCKS")) {
                         // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
                         new BukkitRunnable() {
                             @Override
