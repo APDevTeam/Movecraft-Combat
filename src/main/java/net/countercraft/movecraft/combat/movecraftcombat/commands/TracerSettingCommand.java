@@ -2,13 +2,16 @@ package net.countercraft.movecraft.combat.movecraftcombat.commands;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.countercraft.movecraft.utils.ChatUtils.MOVECRAFT_COMMAND_PREFIX;
 
-public class TracerSettingCommand implements CommandExecutor {
+public class TracerSettingCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if(!command.getName().equalsIgnoreCase("tracersetting"))
@@ -38,5 +41,27 @@ public class TracerSettingCommand implements CommandExecutor {
         MovecraftCombat.getInstance().getPlayerManager().setSetting(player, setting);
         commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Tracers now set to: " + setting);
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] strings) {
+        final List<String> tabCompletions = new ArrayList<>();
+        if (strings.length <= 1) {
+            tabCompletions.add("OFF");
+            tabCompletions.add("MEDIUM");
+            tabCompletions.add("HIGH");
+            tabCompletions.add("LOW");
+        }
+        if (strings.length == 0) {
+            return tabCompletions;
+        }
+        final List<String> completions = new ArrayList<>();
+        for (String completion : tabCompletions) {
+            if (!completion.startsWith(strings[strings.length - 1])) {
+                continue;
+            }
+            completions.add(completion);
+        }
+        return completions;
     }
 }
