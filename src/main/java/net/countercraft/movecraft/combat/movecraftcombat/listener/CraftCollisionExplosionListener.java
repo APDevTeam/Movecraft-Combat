@@ -3,7 +3,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
