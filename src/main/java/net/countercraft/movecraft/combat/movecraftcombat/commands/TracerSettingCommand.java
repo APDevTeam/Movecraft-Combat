@@ -57,7 +57,7 @@ public class TracerSettingCommand implements TabExecutor {
         }
         final List<String> completions = new ArrayList<>();
         for (String completion : tabCompletions) {
-            if (!completion.startsWith(strings[strings.length - 1])) {
+            if (!completion.startsWith(strings[strings.length - 1].toUpperCase())) {
                 continue;
             }
             completions.add(completion);
