@@ -101,8 +101,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.spawnParticle(Particle.CLOUD, loc, 9);
-                                                // TODO: These are really a problem
+                                                fp.spawnParticle(Particle.FIREWORKS_SPARK, loc, 0, 0.0, 0.0, 0.0);
                                             }
                                         }.runTaskLater(Movecraft.getInstance(), 5);
                                     }

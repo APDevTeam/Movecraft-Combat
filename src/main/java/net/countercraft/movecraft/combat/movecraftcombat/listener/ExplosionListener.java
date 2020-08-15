@@ -62,7 +62,8 @@ public class ExplosionListener implements Listener {
             maxDistSquared = maxDistSquared * maxDistSquared;
 
             for (Player p : e.getEntity().getWorld().getPlayers()) {
-                if(MovecraftCombat.getInstance().getPlayerManager().getSetting(p).equals("OFF")) {
+                String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+                if(setting == null || setting.equals("OFF")) {
                     continue;
                 }
 
@@ -95,7 +96,7 @@ public class ExplosionListener implements Listener {
                             public void run() {
                                 fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
                             }
-                        }.runTaskLater(Movecraft.getInstance(), 10);
+                        }.runTaskLater(Movecraft.getInstance(), 20);
                     }
                 }
             }
