@@ -11,11 +11,9 @@ public class PlayerManager {
     private HashMap<Player, PlayerConfig> onlinePlayers = new HashMap<>();
 
     public void shutDown() {
-        MovecraftCombat.getInstance().getLogger().info("Saving player configurations...");
         for(Player p : onlinePlayers.keySet()) {
             savePlayer(p);
         }
-        MovecraftCombat.getInstance().getLogger().info("Saved player configurations.");
     }
 
     public void playerQuit(Player player) {

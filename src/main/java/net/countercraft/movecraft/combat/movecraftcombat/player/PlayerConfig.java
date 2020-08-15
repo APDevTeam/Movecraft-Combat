@@ -47,7 +47,6 @@ public class PlayerConfig extends YamlConfiguration {
 
 
     public void load() {
-        MovecraftCombat.getInstance().getLogger().info("Loading " + owner);
         try {
             try(FileInputStream inputStream = new FileInputStream(configFile)) {
                 long startSize = configFile.length();
@@ -92,7 +91,6 @@ public class PlayerConfig extends YamlConfiguration {
             }
         }
         catch (FileNotFoundException ex) {
-            MovecraftCombat.getInstance().getLogger().info("Unable to find config for " + owner + ", creating a new one.");
             save();
         }
         catch (IOException ex) {
@@ -105,11 +103,9 @@ public class PlayerConfig extends YamlConfiguration {
         }
         setting = getString("setting");
         mode = getString("mode");
-        MovecraftCombat.getInstance().getLogger().info("Loaded " + owner);
     }
 
     public void save() {
-        MovecraftCombat.getInstance().getLogger().info("Saving " + owner);
         set("setting", setting);
         set("mode", mode);
         String data = saveToString();
@@ -131,6 +127,5 @@ public class PlayerConfig extends YamlConfiguration {
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
             return;
         }
-        MovecraftCombat.getInstance().getLogger().info("Saved " + owner);
     }
 }
