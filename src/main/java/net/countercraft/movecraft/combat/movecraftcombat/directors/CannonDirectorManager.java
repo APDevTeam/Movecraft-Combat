@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -50,12 +51,13 @@ public class CannonDirectorManager extends DirectorManager {
                 if (w != null) {
                     for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                         if (tnt.getVelocity().lengthSquared() > 0.25) {
+                            int random = new Random((long) (tnt.getLocation().getX()*tnt.getLocation().getY()*tnt.getLocation().getZ()+(System.currentTimeMillis() >> 12))).nextInt(100);
                             for (Player p : w.getPlayers()) {
                                 String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
                                 if(setting.equals("OFF") || setting.equals("LOW")) {
                                     continue;
                                 }
-                                else if(setting.equals("MEDIUM") && ticksElapsed < Config.TracerRateTicks * 2) {
+                                else if(setting.equals("MEDIUM") && random < 50) {
                                     continue;   // Medium merely spawns half the particles/cobwebs
                                 }
 
@@ -99,7 +101,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.spawnParticle(Particle.EXPLOSION_HUGE, loc, 9);
+                                                fp.spawnParticle(Particle.CLOUD, loc, 9);
                                             }
                                         }.runTaskLater(Movecraft.getInstance(), 5);
                                     }
