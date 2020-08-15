@@ -21,7 +21,7 @@ public class TracerModeCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current mode: " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
             return true;
         }
         if(args.length != 1) {
@@ -31,7 +31,7 @@ public class TracerModeCommand implements CommandExecutor {
 
         String mode = args[0].toUpperCase();
         if(!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Please specify a valid setting.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Please specify a valid mode.");
             return true;
         }
 

@@ -54,7 +54,7 @@ public class CannonDirectorManager extends DirectorManager {
                             int random = new Random((long) (tnt.getLocation().getX()*tnt.getLocation().getY()*tnt.getLocation().getZ()+(System.currentTimeMillis() >> 12))).nextInt(100);
                             for (Player p : w.getPlayers()) {
                                 String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
-                                if(setting.equals("OFF") || setting.equals("LOW")) {
+                                if(setting == null || setting.equals("OFF") || setting.equals("LOW")) {
                                     continue;
                                 }
                                 else if(setting.equals("MEDIUM") && random < 50) {
@@ -102,6 +102,7 @@ public class CannonDirectorManager extends DirectorManager {
                                             @Override
                                             public void run() {
                                                 fp.spawnParticle(Particle.CLOUD, loc, 9);
+                                                // TODO: These are really a problem
                                             }
                                         }.runTaskLater(Movecraft.getInstance(), 5);
                                     }
