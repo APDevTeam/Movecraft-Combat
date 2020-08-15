@@ -95,7 +95,7 @@ public class ExplosionListener implements Listener {
                             public void run() {
                                 fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
                             }
-                        }.runTaskLater(Movecraft.getInstance(), 5);
+                        }.runTaskLater(Movecraft.getInstance(), 10);
                     }
                 }
             }
