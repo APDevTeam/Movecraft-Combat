@@ -7,6 +7,8 @@ import net.countercraft.movecraft.craft.CraftType;
 
 
 public class Config {
+    public static Material PilotTool = null;    // Track this internally by copying from movecraft
+
     public static boolean Debug = false;
 
     // Localisation

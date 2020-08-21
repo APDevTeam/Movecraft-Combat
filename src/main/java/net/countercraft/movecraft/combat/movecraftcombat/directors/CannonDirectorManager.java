@@ -80,7 +80,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, Material.WEB, (byte) 0);
+                                                fp.sendBlockChange(loc, Material.getMaterial(30), (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it
@@ -134,7 +134,7 @@ public class CannonDirectorManager extends DirectorManager {
                     continue;
                 }
                 Player p = getDirector(c);
-                if (p.getInventory().getItemInMainHand().getTypeId() != Settings.PilotTool) {
+                if (p.getInventory().getItemInMainHand().getType() != Config.PilotTool) {
                     continue;
                 }
                 Vector tv = tnt.getVelocity();

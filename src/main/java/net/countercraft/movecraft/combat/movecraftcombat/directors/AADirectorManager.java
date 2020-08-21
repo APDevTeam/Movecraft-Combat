@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.SmallFireball;
@@ -51,7 +52,7 @@ public class AADirectorManager extends DirectorManager {
                     boolean inRange = (distX < Config.AADirectorDistance) && (distY < Config.AADirectorDistance) && (distZ < Config.AADirectorDistance);
                     if (hasDirector(c) && inRange) {
                         p = getDirector(c);
-                        if (p.getInventory().getItemInMainHand().getTypeId() == Settings.PilotTool) {
+                        if (p.getInventory().getItemInMainHand().getType() == Config.PilotTool) {
                             Vector fv = fireball.getVelocity();
                             double speed = fv.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
                             fv = fv.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far

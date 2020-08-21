@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingC
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
+import net.countercraft.movecraft.config.Settings;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +43,18 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
+        Object tool = Settings.PilotTool;
+        if(tool instanceof Integer) {
+            int pilotTool = (int) tool;
+            Config.PilotTool = Material.getMaterial(pilotTool);
+        }
+        else if(tool instanceof Material) {
+            Config.PilotTool = (Material) tool;
+        }
+        else {
+            getLogger().log(Level.SEVERE, "Failed to load pilot tool " + tool.toString());
+        }
+
         Config.Debug = getConfig().getBoolean("Debug", false);
 
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
@@ -72,9 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
         for(Object o : getConfig().getList("TransparentBlocks")) {
-            if(o instanceof Integer)
-                Config.Transparent.add(Material.getMaterial((int) o));
-            else if(o instanceof String)
+            if(o instanceof String)
                 Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
