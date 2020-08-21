@@ -25,7 +25,7 @@ public class TracerSettingCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
             return true;
         }
         if(args.length != 1) {
