@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.commands;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -18,28 +19,28 @@ public class TracerModeCommand implements TabExecutor {
             return false;
 
         if(!(commandSender instanceof Player)) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must be a player to use that command.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current mode: " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Mode") + ": " + MovecraftCombat.getInstance().getPlayerManager().getMode(player));
             return true;
         }
         if(args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must specify a mode.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Mode"));
             return true;
         }
 
         String mode = args[0].toUpperCase();
         if(!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Please specify a valid mode.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Mode"));
             return true;
         }
 
         MovecraftCombat.getInstance().getPlayerManager().setMode(player, mode);
-        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Tracers now set to: " + mode);
+        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + mode);
         return true;
     }
 
