@@ -83,7 +83,7 @@ public final class MovecraftCombat extends JavaPlugin {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
             for (String str : temp.keySet()) {
-                Config.DurabilityOverride.put(Integer.parseInt(str), (Integer) temp.get(str));
+                Config.DurabilityOverride.put(Material.getMaterial(str), (Integer) temp.get(str));
             }
         }
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);

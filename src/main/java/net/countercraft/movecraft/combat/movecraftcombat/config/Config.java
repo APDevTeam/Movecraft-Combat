@@ -29,7 +29,7 @@ public class Config {
     public static HashSet<Material> Transparent = new HashSet<>();
 
     // Durability Override
-    public static HashMap<Integer, Integer> DurabilityOverride;
+    public static HashMap<Material, Integer> DurabilityOverride;
 
     // Fireball Lifespan
     public static int FireballLifespan = 6;

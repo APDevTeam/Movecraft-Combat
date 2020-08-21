@@ -5,10 +5,7 @@ import java.util.Random;
 
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -83,7 +80,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, 30, (byte) 0);
+                                                fp.sendBlockChange(loc, Material.GLOWSTONE, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it
@@ -93,7 +90,7 @@ public class CannonDirectorManager extends DirectorManager {
                                                 // fp.sendBlockChange(loc,
                                                 // fw.getBlockAt(loc).getType(),
                                                 // fw.getBlockAt(loc).getData());
-                                                fp.sendBlockChange(loc, 0, (byte) 0);
+                                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 160);
                                     }
