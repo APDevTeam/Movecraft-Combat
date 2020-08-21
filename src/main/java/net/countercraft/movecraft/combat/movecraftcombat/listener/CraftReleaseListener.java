@@ -14,7 +14,13 @@ public class CraftReleaseListener implements Listener {
     public void releaseListener(CraftReleaseEvent e) {
         DamageManager.getInstance().craftReleased(e.getCraft());
         StatusManager.getInstance().craftReleased(e);
+
         Player p = e.getCraft().getNotificationPlayer();
+        if(p == null)
+            return;
+        if(e.getCraft().getType().getCruiseOnPilot())
+            return;
+
         RadarManager.getInstance().endPilot(p);
         RadarManager.getInstance().endInvisible(p);
     }
