@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
@@ -80,7 +79,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, Material.getMaterial(30), (byte) 0);
+                                                fp.sendBlockChange(loc, Material.COBWEB, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it
@@ -134,7 +133,7 @@ public class CannonDirectorManager extends DirectorManager {
                     continue;
                 }
                 Player p = getDirector(c);
-                if (p.getInventory().getItemInMainHand().getType() != Config.PilotTool) {
+                if (p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
                     continue;
                 }
                 Vector tv = tnt.getVelocity();

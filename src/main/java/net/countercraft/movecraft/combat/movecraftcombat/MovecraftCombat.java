@@ -10,7 +10,6 @@ import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingC
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
-import net.countercraft.movecraft.config.Settings;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,17 +42,6 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
-        Object tool = Settings.PilotTool;
-        if(tool instanceof Integer) {
-            int pilotTool = (int) tool;
-            Config.PilotTool = Material.getMaterial(pilotTool);
-        }
-        else if(tool instanceof Material) {
-            Config.PilotTool = (Material) tool;
-        }
-        else {
-            getLogger().log(Level.SEVERE, "Failed to load pilot tool " + tool.toString());
-        }
 
         Config.Debug = getConfig().getBoolean("Debug", false);
 
@@ -84,6 +72,14 @@ public final class MovecraftCombat extends JavaPlugin {
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
+        Object tool = getConfig().get("DirectorTool");
+        Material directorTool = null;
+        if(tool instanceof String)
+            directorTool = Material.getMaterial((String) tool);
+        if(directorTool == null)
+            getLogger().log(Level.SEVERE, "Failed to load director tool " + tool.toString());
+        else
+            Config.DirectorTool = directorTool;
         for(Object o : getConfig().getList("TransparentBlocks")) {
             if(o instanceof String)
                 Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
@@ -153,7 +149,7 @@ public final class MovecraftCombat extends JavaPlugin {
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         RadarManager radarManager = new RadarManager();
-        radarManager.runTaskTimer(this, 0, 12000);                        // Every 10 minutes
+        radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
     }
 
     @Override

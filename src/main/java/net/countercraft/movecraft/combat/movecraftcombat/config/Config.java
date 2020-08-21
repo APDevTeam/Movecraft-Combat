@@ -7,7 +7,6 @@ import net.countercraft.movecraft.craft.CraftType;
 
 
 public class Config {
-    public static Material PilotTool = null;    // Track this internally by copying from movecraft
 
     public static boolean Debug = false;
 
@@ -28,6 +27,7 @@ public class Config {
     public static HashSet<CraftType> CannonDirectorsAllowed = new HashSet<>();
 
     // Directors
+    public static Material DirectorTool = null;
     public static HashSet<Material> Transparent = new HashSet<>();
 
     // Durability Override

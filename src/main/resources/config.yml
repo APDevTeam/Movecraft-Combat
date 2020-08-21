@@ -19,6 +19,7 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
   - "SubAirship"
 
 # Directors
+DirectorTool: STICK # Material name for director control.
 TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
   - AIR
   - GLASS
