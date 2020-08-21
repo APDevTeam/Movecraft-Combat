@@ -15,3 +15,7 @@ commands:
   tracermode:
     description: Configure tracer mode
     usage: /tracermode [BLOCKS | PARTICLES]
+permissions:
+  movecraft.combat.bypass:
+    description: Allows you to bypass combat release punishments.
+    default: false
