@@ -80,7 +80,7 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, Material.GLOWSTONE, (byte) 0);
+                                                fp.sendBlockChange(loc, Material.WEB, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it

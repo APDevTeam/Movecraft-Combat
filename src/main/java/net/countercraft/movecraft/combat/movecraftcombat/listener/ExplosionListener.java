@@ -5,11 +5,8 @@ import java.util.Random;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -89,14 +86,14 @@ public class ExplosionListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.sendBlockChange(loc, 89, (byte) 0);
+                                fp.sendBlockChange(loc, Material.GLOWSTONE, (byte) 0);
                             }
                         }.runTaskLater(Movecraft.getInstance(), 5);
                         // then remove it
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.sendBlockChange(loc, 0, (byte) 0);
+                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
                             }
                         }.runTaskLater(Movecraft.getInstance(), 160);
                     }
