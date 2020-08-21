@@ -2,7 +2,9 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import java.util.Random;
 
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
+import org.bukkit.Particle;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -60,25 +62,42 @@ public class ExplosionListener implements Listener {
             maxDistSquared = maxDistSquared * maxDistSquared;
 
             for (Player p : e.getEntity().getWorld().getPlayers()) {
+                String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+                if(setting == null || setting.equals("OFF")) {
+                    continue;
+                }
+
                 // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
                 if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared && p.getLocation().distanceSquared(tnt.getLocation()) >= Config.TracerMinDistanceSqrd) {  // we use squared because its faster
                     final Location loc = tnt.getLocation();
                     final Player fp = p;
                     final World fw = e.getEntity().getWorld();
-                    // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            fp.sendBlockChange(loc, 89, (byte) 0);
-                        }
-                    }.runTaskLater(Movecraft.getInstance(), 5);
-                    // then remove it
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            fp.sendBlockChange(loc, 0, (byte) 0);
-                        }
-                    }.runTaskLater(Movecraft.getInstance(), 160);
+
+                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                    if (mode.equals("BLOCKS")) {
+                        // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.sendBlockChange(loc, 89, (byte) 0);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 5);
+                        // then remove it
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.sendBlockChange(loc, 0, (byte) 0);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 160);
+                    }
+                    else if (mode.equals("PARTICLES")) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
+                            }
+                        }.runTaskLater(Movecraft.getInstance(), 20);
+                    }
                 }
             }
         }

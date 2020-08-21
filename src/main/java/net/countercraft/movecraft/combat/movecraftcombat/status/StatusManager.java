@@ -104,6 +104,10 @@ public class StatusManager extends BukkitRunnable {
         if(event.isCancelled())
             return;
 
+        if(player.hasPermission("movecraft.combat.bypass")) {
+            return;
+        }
+
         if(Config.CombatReleaseScuttle) {
             e.setCancelled(true);
             craft.sink();

@@ -8,3 +8,14 @@ softdepend: [WorldGuard]
 authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
 website: https://github.com/APDevTeam
+commands:
+  tracersetting:
+    description: Configure tracer settings
+    usage: /tracersetting [HIGH | MEDIUM | LOW | OFF]
+  tracermode:
+    description: Configure tracer mode
+    usage: /tracermode [BLOCKS | PARTICLES]
+permissions:
+  movecraft.combat.bypass:
+    description: Allows you to bypass combat release punishments.
+    default: false
