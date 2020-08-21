@@ -1,17 +1,19 @@
 package net.countercraft.movecraft.combat.movecraftcombat.radar;
 
+import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 
 
-public class RadarManager {
+public class RadarManager extends BukkitRunnable {
     private static RadarManager instance = null;
 
     // All players who are hidden from pilots
-    private HashSet<Player> invisibles;
+    private HashSet<Player> invisibles = new HashSet<>();
     // All players who have others hidden
-    private HashSet<Player> pilots;
+    private HashSet<Player> pilots = new HashSet<>();
 
 
     public static RadarManager getInstance() {
@@ -19,15 +21,18 @@ public class RadarManager {
     }
 
 
+    public void run() {
+        // do all the things
+    }
+
+
     public RadarManager() {
         instance = this;
-        invisibles = new HashSet<>();
-        pilots = new HashSet<>();
     }
 
 
     public void startInvisible(Player p) {
-        if(isInvisible(p)) {
+        if(!Config.EnableAntiRadar || isInvisible(p)) {
             return;
         }
 
@@ -40,7 +45,7 @@ public class RadarManager {
     }
 
     public void endInvisible(Player p) {
-        if(!isInvisible(p)) {
+        if(!Config.EnableAntiRadar || !isInvisible(p)) {
             return;
         }
 
@@ -52,12 +57,15 @@ public class RadarManager {
         invisibles.remove(p);
     }
 
-    public boolean isInvisible(Player p) {
+    private boolean isInvisible(Player p) {
+        if(!Config.EnableAntiRadar) {
+            return false;
+        }
         return invisibles.contains(p);
     }
 
     public void startPilot(Player p) {
-        if(isPilot(p)) {
+        if(!Config.EnableAntiRadar || isPilot(p)) {
             return;
         }
 
@@ -70,7 +78,7 @@ public class RadarManager {
     }
 
     public void endPilot(Player p) {
-        if(!isPilot(p)) {
+        if(!Config.EnableAntiRadar || !isPilot(p)) {
             return;
         }
 
@@ -83,6 +91,9 @@ public class RadarManager {
     }
 
     public boolean isPilot(Player p) {
+        if(!Config.EnableAntiRadar) {
+            return false;
+        }
         return pilots.contains(p);
     }
 }

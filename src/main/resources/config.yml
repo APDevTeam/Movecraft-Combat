@@ -1,4 +1,8 @@
 Debug: false # Used only for internal testing, recommend leaving this OFF
+Locale: "en" # Language file to load, currently the plugin comes with en and no, but you can add your own custom language as well.
+
+
+### Stock features moved from Movecraft
 
 # AA Directors
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
@@ -51,6 +55,9 @@ FireballLifespan: 6 # Lifespan of fireballs in seconds
 TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying TNT
 TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
 
+
+### Custom features
+
 # Damage Tracking
 EnableFireballTracking: false # Enable tracking and recording of fireballs (higher lag than other tracking methods)
 EnableTNTTracking: false # Enable tracking and recording of TNT damage (please read the wiki page before enabling!)
@@ -63,5 +70,5 @@ EnableCombatReleaseKick: true # Enable combat release kick, overriden to true if
 CombatReleaseBanLength: 60 # Length of combat release ban in seconds, set to 0 to disable
 CombatReleaseScuttle: true # Enable scuttling of crafts when combat released
 
-# Localisation
-Locale: "en" # Language file to load, currently the plugin comes with en and no, but you can add your own custom language as well.
+# Anti-Player Radar
+EnableAntiRadar: false # Enable invisibility for craft pilots to nullify minimap "player radar" modes
