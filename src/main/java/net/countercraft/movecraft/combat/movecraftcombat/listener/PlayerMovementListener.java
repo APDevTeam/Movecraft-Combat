@@ -17,9 +17,18 @@ public class PlayerMovementListener implements Listener {
             return;
         }
 
-        final Craft c = CraftManager.getInstance().getCraftByPlayer(p);
-        final boolean from = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getFrom()));
-        final boolean to = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getTo()));
+        Craft c = CraftManager.getInstance().getCraftByPlayer(p);
+        if(c == null) {
+            return;
+        }
+        boolean from = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getFrom()));
+        boolean to;
+        if(e.getTo() == null) {
+            to = from;
+        }
+        else {
+            to = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getTo()));
+        }
 
         if(from && !to) {
             // Player left their craft
