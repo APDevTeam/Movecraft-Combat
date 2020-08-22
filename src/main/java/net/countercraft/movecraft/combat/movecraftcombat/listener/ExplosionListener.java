@@ -89,14 +89,14 @@ public class ExplosionListener implements Listener {
                             public void run() {
                                 fp.sendBlockChange(loc, Material.GLOWSTONE, (byte) 0);
                             }
-                        }.runTaskLater(Movecraft.getInstance(), 5);
+                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
                         // then remove it
                         new BukkitRunnable() {
                             @Override
                             public void run() {
                                 fp.sendBlockChange(loc, Material.AIR, (byte) 0);
                             }
-                        }.runTaskLater(Movecraft.getInstance(), 160);
+                        }.runTaskLater(MovecraftCombat.getInstance(), 160);
                     }
                     else if (mode.equals("PARTICLES")) {
                         new BukkitRunnable() {
@@ -104,7 +104,7 @@ public class ExplosionListener implements Listener {
                             public void run() {
                                 fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
                             }
-                        }.runTaskLater(Movecraft.getInstance(), 20);
+                        }.runTaskLater(MovecraftCombat.getInstance(), 20);
                     }
                 }
             }

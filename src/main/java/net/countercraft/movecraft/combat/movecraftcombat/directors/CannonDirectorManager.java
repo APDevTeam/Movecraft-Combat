@@ -102,7 +102,7 @@ public class CannonDirectorManager extends DirectorManager {
                                             public void run() {
                                                 fp.spawnParticle(Particle.FIREWORKS_SPARK, loc, 0, 0.0, 0.0, 0.0);
                                             }
-                                        }.runTaskLater(Movecraft.getInstance(), 5);
+                                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                     }
                                 }
                             }
