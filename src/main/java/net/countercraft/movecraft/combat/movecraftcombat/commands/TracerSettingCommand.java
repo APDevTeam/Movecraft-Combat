@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.commands;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -18,28 +19,28 @@ public class TracerSettingCommand implements TabExecutor {
             return false;
 
         if(!(commandSender instanceof Player)) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must be a player to use that command.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Current setting: " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
             return true;
         }
         if(args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "You must specify a setting.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Setting"));
             return true;
         }
 
         String setting = args[0].toUpperCase();
         if(!setting.equals("OFF") && !setting.equals("LOW") && !setting.equals("MEDIUM") && !setting.equals("HIGH")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Please specify a valid setting.");
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
             return true;
         }
 
         MovecraftCombat.getInstance().getPlayerManager().setSetting(player, setting);
-        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + "Tracers now set to: " + setting);
+        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + setting);
         return true;
     }
 

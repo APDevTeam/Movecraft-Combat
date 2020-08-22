@@ -9,6 +9,9 @@ import net.countercraft.movecraft.craft.CraftType;
 public class Config {
     public static boolean Debug = false;
 
+    // Localisation
+    public static String Locale = "en";
+
     // AA Directors
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
@@ -46,7 +49,7 @@ public class Config {
     public static boolean EnableCombatReleaseKick = true;
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
-
-    //Localisation
-    public static String Locale = "en";
+    
+    // Anti-Player Radar
+    public static boolean EnableAntiRadar = false;
 }

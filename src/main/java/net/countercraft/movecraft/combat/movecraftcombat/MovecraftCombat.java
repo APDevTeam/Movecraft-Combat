@@ -9,6 +9,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerModeComm
 import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
+import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +42,8 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
+        Config.Debug = getConfig().getBoolean("Debug", false);
+
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
         if (!folder.exists()) {
             getLogger().info("Created userdata directory");
@@ -48,14 +51,15 @@ public final class MovecraftCombat extends JavaPlugin {
         }
 
         //TODO other languages
-        String[] languages = {"en"};
+        String[] languages = {"en", "no"};
         for (String s : languages) {
             if (!new File(getDataFolder()  + "/localisation/mcclang_"+ s +".properties").exists()) {
                 this.saveResource("localisation/mcclang_"+ s +".properties", false);
             }
         }
+        Config.Locale = getConfig().getString("Locale", "en");
+        I18nSupport.init();
 
-        Config.Debug = getConfig().getBoolean("Debug", false);
         Config.AADirectorDistance = getConfig().getInt("AADirectorDistance", 50);
         Config.AADirectorRange = getConfig().getInt("AADirectorRange", 120);
         for(String s : getConfig().getStringList("AADirectorsAllowed")) {
@@ -64,10 +68,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
-        Config.Locale = getConfig().getString("Locale", "en");
-
-        I18nSupport.init();
-
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
@@ -79,7 +79,6 @@ public final class MovecraftCombat extends JavaPlugin {
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
         }
-
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
@@ -91,6 +90,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
+
         Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
         Config.EnableTNTTracking = getConfig().getBoolean("EnableTNTTracking", true);
         Config.EnableTorpedoTracking = getConfig().getBoolean("EnableTorpedoTracking", false);
@@ -99,6 +99,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
+        Config.EnableAntiRadar = getConfig().getBoolean("EnableAntiRadar", false);
 
 
         Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -115,11 +116,13 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftPilotListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
         getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
@@ -133,10 +136,13 @@ public final class MovecraftCombat extends JavaPlugin {
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);       // Every tick
         playerManager = new PlayerManager();
+
         DamageManager damageTracking = new DamageManager();
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
+        RadarManager radarManager = new RadarManager();
+        radarManager.runTaskTimer(this, 0, 12000);                        // Every 10 minutes
     }
 
     @Override

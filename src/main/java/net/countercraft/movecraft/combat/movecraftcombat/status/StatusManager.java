@@ -11,10 +11,12 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
+import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
@@ -109,15 +111,28 @@ public class StatusManager extends BukkitRunnable {
         }
 
         if(Config.CombatReleaseScuttle) {
+            player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
             e.setCancelled(true);
+            craft.setNotificationPlayer(null);
             craft.sink();
         }
         if(Config.CombatReleaseBanLength > 0) {
-            Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-            Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
+                }
+            }.runTaskLater(MovecraftCombat.getInstance(), 5);
         }
-        if(Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick)
-            player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
+        if(Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
+                }
+            }.runTaskLater(MovecraftCombat.getInstance(), 5);
+        }
     }
 
     public void craftSunk(@NotNull Craft craft) {
