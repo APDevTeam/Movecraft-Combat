@@ -19,6 +19,7 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
   - "SubAirship"
 
 # Directors
+DirectorTool: STICK # Material name for director control.
 TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
   - AIR
   - GLASS
@@ -45,8 +46,8 @@ EnableContactExplosives: true # Enable TNT contact explosives
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
-  121: 70
-  206: 70
+  END_STONE: 80
+  END_STONE_BRICKS: 80
 
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds

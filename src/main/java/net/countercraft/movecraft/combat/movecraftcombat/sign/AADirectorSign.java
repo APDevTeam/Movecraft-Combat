@@ -16,6 +16,9 @@ import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.AADirectorManager;
+
+import javax.annotation.Nullable;
+
 import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
 
@@ -28,7 +31,7 @@ public class AADirectorSign implements Listener {
             return;
         }
         Block block = event.getClickedBlock();
-        if (block.getType() != Material.SIGN_POST && block.getType() != Material.WALL_SIGN) {
+        if(!isSign(block)) {
             return;
         }
         Sign sign = (Sign) event.getClickedBlock().getState();
@@ -67,5 +70,17 @@ public class AADirectorSign implements Listener {
         if (MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)) {
             MovecraftCombat.getInstance().getCannonDirectors().removeDirector(player);
         }
+    }
+
+    private boolean isSign(@Nullable Block block){
+        if (block == null)
+            return false;
+        final Material type = block.getType();
+
+        return type.name().equals("SIGN_POST") ||
+                type.name().equals("SIGN") ||
+                type.name().equals("WALL_SIGN") ||
+                type.name().endsWith("_SIGN") ||
+                type.name().endsWith("_WALL_SIGN");
     }
 }

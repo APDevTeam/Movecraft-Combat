@@ -4,17 +4,14 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.countercraft.movecraft.Movecraft;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
@@ -83,7 +80,9 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, 30, (byte) 0);
+                                                Material cobweb = LegacyUtils.getInstance().getCobweb();
+                                                if(cobweb != null)
+                                                    fp.sendBlockChange(loc, cobweb, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it
@@ -93,7 +92,7 @@ public class CannonDirectorManager extends DirectorManager {
                                                 // fp.sendBlockChange(loc,
                                                 // fw.getBlockAt(loc).getType(),
                                                 // fw.getBlockAt(loc).getData());
-                                                fp.sendBlockChange(loc, 0, (byte) 0);
+                                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 160);
                                     }
@@ -137,7 +136,7 @@ public class CannonDirectorManager extends DirectorManager {
                     continue;
                 }
                 Player p = getDirector(c);
-                if (p.getInventory().getItemInMainHand().getTypeId() != Settings.PilotTool) {
+                if (p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
                     continue;
                 }
                 Vector tv = tnt.getVelocity();

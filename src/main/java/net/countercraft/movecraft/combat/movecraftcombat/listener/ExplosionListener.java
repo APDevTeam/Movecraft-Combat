@@ -1,14 +1,12 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import java.util.HashSet;
 import java.util.Random;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -45,11 +43,21 @@ public class ExplosionListener implements Listener {
         // Sorry for the following monster conditional statement, it is necessary to avoid spalling.
         // Basically it runs a random number based on the XYZ of the block and the system time if the block has explosion resistance
         // And then it also removes the block if no adjacent blocks are air (IE: the explosion skipped a block)
-        e.blockList().removeIf(b -> (Config.DurabilityOverride.containsKey(b.getTypeId()) &&
-                (new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) < Config.DurabilityOverride.get(b.getTypeId()))) ||
-                !(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
-                        b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty()));
-//                    (new Random( new Random(b.getX()).nextInt(100)+ new Random(b.getY()).nextInt(100) + new Random(b.getZ()).nextInt(100)+
+        HashSet<Block> removeList = new HashSet<>();
+        for(Block b : e.blockList()) {
+            if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
+                continue;
+            }
+            if(!(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
+                    b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty())) {
+                continue;
+            }
+            if(new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) > Config.DurabilityOverride.get(b.getType())) {
+                continue;
+            }
+            removeList.add(b);
+        }
+        e.blockList().removeAll(removeList);
     }
 
     private void processTracers(@NotNull EntityExplodeEvent e) {
@@ -79,14 +87,14 @@ public class ExplosionListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.sendBlockChange(loc, 89, (byte) 0);
+                                fp.sendBlockChange(loc, Material.GLOWSTONE, (byte) 0);
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                         // then remove it
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.sendBlockChange(loc, 0, (byte) 0);
+                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 160);
                     }

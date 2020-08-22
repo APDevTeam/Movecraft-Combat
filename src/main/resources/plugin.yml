@@ -1,7 +1,7 @@
 name: Movecraft-Combat
 version: ${project.version}
 main: net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat
-api-version: 1.10.2
+api-version: 1.13
 prefix: Movecraft-Combat
 depend: [Movecraft]
 softdepend: [WorldGuard]
