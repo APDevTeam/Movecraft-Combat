@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.countercraft.movecraft.Movecraft;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
 import org.bukkit.util.Vector;
@@ -79,7 +80,9 @@ public class CannonDirectorManager extends DirectorManager {
                                         new BukkitRunnable() {
                                             @Override
                                             public void run() {
-                                                fp.sendBlockChange(loc, Material.COBWEB, (byte) 0);
+                                                Material cobweb = LegacyUtils.getInstance().getCobweb();
+                                                if(cobweb != null)
+                                                    fp.sendBlockChange(loc, cobweb, (byte) 0);
                                             }
                                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                                         // then remove it

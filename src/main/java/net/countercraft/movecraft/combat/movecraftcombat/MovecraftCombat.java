@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingC
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -150,6 +151,8 @@ public final class MovecraftCombat extends JavaPlugin {
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         RadarManager radarManager = new RadarManager();
         radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
+
+        LegacyUtils legacyUtils = new LegacyUtils();
     }
 
     @Override
