@@ -8,15 +8,13 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.HitBox;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
@@ -85,7 +83,7 @@ public class StatusManager extends BukkitRunnable {
         CraftReleaseEvent.Reason reason = e.getReason();
         if(craft.getType().getMustBeSubcraft())
             return;
-        if(reason != CraftReleaseEvent.Reason.PLAYER)
+        if(reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
             return;
         if(craft.getType().getCruiseOnPilot())
             return;
@@ -129,6 +127,9 @@ public class StatusManager extends BukkitRunnable {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(player == null || !player.isOnline()) {
+                        return;
+                    }
                     player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
                 }
             }.runTaskLater(MovecraftCombat.getInstance(), 5);
