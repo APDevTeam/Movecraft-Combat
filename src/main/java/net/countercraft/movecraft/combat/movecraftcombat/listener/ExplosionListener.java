@@ -45,11 +45,11 @@ public class ExplosionListener implements Listener {
         // And then it also removes the block if no adjacent blocks are air (IE: the explosion skipped a block)
         HashSet<Block> removeList = new HashSet<>();
         for(Block b : e.blockList()) {
-            if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
-                continue;
-            }
             if(!(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
                     b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty())) {
+                continue;
+            }
+            if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
                 continue;
             }
             if(new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) > Config.DurabilityOverride.get(b.getType())) {
