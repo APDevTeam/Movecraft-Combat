@@ -106,15 +106,15 @@ public class StatusManager extends BukkitRunnable {
         if(isInAirspace(craft))
             return;
 
+        if(player.hasPermission("movecraft.combat.bypass")) {
+            return;
+        }
+
         MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
-
-        if(player.hasPermission("movecraft.combat.bypass")) {
-            return;
-        }
 
         if(Config.CombatReleaseScuttle) {
             player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
