@@ -7,6 +7,7 @@ import net.countercraft.movecraft.craft.CraftType;
 
 
 public class Config {
+
     public static boolean Debug = false;
 
     // Localisation
@@ -26,10 +27,11 @@ public class Config {
     public static HashSet<CraftType> CannonDirectorsAllowed = new HashSet<>();
 
     // Directors
+    public static Material DirectorTool = null;
     public static HashSet<Material> Transparent = new HashSet<>();
 
     // Durability Override
-    public static HashMap<Integer, Integer> DurabilityOverride;
+    public static HashMap<Material, Integer> DurabilityOverride = null;
 
     // Fireball Lifespan
     public static int FireballLifespan = 6;

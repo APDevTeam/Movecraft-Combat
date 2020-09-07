@@ -1,22 +1,28 @@
 package net.countercraft.movecraft.combat.movecraftcombat.status;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
-import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
+import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.utils.HitBox;
-import org.bukkit.BanList;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.bukkit.entity.Player;
@@ -85,7 +91,7 @@ public class StatusManager extends BukkitRunnable {
         CraftReleaseEvent.Reason reason = e.getReason();
         if(craft.getType().getMustBeSubcraft())
             return;
-        if(reason != CraftReleaseEvent.Reason.PLAYER)
+        if(reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
             return;
         if(craft.getType().getCruiseOnPilot())
             return;
@@ -100,15 +106,15 @@ public class StatusManager extends BukkitRunnable {
         if(isInAirspace(craft))
             return;
 
+        if(player.hasPermission("movecraft.combat.bypass")) {
+            return;
+        }
+
         MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
-
-        if(player.hasPermission("movecraft.combat.bypass")) {
-            return;
-        }
 
         if(Config.CombatReleaseScuttle) {
             player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
@@ -129,6 +135,9 @@ public class StatusManager extends BukkitRunnable {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if(player == null || !player.isOnline()) {
+                        return;
+                    }
                     player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
                 }
             }.runTaskLater(MovecraftCombat.getInstance(), 5);
@@ -167,10 +176,14 @@ public class StatusManager extends BukkitRunnable {
         if(MovecraftCombat.getInstance().getWGPlugin() == null)
             return false;
 
+        if (LegacyUtils.getInstance().isLegacy()) {
+            return WorldGuard6Utils.isInAirspace(craft);
+        }
         for(MovecraftLocation l : getHitboxCorners(craft.getHitBox())) {
-            ApplicableRegionSet regions = MovecraftCombat.getInstance().getWGPlugin().getRegionManager(craft.getW()).getApplicableRegions(l.toBukkit(craft.getW()));
+            RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(craft.getW()));
+            ApplicableRegionSet regions = manager.getApplicableRegions(BlockVector3.at(l.getX(), l.getY(), l.getZ()));
             for(ProtectedRegion r : regions.getRegions()) {
-                if(r.getFlag(DefaultFlag.TNT) == StateFlag.State.DENY || r.getFlag(DefaultFlag.PVP) == StateFlag.State.DENY)
+                if(r.getFlag(Flags.TNT) == StateFlag.State.DENY || r.getFlag(Flags.PVP) == StateFlag.State.DENY)
                     return true;
             }
         }

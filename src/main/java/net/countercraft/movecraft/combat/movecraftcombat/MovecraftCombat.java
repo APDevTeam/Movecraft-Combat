@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingC
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +43,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
+
         Config.Debug = getConfig().getBoolean("Debug", false);
 
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
@@ -71,10 +73,16 @@ public final class MovecraftCombat extends JavaPlugin {
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
             Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
         }
+        Object tool = getConfig().get("DirectorTool");
+        Material directorTool = null;
+        if(tool instanceof String)
+            directorTool = Material.getMaterial((String) tool);
+        if(directorTool == null)
+            getLogger().log(Level.SEVERE, "Failed to load director tool " + tool.toString());
+        else
+            Config.DirectorTool = directorTool;
         for(Object o : getConfig().getList("TransparentBlocks")) {
-            if(o instanceof Integer)
-                Config.Transparent.add(Material.getMaterial((int) o));
-            else if(o instanceof String)
+            if(o instanceof String)
                 Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
             else
                 getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
@@ -83,7 +91,7 @@ public final class MovecraftCombat extends JavaPlugin {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
             for (String str : temp.keySet()) {
-                Config.DurabilityOverride.put(Integer.parseInt(str), (Integer) temp.get(str));
+                Config.DurabilityOverride.put(Material.getMaterial(str.toUpperCase()), (Integer) temp.get(str));
             }
         }
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
@@ -142,7 +150,9 @@ public final class MovecraftCombat extends JavaPlugin {
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         RadarManager radarManager = new RadarManager();
-        radarManager.runTaskTimer(this, 0, 12000);                        // Every 10 minutes
+        radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
+
+        LegacyUtils legacyUtils = new LegacyUtils();
     }
 
     @Override
