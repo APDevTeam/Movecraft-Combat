@@ -6,6 +6,7 @@ import java.util.Random;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
+import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,7 +24,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracki
 
 
 public class ExplosionListener implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void entityExplodeEvent(EntityExplodeEvent e) {
         processDurabilityOverride(e);
         processTracers(e);
@@ -47,6 +48,7 @@ public class ExplosionListener implements Listener {
         for(Block b : e.blockList()) {
             if(!(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
                     b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty())) {
+                removeList.add(b);
                 continue;
             }
             if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
