@@ -26,6 +26,10 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracki
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void entityExplodeEvent(EntityExplodeEvent e) {
+        if(e.isCancelled()) {
+            return;
+        }
+
         processDurabilityOverride(e);
         processTracers(e);
         processTNTTracking(e);
