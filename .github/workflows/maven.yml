@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout MCC
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
       with:
         path: MC-Combat
     - name: Checkout Movecraft
