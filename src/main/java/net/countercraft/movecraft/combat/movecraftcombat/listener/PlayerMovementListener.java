@@ -21,13 +21,13 @@ public class PlayerMovementListener implements Listener {
         if(c == null) {
             return;
         }
-        boolean from = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getFrom()));
+        boolean from = MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(e.getFrom()));
         boolean to;
         if(e.getTo() == null) {
             to = from;
         }
         else {
-            to = c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getTo()));
+            to = MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(e.getTo()));
         }
 
         if(from && !to) {
