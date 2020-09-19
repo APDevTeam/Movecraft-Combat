@@ -1,7 +1,5 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
-import java.util.HashMap;
-
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -12,11 +10,9 @@ import org.bukkit.entity.Player;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
-import net.countercraft.movecraft.combat.movecraftcombat.tracking.FireballTracking;
 
 
 public class AADirectorManager extends DirectorManager {
-    private final HashMap<SmallFireball, Long> tracking = new HashMap<>();
     private long lastCheck = 0;
 
     public void run() {
@@ -26,7 +22,6 @@ public class AADirectorManager extends DirectorManager {
         }
 
         processDirectors();
-        processDespawning();
         lastCheck = System.currentTimeMillis();
     }
 
@@ -36,10 +31,8 @@ public class AADirectorManager extends DirectorManager {
                 continue;
             for (SmallFireball fireball : w.getEntitiesByClass(SmallFireball.class)) {
                 if (!(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
-                        && w.getPlayers().size() > 0
-                        && !tracking.containsKey(fireball)) {
+                        && w.getPlayers().size() > 0) {
                     Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-                    tracking.put(fireball, System.currentTimeMillis());
                     Player p = null;
                     if (c == null)
                         continue;
@@ -93,19 +86,6 @@ public class AADirectorManager extends DirectorManager {
                     if (p != null)
                         fireball.setShooter(p);
                 }
-            }
-        }
-    }
-
-    private void processDespawning() {
-        int timeLimit = 20 * Config.FireballLifespan * 50;
-        // then, removed any fireballs out of range from tracking
-        for(SmallFireball fireball : tracking.keySet()) {
-            if (fireball == null)
-                continue;
-            if (System.currentTimeMillis() - tracking.get(fireball) > timeLimit) {
-                fireball.remove();
-                FireballTracking.getInstance().expiredFireball(fireball);
             }
         }
     }

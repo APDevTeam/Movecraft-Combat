@@ -7,11 +7,13 @@ import java.util.logging.Level;
 
 import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.movecraftcombat.commands.TracerSettingCommand;
+import net.countercraft.movecraft.combat.movecraftcombat.fireballs.FireballManager;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.Fireball;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -129,6 +131,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
+        getServer().getPluginManager().registerEvents(new EntitySpawnListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
@@ -151,8 +154,10 @@ public final class MovecraftCombat extends JavaPlugin {
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         RadarManager radarManager = new RadarManager();
         radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
+        FireballManager fireballManager = new FireballManager();
+        fireballManager.runTaskTimer(this, 0, 20);      // Every 1 second
 
-        LegacyUtils legacyUtils = new LegacyUtils();
+        new LegacyUtils();
     }
 
     @Override
