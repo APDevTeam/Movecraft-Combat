@@ -17,8 +17,6 @@ jobs:
       with:
         repository: 'APDevTeam/Movecraft'
         path: Movecraft
-    - run: ls
-    - run: pwd
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
       with:
@@ -49,13 +47,15 @@ jobs:
       run: cd BuildTools && java -jar BuildTools.jar --rev 1.12.1
     
     # Build Movecraft
-    - run:  mvn -B package --file Movecraft/pom.xml
+    - name: Build Movecraft
+      run:  mvn -B package --file Movecraft/pom.xml
 
     # Build MCC
-    - run: mvn -B package --file MC-Combat/pom.xml
+    - name: Build Movecraft-Combat
+      run: mvn -B package --file MC-Combat/pom.xml
 
     - name: Stage jar
-      run: mkdir staging && cp target/Movecraft-Combat*.jar staging
+      run: mkdir staging && cp target/Movecraft-Combat*.jar staging && ls && ls target && pwd
     - name: Rename jar
       run: mv staging/Movecraft-Combat*.jar staging/Movecraft-Combat_$GITHUB_SHA.jar
     - name: Upload jar
