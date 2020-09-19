@@ -55,7 +55,7 @@ jobs:
       run: mvn -B package --file MC-Combat/pom.xml
 
     - name: Stage jar
-      run: mkdir staging && cp target/Movecraft-Combat*.jar staging && ls && ls target && pwd
+      run: mkdir staging && cp MC-Combat/target/Movecraft-Combat*.jar staging
     - name: Rename jar
       run: mv staging/Movecraft-Combat*.jar staging/Movecraft-Combat_$GITHUB_SHA.jar
     - name: Upload jar
