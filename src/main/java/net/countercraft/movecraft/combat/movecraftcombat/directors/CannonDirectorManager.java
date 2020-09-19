@@ -43,75 +43,79 @@ public class CannonDirectorManager extends DirectorManager {
         if (Config.TracerRateTicks == 0)
             return;
         long ticksElapsed = (System.currentTimeMillis() - lastUpdate) / 50;
-        if (ticksElapsed > Config.TracerRateTicks) {
-            for (World w : Bukkit.getWorlds()) {
-                if (w != null) {
-                    for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
-                        if (tnt.getVelocity().lengthSquared() > 0.25) {
-                            int random = new Random((long) (tnt.getLocation().getX()*tnt.getLocation().getY()*tnt.getLocation().getZ()+(System.currentTimeMillis() >> 12))).nextInt(100);
-                            for (Player p : w.getPlayers()) {
-                                String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
-                                if(setting == null || setting.equals("OFF") || setting.equals("LOW")) {
-                                    continue;
-                                }
-                                else if(setting.equals("MEDIUM") && random < 50) {
-                                    continue;   // Medium merely spawns half the particles/cobwebs
-                                }
+        if (ticksElapsed < Config.TracerRateTicks)
+            return;
 
-                                // is the TNT within the view distance (rendered
-                                // world) of the player?
-                                long maxDistSquared = Bukkit.getServer().getViewDistance() * 16;
-                                maxDistSquared = maxDistSquared - 16;
-                                maxDistSquared = maxDistSquared * maxDistSquared;
+        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16;
+        maxDistSquared = maxDistSquared - 16;
+        maxDistSquared = maxDistSquared * maxDistSquared;
 
-                                if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared) { // we
-                                    // use
-                                    // squared
-                                    // because
-                                    // its
-                                    // faster
-                                    final Location loc = tnt.getLocation();
-                                    final Player fp = p;
-                                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
-                                    if (mode.equals("BLOCKS")) {
-                                        // then make a cobweb to look like smoke,
-                                        // place it a little later so it isn't right
-                                        // in the middle of the volley
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                Material cobweb = LegacyUtils.getInstance().getCobweb();
-                                                if(cobweb != null)
-                                                    fp.sendBlockChange(loc, cobweb, (byte) 0);
-                                            }
-                                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                                        // then remove it
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                // fp.sendBlockChange(loc,
-                                                // fw.getBlockAt(loc).getType(),
-                                                // fw.getBlockAt(loc).getData());
-                                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
-                                            }
-                                        }.runTaskLater(MovecraftCombat.getInstance(), 160);
-                                    }
-                                    else if (mode.equals("PARTICLES")) {
-                                        new BukkitRunnable() {
-                                            @Override
-                                            public void run() {
-                                                fp.spawnParticle(Particle.FIREWORKS_SPARK, loc, 0, 0.0, 0.0, 0.0);
-                                            }
-                                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                                    }
-                                }
+        for (World w : Bukkit.getWorlds()) {
+            if (w == null)
+                continue;
+
+            for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
+                if (tnt.getVelocity().lengthSquared() < 0.25)
+                    continue;
+
+                int random = new Random((long) (tnt.getLocation().getX()*tnt.getLocation().getY()*tnt.getLocation().getZ()+(System.currentTimeMillis() >> 12))).nextInt(100);
+                for (Player p : w.getPlayers()) {
+                    String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+                    if(setting == null || setting.equals("OFF") || setting.equals("LOW")) {
+                        continue;
+                    }
+                    else if(setting.equals("MEDIUM") && random < 50) {
+                        continue;   // Medium merely spawns half the particles/cobwebs
+                    }
+
+                    // is the TNT within the view distance (rendered
+                    // world) of the player?
+
+                    if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared) // we
+                        continue; // use
+                        // squared
+                        // because
+                        // its
+                        // faster
+
+                    final Location loc = tnt.getLocation();
+                    final Player fp = p;
+                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                    if (mode.equals("BLOCKS")) {
+                        // then make a cobweb to look like smoke,
+                        // place it a little later so it isn't right
+                        // in the middle of the volley
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                Material cobweb = LegacyUtils.getInstance().getCobweb();
+                                if(cobweb != null)
+                                    fp.sendBlockChange(loc, cobweb, (byte) 0);
                             }
-                        }
+                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                        // then remove it
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                // fp.sendBlockChange(loc,
+                                // fw.getBlockAt(loc).getType(),
+                                // fw.getBlockAt(loc).getData());
+                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
+                            }
+                        }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                    }
+                    else if (mode.equals("PARTICLES")) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                fp.spawnParticle(Particle.FIREWORKS_SPARK, loc, 0, 0.0, 0.0, 0.0);
+                            }
+                        }.runTaskLater(MovecraftCombat.getInstance(), 5);
                     }
                 }
             }
-            lastUpdate = System.currentTimeMillis();
         }
+        lastUpdate = System.currentTimeMillis();
     }
 
     private void processDirectors() {
@@ -119,6 +123,7 @@ public class CannonDirectorManager extends DirectorManager {
         for (World w : Bukkit.getWorlds()) {
             if (w == null)
                 continue;
+
             for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;

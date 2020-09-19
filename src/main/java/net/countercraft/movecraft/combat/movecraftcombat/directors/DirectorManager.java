@@ -27,7 +27,11 @@ public class DirectorManager extends BukkitRunnable {
     }
 
     public boolean hasDirector(@NotNull Craft craft) {
-        return directors.containsKey(craft);
+        if(!directors.containsKey(craft))
+            return false;
+
+        Player director = directors.get(craft);
+        return director != null && director.isOnline();
     }
 
     public void removeDirector(@NotNull Player player) {
@@ -36,7 +40,11 @@ public class DirectorManager extends BukkitRunnable {
 
     @Nullable
     public Player getDirector(@NotNull Craft craft) {
-        return directors.get(craft);
+        Player director = directors.get(craft);
+        if(director == null || !director.isOnline())
+            return null;
+
+        return director;
     }
 
 }
