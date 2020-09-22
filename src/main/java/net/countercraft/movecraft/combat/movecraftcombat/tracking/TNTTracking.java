@@ -1,19 +1,18 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
-import java.util.HashMap;
+import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
-import net.countercraft.movecraft.combat.movecraftcombat.directors.CannonDirectorManager;
 
 
 public class TNTTracking {
     private static TNTTracking instance;
-    private final HashMap<TNTPrimed, Player> tracking = new HashMap<>();
 
     public TNTTracking() {
         instance = this;
@@ -25,23 +24,24 @@ public class TNTTracking {
 
 
     public void dispensedTNT(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
+        Player sender;
         if(MovecraftCombat.getInstance().getCannonDirectors().hasDirector(craft))
-            tracking.put(tnt, MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft));
+            sender = MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft);
         else
-            tracking.put(tnt, craft.getNotificationPlayer());
+            sender = craft.getNotificationPlayer();
+        if(sender == null)
+            return;
+
+        tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
     }
 
     public void damagedCraft(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
-        Player cause = tracking.get(tnt);
-        tracking.remove(tnt);
+        UUID sender = UUID.fromString(tnt.getMetadata("MCC-Sender").get(0).asString());
+        Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
 
-        if(cause == null)
+        if(cause == null || !cause.isOnline())
             return;
         DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
-    }
-
-    public void explodedTNT(@NotNull TNTPrimed tnt) {
-        tracking.remove(tnt);
     }
 }

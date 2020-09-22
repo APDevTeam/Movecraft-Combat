@@ -133,7 +133,6 @@ public class ExplosionListener implements Listener {
                 return;
             }
         }
-        TNTTracking.getInstance().explodedTNT(tnt);
     }
 
     private void processFireballTracking(@NotNull EntityExplodeEvent e) {
