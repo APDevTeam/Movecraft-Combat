@@ -29,6 +29,5 @@ public class ProjectileHitListener implements Listener {
             FireballTracking.getInstance().damagedCraft(craft, fireball);
             return;
         }
-        FireballTracking.getInstance().expiredFireball(fireball);
     }
 }

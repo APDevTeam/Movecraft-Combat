@@ -29,7 +29,6 @@ public class FireballManager extends BukkitRunnable {
         while(System.currentTimeMillis() - q.peek().getMetadata("MCC-Expiry").get(0).asLong() > timeLimit && q.size() > 0) {
             SmallFireball f = q.pop();
             f.remove();
-            FireballTracking.getInstance().expiredFireball(f);
         }
     }
 

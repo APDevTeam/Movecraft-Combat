@@ -157,6 +157,5 @@ public class ExplosionListener implements Listener {
                 return;
             }
         }
-        FireballTracking.getInstance().expiredFireball(fireball);
     }
 }
