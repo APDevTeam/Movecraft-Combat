@@ -126,7 +126,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new CraftPilotListener(), this);
+        getServer().getPluginManager().registerEvents(new CraftDetectListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
         getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);

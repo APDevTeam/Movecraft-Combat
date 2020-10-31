@@ -11,9 +11,9 @@ public class RadarManager extends BukkitRunnable {
     private static RadarManager instance = null;
 
     // All players who are hidden from pilots
-    private HashSet<Player> invisibles = new HashSet<>();
+    private final HashSet<Player> invisibles = new HashSet<>();
     // All players who have others hidden
-    private HashSet<Player> pilots = new HashSet<>();
+    private final HashSet<Player> pilots = new HashSet<>();
 
 
     public static RadarManager getInstance() {
