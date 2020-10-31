@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.fireballs;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +24,7 @@ public class FireballManager extends BukkitRunnable {
 
     @Override
     public void run() {
-        int timeLimit = 20 * Config.FireballLifespan * 50;
+        final int timeLimit = 20 * Config.FireballLifespan * 50;
 
         while(q.size() > 0 && System.currentTimeMillis() - q.peek().getMetadata("MCC-Expiry").get(0).asLong() > timeLimit) {
             SmallFireball f = q.pop();

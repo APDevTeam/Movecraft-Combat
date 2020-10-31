@@ -1,7 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import net.countercraft.movecraft.combat.movecraftcombat.fireballs.FireballManager;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.entity.Fireball;
+import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -14,9 +15,10 @@ import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 public class ProjectileLaunchListener implements Listener {
     @EventHandler
     public void projectileLaunchEvent(ProjectileLaunchEvent e) {
-        if(!(e.getEntity() instanceof Fireball))
+        if(!(e.getEntity() instanceof SmallFireball))
             return;
-        Fireball fireball = (Fireball) e.getEntity();
+        SmallFireball fireball = (SmallFireball) e.getEntity();
+        FireballManager.getInstance().addFireball(fireball);
 
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
         if(craft == null)
