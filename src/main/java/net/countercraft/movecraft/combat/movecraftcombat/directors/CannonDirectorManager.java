@@ -3,7 +3,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
@@ -70,18 +69,13 @@ public class CannonDirectorManager extends DirectorManager {
 
                     // is the TNT within the view distance (rendered
                     // world) of the player?
-
-                    if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared) // we
-                        continue; // use
-                        // squared
-                        // because
-                        // its
-                        // faster
+                    if (p.getLocation().distanceSquared(tnt.getLocation()) > maxDistSquared)
+                        continue;
 
                     final Location loc = tnt.getLocation();
                     final Player fp = p;
                     String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
-                    if (mode.equals("BLOCKS")) {
+                    if(mode != null && mode.equals("BLOCKS")) {
                         // then make a cobweb to look like smoke,
                         // place it a little later so it isn't right
                         // in the middle of the volley
@@ -104,7 +98,7 @@ public class CannonDirectorManager extends DirectorManager {
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 160);
                     }
-                    else if (mode.equals("PARTICLES")) {
+                    else if (mode != null && mode.equals("PARTICLES")) {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
@@ -141,7 +135,7 @@ public class CannonDirectorManager extends DirectorManager {
                     continue;
                 }
                 Player p = getDirector(c);
-                if (p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
+                if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
                     continue;
                 }
                 Vector tv = tnt.getVelocity();
