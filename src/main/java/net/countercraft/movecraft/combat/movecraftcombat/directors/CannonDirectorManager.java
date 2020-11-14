@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -122,11 +123,29 @@ public class CannonDirectorManager extends DirectorManager {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
-                Craft c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
-                tracking.put(tnt, tnt.getVelocity().lengthSquared());
-                if (c == null) {
+
+                Craft c;
+
+                if(Config.EnableTNTTracking) {
+                    if(!tnt.hasMetadata("MCC-Sender")) {
+                        continue;
+                    }
+                    Player sender = Bukkit.getPlayer(UUID.fromString(tnt.getMetadata("MCC-Sender").get(0).asString()));
+                    if (sender == null) {
+                        continue;
+                    }
+
+                    c = CraftManager.getInstance().getCraftByPlayer(sender);
+                }
+                else {
+                    c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+                }
+
+                if(c == null) {
                     continue;
                 }
+                tracking.put(tnt, tnt.getVelocity().lengthSquared());
+
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
                 int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
