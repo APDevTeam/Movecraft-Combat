@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -123,46 +122,22 @@ public class CannonDirectorManager extends DirectorManager {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
-
-                Craft c;
-                Player p;
-
+                Craft c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
                 tracking.put(tnt, tnt.getVelocity().lengthSquared());
-
-                if(Config.EnableTNTTracking) {
-                    if(!tnt.hasMetadata("MCC-Sender")) {
-                        continue;
-                    }
-                    p = Bukkit.getPlayer(UUID.fromString(tnt.getMetadata("MCC-Sender").get(0).asString()));
-                    if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
-                        continue;
-                    }
-
-                    c = CraftManager.getInstance().getCraftByPlayer(p);
-                    if (c == null) {
-                        continue;
-                    }
+                if (c == null) {
+                    continue;
                 }
-                else {
-                    c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
-                    if (c == null || !hasDirector(c)) {
-                        continue;
-                    }
-
-                    p = getDirector(c);
-                    if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
-                        continue;
-                    }
-                }
-
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
                 int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
                 int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-                if (distX >= Config.CannonDirectorDistance || distY >= Config.CannonDirectorDistance || distZ >= Config.CannonDirectorDistance) {
+                if (!hasDirector(c) || distX >= Config.CannonDirectorDistance || distY >= Config.CannonDirectorDistance || distZ >= Config.CannonDirectorDistance) {
                     continue;
                 }
-
+                Player p = getDirector(c);
+                if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
+                    continue;
+                }
                 Vector tv = tnt.getVelocity();
                 double speed = tv.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
                 tv = tv.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
