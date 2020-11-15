@@ -141,10 +141,10 @@ public class CannonDirectorManager extends DirectorManager {
                     c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
                 }
 
+                tracking.put(tnt, tnt.getVelocity().lengthSquared());
                 if(c == null) {
                     continue;
                 }
-                tracking.put(tnt, tnt.getVelocity().lengthSquared());
 
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
