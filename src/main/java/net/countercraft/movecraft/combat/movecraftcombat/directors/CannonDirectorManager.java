@@ -142,7 +142,7 @@ public class CannonDirectorManager extends DirectorManager {
                 }
 
                 tracking.put(tnt, tnt.getVelocity().lengthSquared());
-                if(c == null) {
+                if (c == null) {
                     continue;
                 }
 
