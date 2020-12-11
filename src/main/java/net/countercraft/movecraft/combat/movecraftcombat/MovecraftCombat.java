@@ -110,6 +110,8 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
         Config.EnableAntiRadar = getConfig().getBoolean("EnableAntiRadar", false);
+        Config.EnableFireballPenetration = getConfig().getBoolean("EnableFireballPenetration", false);
+        Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
 
         Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
@@ -139,7 +141,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
-
+        getServer().getPluginManager().registerEvents(new IgniteListener(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
