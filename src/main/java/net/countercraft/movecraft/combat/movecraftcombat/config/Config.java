@@ -54,4 +54,10 @@ public class Config {
     
     // Anti-Player Radar
     public static boolean EnableAntiRadar = false;
+
+    // Fireball Penetration
+    public static boolean EnableFireballPenetration = true;
+
+    // Add fires to craft hitbox
+    public static boolean AddFiresToHitbox = true;
 }
