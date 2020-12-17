@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
@@ -16,11 +15,11 @@ import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
-import net.countercraft.movecraft.utils.WorldguardUtils;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -36,14 +35,6 @@ public class IgniteListener implements Listener {
         }
         final Craft adjacentCraft = adjacentCraft(event.getBlock().getLocation());
 
-        // cannibalizing the anti-spalling code here to keep fireballs from lighting fires inside of moving crafts
-        if (!(event.getBlock().getRelative(BlockFace.DOWN).isEmpty() || event.getBlock().getRelative(BlockFace.UP).isEmpty()
-                || event.getBlock().getRelative(BlockFace.EAST).isEmpty() || event.getBlock().getRelative(BlockFace.WEST).isEmpty()
-                || event.getBlock().getRelative(BlockFace.NORTH).isEmpty() || event.getBlock().getRelative(BlockFace.SOUTH).isEmpty())
-                && event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
-            event.setCancelled(true);
-            return;
-        }
 
         // replace blocks with fire occasionally, to prevent fast craft from simply ignoring fire
         if (Config.EnableFireballPenetration && event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
@@ -61,16 +52,23 @@ public class IgniteListener implements Listener {
 
             // check to see if fire spread is allowed, don't check if worldguard integration is not enabled
             if(Movecraft.getInstance().getWorldGuardPlugin() != null && (Settings.WorldGuardBlockMoveOnBuildPerm ||Settings.WorldGuardBlockSinkOnPVPPerm)) {
-                RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(testBlock.getWorld()));
-                ApplicableRegionSet set = manager.getApplicableRegions(BlockVector3.at(testBlock.getX(), testBlock.getY(), testBlock.getZ()));
-                for (ProtectedRegion region : set) {
-                    if (region.getFlag(Flags.FIRE_SPREAD) == StateFlag.State.DENY) {
+                if (LegacyUtils.getInstance().isLegacy()) {
+                    if (!WorldGuard6Utils.locationAllowsFireSpread(event.getBlock().getLocation())) {
                         return;
+                    }
+                } else {
+                    RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(testBlock.getWorld()));
+                    ApplicableRegionSet set = manager.getApplicableRegions(BlockVector3.at(testBlock.getX(), testBlock.getY(), testBlock.getZ()));
+                    for (ProtectedRegion region : set) {
+                        if (region.getFlag(Flags.FIRE_SPREAD) == StateFlag.State.DENY) {
+                            return;
+                        }
                     }
                 }
             }
             testBlock.setType(Material.AIR);
-        } else if (adjacentCraft != null && Config.AddFiresToHitbox) {
+        }
+        if (adjacentCraft != null && Config.AddFiresToHitbox) { //else if
             adjacentCraft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(event.getBlock().getLocation()));
         }
     }
