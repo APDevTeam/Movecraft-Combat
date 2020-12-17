@@ -1,22 +1,24 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
-import com.sk89q.worldedit.LocalWorld;
+
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-import com.sk89q.worldedit.extent.Extent;
-import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
+import net.countercraft.movecraft.utils.WorldguardUtils;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -57,15 +59,16 @@ public class IgniteListener implements Listener {
             }
 
             // check to see if fire spread is allowed, don't check if worldguard integration is not enabled
-            if (Movecraft.getInstance().getWorldGuardPlugin() != null && (Settings.WorldGuardBlockMoveOnBuildPerm || Settings.WorldGuardBlockSinkOnPVPPerm)) {
-                RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery regionQuery= regionContainer.createQuery();
-                ApplicableRegionSet applicableRegionSet = regionQuery.getApplicableRegions(BukkitAdapter.adapt(testBlock.getLocation()));
-                if(!applicableRegionSet.testState(null, Flags.FIRE_SPREAD)) {
-                    return;
+            if(Movecraft.getInstance().getWorldGuardPlugin() != null && (Settings.WorldGuardBlockMoveOnBuildPerm ||Settings.WorldGuardBlockSinkOnPVPPerm)) {
+                RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(testBlock.getWorld()));
+                ApplicableRegionSet set = manager.getApplicableRegions(BlockVector3.at(testBlock.getX(), testBlock.getY(), testBlock.getZ()));
+                for (ProtectedRegion region : set) {
+                    if (region.getFlag(Flags.FIRE_SPREAD) == StateFlag.State.DENY) {
+                        return;
+                    }
                 }
             }
-            testBlock.setType(org.bukkit.Material.AIR);
+            testBlock.setType(Material.AIR);
         } else if (adjacentCraft != null && Config.AddFiresToHitbox) {
             adjacentCraft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(event.getBlock().getLocation()));
         }
