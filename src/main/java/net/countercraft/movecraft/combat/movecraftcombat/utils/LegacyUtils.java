@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import javax.annotation.Nullable;
 
 public class LegacyUtils {
-    private Material web;
+    private static Material web;
     private boolean isLegacy;
     private static LegacyUtils instance;
 

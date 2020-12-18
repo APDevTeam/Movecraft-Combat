@@ -2,7 +2,8 @@ package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
+
+import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -62,41 +63,19 @@ public class DamageManager extends BukkitRunnable {
         HashSet<DamageRecord> causes = new HashSet<>();
         long currentTime = System.currentTimeMillis();
         for(DamageRecord r : damageRecords.get(craft)) {
-            if(currentTime - r.getTime() < Config.DamageTimeout * 1000 && r.getCause() != craft.getNotificationPlayer())
+            if(currentTime - r.getTime() < Config.DamageTimeout * 1000L && r.getCause() != craft.getNotificationPlayer())
                 causes.add(r);
         }
         if(causes.size() == 0)
             return;
-        Bukkit.broadcastMessage(causesToString(craft.getNotificationPlayer(), causes));
+        CraftSunkByEvent e = new CraftSunkByEvent(craft, causes);
+        Bukkit.getServer().getPluginManager().callEvent(e);
+        Bukkit.broadcastMessage(e.causesToString());
         damageRecords.remove(craft);
+
     }
 
     public void craftReleased(@NotNull Craft craft) {
         damageRecords.remove(craft);
-    }
-
-    private String causesToString(@NotNull Player sunk, @NotNull HashSet<DamageRecord> causes) {
-        DamageRecord latestDamage = null;
-        HashSet<Player> players = new HashSet<>();
-        for(DamageRecord r : causes) {
-            players.add(r.getCause());
-            if(latestDamage == null || r.getTime() > latestDamage.getTime())
-                latestDamage = r;
-        }
-        players.remove(latestDamage.getCause());
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(sunk.getDisplayName());
-        stringBuilder.append(" " + I18nSupport.getInternationalisedString("Killfeed - Sunk By") + " ");
-        stringBuilder.append(latestDamage.getCause().getDisplayName());
-        if(players.size() < 1)
-            return stringBuilder.toString();
-
-        stringBuilder.append(" " + I18nSupport.getInternationalisedString("Killfeed - With Assists") + " ");
-        for(Player p : players) {
-            stringBuilder.append(p.getDisplayName());
-            stringBuilder.append(", ");
-        }
-        return stringBuilder.substring(0, stringBuilder.length() - 2);
     }
 }
