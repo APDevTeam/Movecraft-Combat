@@ -128,7 +128,10 @@ public class CannonDirectorManager extends DirectorManager {
 
                 Craft c = getDirectingCraft(tnt);
                 if(c == null) {
-                    continue;
+                    c= CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+
+                    if(c == null || c.getSinking())
+                        continue;
                 }
 
                 tracking.put(tnt, tnt.getVelocity().lengthSquared());
@@ -179,21 +182,21 @@ public class CannonDirectorManager extends DirectorManager {
 
     private Craft getDirectingCraft(TNTPrimed tnt)
     {
+        if(!Config.EnableTNTTracking)
+            return null;
+
         List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return null;
 
-        if(Config.EnableTNTTracking && !meta.isEmpty()) {
-            Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
-            if (sender == null || !sender.isOnline()) {
-                return CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
-            }
+        Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
+        if (sender == null || !sender.isOnline())
+            return null;
 
-            Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
-            if (c == null || c.getSinking()) {
-                return CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
-            }
-            return c;
-        }
-        return CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+        Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
+        if (c == null || c.getSinking())
+            return null;
+        return c;
     }
 
     private void processTNTContactExplosives() {
