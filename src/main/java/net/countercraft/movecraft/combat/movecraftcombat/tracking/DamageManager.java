@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import net.countercraft.movecraft.combat.movecraftcombat.event.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
@@ -35,15 +36,17 @@ public class DamageManager extends BukkitRunnable {
     public void addDamageRecord(@NotNull Craft craft, @NotNull Player cause, @NotNull DamageType type) {
         if(Config.Debug)
             Bukkit.broadcast((craft.getNotificationPlayer() != null ? craft.getNotificationPlayer().getDisplayName() : "None ") + "'s craft was damaged by a " + type + " by " + cause.getDisplayName(), "movecraft.combat.debug");
-        if(damageRecords.containsKey(craft)) {
+
+        DamageRecord damageRecord = new DamageRecord(cause, type);
+        Bukkit.getServer().getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
+
+        if(damageRecords.containsKey(craft) && damageRecords.get(craft) != null) {
             HashSet<DamageRecord> craftRecords = damageRecords.get(craft);
-            if(craftRecords == null)
-                craftRecords = new HashSet<>();
-            craftRecords.add(new DamageRecord(cause, type));
+            craftRecords.add(damageRecord);
         }
         else {
             HashSet<DamageRecord> craftRecords = new HashSet<>();
-            craftRecords.add(new DamageRecord(cause, type));
+            craftRecords.add(damageRecord);
             damageRecords.put(craft, craftRecords);
         }
     }
