@@ -125,6 +125,7 @@ public class CannonDirectorManager extends DirectorManager {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
+                tracking.put(tnt, tnt.getVelocity().lengthSquared());
 
                 Craft c = getDirectingCraft(tnt);
                 if(c == null) {
@@ -133,8 +134,6 @@ public class CannonDirectorManager extends DirectorManager {
                     if(c == null || c.getSinking())
                         continue;
                 }
-
-                tracking.put(tnt, tnt.getVelocity().lengthSquared());
 
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
