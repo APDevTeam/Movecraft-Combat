@@ -1,11 +1,14 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -122,11 +125,17 @@ public class CannonDirectorManager extends DirectorManager {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
-                Craft c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
-                tracking.put(tnt, tnt.getVelocity().lengthSquared());
-                if (c == null) {
-                    continue;
+
+                Craft c = getDirectingCraft(tnt);
+                if(c == null) {
+                    c= CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+
+                    if(c == null || c.getSinking())
+                        continue;
                 }
+
+                tracking.put(tnt, tnt.getVelocity().lengthSquared());
+
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
                 int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
@@ -169,6 +178,25 @@ public class CannonDirectorManager extends DirectorManager {
             }
         }
 
+    }
+
+    private Craft getDirectingCraft(TNTPrimed tnt)
+    {
+        if(!Config.EnableTNTTracking)
+            return null;
+
+        List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return null;
+
+        Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
+        if (sender == null || !sender.isOnline())
+            return null;
+
+        Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
+        if (c == null || c.getSinking())
+            return null;
+        return c;
     }
 
     private void processTNTContactExplosives() {
