@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.DamageType;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

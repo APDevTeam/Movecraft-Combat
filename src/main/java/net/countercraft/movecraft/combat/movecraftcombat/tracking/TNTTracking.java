@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class TNTTracking {
 
         if(cause == null || !cause.isOnline())
             return;
-        DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
+        DamageManager.getInstance().addDamageRecord(craft, cause, new TNTCannonDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 }
