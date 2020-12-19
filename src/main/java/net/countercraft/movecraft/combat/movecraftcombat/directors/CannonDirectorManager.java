@@ -105,7 +105,7 @@ public class CannonDirectorManager extends DirectorManager {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.spawnParticle(Particle.FIREWORKS_SPARK, loc, 0, 0.0, 0.0, 0.0);
+                                fp.spawnParticle(Config.TracerParticle, loc, 0, 0.0, 0.0, 0.0);
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                     }
@@ -179,8 +179,7 @@ public class CannonDirectorManager extends DirectorManager {
 
     }
 
-    private Craft getDirectingCraft(TNTPrimed tnt)
-    {
+    private Craft getDirectingCraft(TNTPrimed tnt) {
         if(!Config.EnableTNTTracking)
             return null;
 

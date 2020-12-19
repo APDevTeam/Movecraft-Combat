@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import org.bukkit.Material;
 import net.countercraft.movecraft.craft.CraftType;
+import org.bukkit.Particle;
 
 
 public class Config {
@@ -39,6 +40,8 @@ public class Config {
     // TNT Tracers
     public static double TracerRateTicks = 5.0;
     public static long TracerMinDistanceSqrd = 360;
+    public static Particle TracerParticle = null;
+    public static Particle ExplosionParticle = null;
 
     // Damage Tracking
     public static boolean EnableFireballTracking = false;
