@@ -134,6 +134,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        getServer().getPluginManager().registerEvents(new IgniteListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
@@ -141,7 +142,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
-        getServer().getPluginManager().registerEvents(new IgniteListener(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick

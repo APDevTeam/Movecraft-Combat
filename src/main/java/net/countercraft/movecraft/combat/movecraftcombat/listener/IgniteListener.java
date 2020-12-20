@@ -33,8 +33,6 @@ public class IgniteListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        final Craft adjacentCraft = adjacentCraft(event.getBlock().getLocation());
-
 
         // replace blocks with fire occasionally, to prevent fast craft from simply ignoring fire
         if (Config.EnableFireballPenetration && event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
@@ -51,36 +49,68 @@ public class IgniteListener implements Listener {
             }
 
             // check to see if fire spread is allowed, don't check if worldguard integration is not enabled
-            if(Movecraft.getInstance().getWorldGuardPlugin() != null && (Settings.WorldGuardBlockMoveOnBuildPerm ||Settings.WorldGuardBlockSinkOnPVPPerm)) {
-                if (LegacyUtils.getInstance().isLegacy()) {
-                    if (!WorldGuard6Utils.locationAllowsFireSpread(event.getBlock().getLocation())) {
-                        return;
-                    }
-                } else {
-                    RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(testBlock.getWorld()));
-                    ApplicableRegionSet set = manager.getApplicableRegions(BlockVector3.at(testBlock.getX(), testBlock.getY(), testBlock.getZ()));
-                    for (ProtectedRegion region : set) {
-                        if (region.getFlag(Flags.FIRE_SPREAD) == StateFlag.State.DENY) {
-                            return;
-                        }
-                    }
-                }
+            if(!isFireSpreadAllowed(event.getBlock().getLocation())) {
+                return;
             }
             testBlock.setType(Material.AIR);
         }
-        if (adjacentCraft != null && Config.AddFiresToHitbox) { //else if
-            adjacentCraft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(event.getBlock().getLocation()));
+        if (Config.AddFiresToHitbox) {
+            doAddFiresToHitbox(event);
         }
     }
 
     @Nullable
     private Craft adjacentCraft(@NotNull Location location) {
-        for (Craft craft : CraftManager.getInstance().getCraftsInWorld(location.getWorld())) {
-            if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(location))) {
-                continue;
-            }
+        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(location);
+        if(craft == null) {
+            return null; //return null if no craft found
+        }
+
+        //TODO move this to a locIsAdjacentToCraft method
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(1,0,0))) {
+            return craft;
+        }
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(-1,0,0))) {
+            return craft;
+        }
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,1,0))) {
+            return craft;
+        }
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,-1,0))) {
+            return craft;
+        }
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,0,1))) {
+            return craft;
+        }
+        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,0,-1))) {
             return craft;
         }
         return null;
+    }
+
+    private void doAddFiresToHitbox(BlockIgniteEvent e) {
+        final Craft craft = adjacentCraft(e.getBlock().getLocation());
+        if (craft != null) {
+            craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
+        }
+    }
+
+    private boolean isFireSpreadAllowed(Location l) {
+        if(Movecraft.getInstance().getWorldGuardPlugin() != null && (Settings.WorldGuardBlockMoveOnBuildPerm ||Settings.WorldGuardBlockSinkOnPVPPerm)) {
+            if (LegacyUtils.getInstance().isLegacy()) {
+                if (!WorldGuard6Utils.locationAllowsFireSpread(l)) {
+                    return false;
+                }
+            } else {
+                RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(l.getWorld()));
+                ApplicableRegionSet set = manager.getApplicableRegions(BlockVector3.at(l.getX(), l.getY(), l.getZ()));
+                for (ProtectedRegion region : set) {
+                    if (region.getFlag(Flags.FIRE_SPREAD) == StateFlag.State.DENY) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
