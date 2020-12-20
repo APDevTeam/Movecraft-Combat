@@ -62,4 +62,18 @@ public class WorldGuard6Utils {
         }
         return false;
     }
+
+    public static boolean locationAllowsFireSpread (Location location) {
+        try {
+            RegionManager manager = (RegionManager) GET_REGION_MANAGER.invoke(MovecraftCombat.getInstance().getWGPlugin(), location.getWorld());
+            ApplicableRegionSet regions = (ApplicableRegionSet) GET_APPLICABLE_REGIONS.invoke(manager, location);
+            for (ProtectedRegion r : regions.getRegions()) {
+                if (r.getFlag(DefaultFlag.FIRE_SPREAD) == StateFlag.State.DENY)
+                    return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }
