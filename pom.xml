@@ -19,6 +19,7 @@
     <url>https://github.com/TylerS1066/Movecraft-Combat</url>
 
     <build>
+        <finalName>Movecraft-Combat</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

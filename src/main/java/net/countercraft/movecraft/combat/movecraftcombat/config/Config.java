@@ -8,7 +8,6 @@ import org.bukkit.Particle;
 
 
 public class Config {
-
     public static boolean Debug = false;
 
     // Localisation
