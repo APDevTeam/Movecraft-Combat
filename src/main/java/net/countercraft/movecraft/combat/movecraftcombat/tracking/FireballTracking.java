@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.FireballDamage;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -57,7 +58,7 @@ public class FireballTracking {
         if(cause == null || !cause.isOnline())
             return;
 
-        DamageManager.getInstance().addDamageRecord(craft, cause, new TNTCannonDamage());
+        DamageManager.getInstance().addDamageRecord(craft, cause, new FireballDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 }
