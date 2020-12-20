@@ -1,13 +1,14 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.DamageType;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 
 
 public class DamageRecord {
-    private Player cause;
-    private DamageType type;
-    private long time;
+    private final Player cause;
+    private final DamageType type;
+    private final long time;
 
     public DamageRecord(@NotNull Player cause, @NotNull DamageType type) {
         this.cause = cause;

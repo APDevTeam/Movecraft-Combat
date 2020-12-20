@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 public class CombatEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private Player player;
+    private final Player player;
 
     public CombatEvent(@Nullable Player player) {
         this.player = player;
@@ -28,5 +28,4 @@ public class CombatEvent extends Event {
     public Player getPlayer() {
         return this.player;
     }
-
 }

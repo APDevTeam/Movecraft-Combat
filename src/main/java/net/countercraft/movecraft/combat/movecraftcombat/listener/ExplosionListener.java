@@ -108,7 +108,7 @@ public class ExplosionListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                fp.spawnParticle(Particle.VILLAGER_ANGRY, loc, 9);
+                                fp.spawnParticle(Config.ExplosionParticle, loc, 9);
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 20);
                     }

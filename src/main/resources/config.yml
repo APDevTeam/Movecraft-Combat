@@ -55,6 +55,8 @@ FireballLifespan: 6 # Lifespan of fireballs in seconds
 # TNT Tracers
 TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying TNT
 TracerMinDistance: 60 # Minimum distance at which glowstone tracers are spawned on explosion
+TracerParticles: FIREWORKS_SPARK # Particle to use for particle tracers  See https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html for options.
+ExplosionParticles: VILLAGER_ANGRY # Particle to use for particle tracer explosions
 
 
 ### Custom features

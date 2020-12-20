@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
-import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TorpedoDamage;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -11,7 +11,6 @@ import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
-import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -34,7 +33,7 @@ public class CraftCollisionExplosionListener implements Listener {
         if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
 
-        DamageManager.getInstance().addDamageRecord(craft, e.getCraft().getNotificationPlayer(), DamageType.TORPEDO);
+        DamageManager.getInstance().addDamageRecord(craft, e.getCraft().getNotificationPlayer(), new TorpedoDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 

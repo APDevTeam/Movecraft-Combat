@@ -13,6 +13,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Fireball;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +34,7 @@ public final class MovecraftCombat extends JavaPlugin {
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
     private PlayerManager playerManager;
+    private Class<Particle> particleClass;
 
     public static synchronized MovecraftCombat getInstance() {
         return instance;
@@ -100,6 +102,9 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
+        Config.TracerParticle = Particle.valueOf(getConfig().getString("TracerParticles", "FIREWORKS_SPARK"));
+        Config.ExplosionParticle = Particle.valueOf(getConfig().getString("ExplosionParticles", "VILLAGER_ANGRY"));
+
 
         Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
         Config.EnableTNTTracking = getConfig().getBoolean("EnableTNTTracking", true);

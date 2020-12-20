@@ -1,10 +1,13 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.FireballDamage;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Fireball;
@@ -46,12 +49,16 @@ public class FireballTracking {
         if(!Config.EnableFireballTracking)
             return;
 
-        UUID sender = UUID.fromString(fireball.getMetadata("MCC-Sender").get(0).asString());
+        List<MetadataValue> meta = fireball.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return;
+
+        UUID sender = UUID.fromString(meta.get(0).asString());
         Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
         if(cause == null || !cause.isOnline())
             return;
 
-        DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.FIREBALL);
+        DamageManager.getInstance().addDamageRecord(craft, cause, new FireballDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 }

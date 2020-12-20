@@ -1,9 +1,12 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
+import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -36,12 +39,16 @@ public class TNTTracking {
     }
 
     public void damagedCraft(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
-        UUID sender = UUID.fromString(tnt.getMetadata("MCC-Sender").get(0).asString());
+        List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return;
+
+        UUID sender = UUID.fromString(meta.get(0).asString());
         Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
 
         if(cause == null || !cause.isOnline())
             return;
-        DamageManager.getInstance().addDamageRecord(craft, cause, DamageType.CANNON);
+        DamageManager.getInstance().addDamageRecord(craft, cause, new TNTCannonDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 }

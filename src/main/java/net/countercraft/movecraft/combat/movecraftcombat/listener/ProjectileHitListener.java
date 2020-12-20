@@ -25,9 +25,9 @@ public class ProjectileHitListener implements Listener {
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
         if(craft == null)
             return;
-        if(MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation()))) {
-            FireballTracking.getInstance().damagedCraft(craft, fireball);
+        if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
             return;
-        }
+
+        FireballTracking.getInstance().damagedCraft(craft, fireball);
     }
 }
