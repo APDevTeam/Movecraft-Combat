@@ -14,7 +14,6 @@ import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Fireball;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -28,13 +27,12 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
 public final class MovecraftCombat extends JavaPlugin {
-    private static MovecraftCombat instance;
-    private static WorldGuardPlugin wgPlugin;
+    private static MovecraftCombat instance = null;
+    private static WorldGuardPlugin wgPlugin = null;
 
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
     private PlayerManager playerManager;
-    private Class<Particle> particleClass;
 
     public static synchronized MovecraftCombat getInstance() {
         return instance;

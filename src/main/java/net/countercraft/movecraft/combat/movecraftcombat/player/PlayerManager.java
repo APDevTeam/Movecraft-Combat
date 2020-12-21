@@ -1,14 +1,12 @@
 package net.countercraft.movecraft.combat.movecraftcombat.player;
 
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
-import java.io.*;
 import java.util.HashMap;
 
 public class PlayerManager {
-    private HashMap<Player, PlayerConfig> onlinePlayers = new HashMap<>();
+    private final HashMap<Player, PlayerConfig> onlinePlayers = new HashMap<>();
 
     public void shutDown() {
         for(Player p : onlinePlayers.keySet()) {

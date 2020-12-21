@@ -1,26 +1,10 @@
 package net.countercraft.movecraft.combat.movecraftcombat.status;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
-
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
-import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
-import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
@@ -171,23 +155,11 @@ public class StatusManager extends BukkitRunnable {
         MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Leave Combat"));
     }
 
-    // TODO: Replace this functionality with a listener in MCWG
     private boolean isInAirspace(@NotNull Craft craft) {
         if(MovecraftCombat.getInstance().getWGPlugin() == null)
             return false;
 
-        if (LegacyUtils.getInstance().isLegacy()) {
-            return WorldGuard6Utils.isInAirspace(craft);
-        }
-        for(MovecraftLocation l : getHitboxCorners(craft.getHitBox())) {
-            RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(craft.getW()));
-            ApplicableRegionSet regions = manager.getApplicableRegions(BlockVector3.at(l.getX(), l.getY(), l.getZ()));
-            for(ProtectedRegion r : regions.getRegions()) {
-                if(r.getFlag(Flags.TNT) == StateFlag.State.DENY || r.getFlag(Flags.PVP) == StateFlag.State.DENY)
-                    return true;
-            }
-        }
-        return false;
+        return WorldGuard6Utils.isInAirspace(craft);
     }
 
     // TODO: Move this to HitBox or somewhere in Utils of MC
