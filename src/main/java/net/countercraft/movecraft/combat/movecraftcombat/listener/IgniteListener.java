@@ -80,9 +80,10 @@ public class IgniteListener implements Listener {
 
     private void doAddFiresToHitbox(BlockIgniteEvent e) {
         final Craft craft = adjacentCraft(e.getBlock().getLocation());
-        if (craft != null) {
-            craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
-        }
+        if (craft == null || craft.getHitBox().isEmpty())
+            return;
+
+        craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
     }
 
     private boolean isFireSpreadAllowed(Location l) {
