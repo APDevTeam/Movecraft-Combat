@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
 import org.bukkit.event.EventPriority;
@@ -34,6 +35,7 @@ public class ExplosionListener implements Listener {
         processTracers(e);
         processTNTTracking(e);
         processFireballTracking(e);
+        processDirectors(e);
     }
 
 
@@ -155,6 +157,12 @@ public class ExplosionListener implements Listener {
                 FireballTracking.getInstance().damagedCraft(craft, fireball);
                 return;
             }
+        }
+    }
+
+    private void processDirectors(@NotNull EntityExplodeEvent e) {
+        if(e.getEntity() instanceof TNTPrimed) {
+            CannonDirectorManager.getInstance().removeTNT((TNTPrimed) e.getEntity());
         }
     }
 }

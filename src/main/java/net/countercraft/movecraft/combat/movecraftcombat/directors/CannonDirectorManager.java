@@ -21,9 +21,18 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
 public class CannonDirectorManager extends DirectorManager {
+    private static CannonDirectorManager instance;
     private final HashMap<TNTPrimed, Double> tracking = new HashMap<>();
     private long lastUpdate = 0;
     private long lastCheck = 0;
+
+    public static CannonDirectorManager getInstance() {
+        return instance;
+    }
+
+    public CannonDirectorManager() {
+        instance = this;
+    }
 
     @Override
     public void run() {
@@ -212,5 +221,9 @@ public class CannonDirectorManager extends DirectorManager {
                 tracking.put(tnt, vel);
             }
         }
+    }
+
+    public void removeTNT(TNTPrimed tnt) {
+        tracking.remove(tnt);
     }
 }
