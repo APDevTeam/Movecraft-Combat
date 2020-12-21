@@ -1,11 +1,20 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import com.google.common.collect.HashBiMap;
+import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.CraftManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.UUID;
 
 public class DirectorManager extends BukkitRunnable {
     private final HashBiMap<Craft, Player> directors = HashBiMap.create();
@@ -47,4 +56,21 @@ public class DirectorManager extends BukkitRunnable {
         return director;
     }
 
+    protected Craft getDirectingCraft(Metadatable directed) {
+        if(!Config.EnableTNTTracking)
+            return null;
+
+        List<MetadataValue> meta = directed.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return null;
+
+        Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
+        if (sender == null || !sender.isOnline())
+            return null;
+
+        Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
+        if (c == null || c.getSinking())
+            return null;
+        return c;
+    }
 }

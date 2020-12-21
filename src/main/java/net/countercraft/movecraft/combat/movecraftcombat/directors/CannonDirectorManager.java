@@ -1,23 +1,23 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import org.bukkit.*;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.util.Vector;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
-import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.Random;
 
 
 public class CannonDirectorManager extends DirectorManager {
@@ -138,7 +138,7 @@ public class CannonDirectorManager extends DirectorManager {
 
                 Craft c = getDirectingCraft(tnt);
                 if(c == null) {
-                    c= CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+                    c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
 
                     if(c == null || c.getSinking())
                         continue;
@@ -166,17 +166,17 @@ public class CannonDirectorManager extends DirectorManager {
                     targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
                     targetVector = targetVector.normalize();
                 }
-                if (targetVector.getX() - tv.getX() > 0.7) {
-                    tv.setX(tv.getX() + 0.7);
-                } else if (targetVector.getX() - tv.getX() < -0.7) {
-                    tv.setX(tv.getX() - 0.7);
+                if (targetVector.getX() - tv.getX() > 0.6) {
+                    tv.setX(tv.getX() + 0.6);
+                } else if (targetVector.getX() - tv.getX() < -0.6) {
+                    tv.setX(tv.getX() - 0.6);
                 } else {
                     tv.setX(targetVector.getX());
                 }
-                if (targetVector.getZ() - tv.getZ() > 0.7) {
-                    tv.setZ(tv.getZ() + 0.7);
-                } else if (targetVector.getZ() - tv.getZ() < -0.7) {
-                    tv.setZ(tv.getZ() - 0.7);
+                if (targetVector.getZ() - tv.getZ() > 0.6) {
+                    tv.setZ(tv.getZ() + 0.6);
+                } else if (targetVector.getZ() - tv.getZ() < -0.6) {
+                    tv.setZ(tv.getZ() - 0.6);
                 } else {
                     tv.setZ(targetVector.getZ());
                 }
@@ -186,24 +186,6 @@ public class CannonDirectorManager extends DirectorManager {
             }
         }
 
-    }
-
-    private Craft getDirectingCraft(TNTPrimed tnt) {
-        if(!Config.EnableTNTTracking)
-            return null;
-
-        List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
-        if(meta.isEmpty())
-            return null;
-
-        Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
-        if (sender == null || !sender.isOnline())
-            return null;
-
-        Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
-        if (c == null || c.getSinking())
-            return null;
-        return c;
     }
 
     private void processTNTContactExplosives() {

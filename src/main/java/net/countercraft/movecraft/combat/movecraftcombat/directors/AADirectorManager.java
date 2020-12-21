@@ -1,15 +1,15 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.util.Vector;
-import org.bukkit.entity.Player;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
 public class AADirectorManager extends DirectorManager {
@@ -33,9 +33,13 @@ public class AADirectorManager extends DirectorManager {
                 if (fireball.getShooter() instanceof org.bukkit.entity.LivingEntity || w.getPlayers().size() == 0)
                     continue;
 
-                Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-                if (c == null || !hasDirector(c))
-                    continue;
+                Craft c = getDirectingCraft(fireball);
+                if(c == null) {
+                    c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
+
+                    if (c == null || c.getSinking() || !hasDirector(c))
+                        continue;
+                }
 
                 Player p = getDirector(c);
 
@@ -48,7 +52,7 @@ public class AADirectorManager extends DirectorManager {
 
                 fireball.setShooter(p);
 
-                if (p.getInventory().getItemInMainHand().getType() != Config.DirectorTool)
+                if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool)
                     continue;
 
                 Vector fv = fireball.getVelocity();
