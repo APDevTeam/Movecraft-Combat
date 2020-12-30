@@ -66,15 +66,11 @@ public final class MovecraftCombat extends JavaPlugin {
 
         Config.AADirectorDistance = getConfig().getInt("AADirectorDistance", 50);
         Config.AADirectorRange = getConfig().getInt("AADirectorRange", 120);
-        for(String s : getConfig().getStringList("AADirectorsAllowed")) {
-            Config.AADirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
-        }
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
-        for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
-            Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
-        }
+        reloadTypes();
+
         Object tool = getConfig().get("DirectorTool");
         Material directorTool = null;
         if(tool instanceof String)
@@ -145,6 +141,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
+        getServer().getPluginManager().registerEvents(new TypesReloadedListener(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
@@ -183,5 +180,14 @@ public final class MovecraftCombat extends JavaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public void reloadTypes() {
+        for(String s : getConfig().getStringList("AADirectorsAllowed")) {
+            Config.AADirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
+        }
+        for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
+            Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
+        }
     }
 }
