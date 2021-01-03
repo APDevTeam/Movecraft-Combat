@@ -166,17 +166,17 @@ public class CannonDirectorManager extends DirectorManager {
                     targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
                     targetVector = targetVector.normalize();
                 }
-                if (targetVector.getX() - tv.getX() > 0.6) {
-                    tv.setX(tv.getX() + 0.6);
-                } else if (targetVector.getX() - tv.getX() < -0.6) {
-                    tv.setX(tv.getX() - 0.6);
+                if (targetVector.getX() - tv.getX() > 0.7) {
+                    tv.setX(tv.getX() + 0.7);
+                } else if (targetVector.getX() - tv.getX() < -0.7) {
+                    tv.setX(tv.getX() - 0.7);
                 } else {
                     tv.setX(targetVector.getX());
                 }
-                if (targetVector.getZ() - tv.getZ() > 0.6) {
-                    tv.setZ(tv.getZ() + 0.6);
-                } else if (targetVector.getZ() - tv.getZ() < -0.6) {
-                    tv.setZ(tv.getZ() - 0.6);
+                if (targetVector.getZ() - tv.getZ() > 0.7) {
+                    tv.setZ(tv.getZ() + 0.7);
+                } else if (targetVector.getZ() - tv.getZ() < -0.7) {
+                    tv.setZ(tv.getZ() - 0.7);
                 } else {
                     tv.setZ(targetVector.getZ());
                 }
