@@ -1,23 +1,30 @@
 package net.countercraft.movecraft.combat.movecraftcombat.status;
 
-import java.util.*;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
-import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
-import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
-import net.countercraft.movecraft.config.Settings;
-import net.countercraft.movecraft.utils.HitBox;
-import org.bukkit.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
+import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
+import net.countercraft.movecraft.config.Settings;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.events.CraftReleaseEvent;
+import net.countercraft.movecraft.utils.HitBox;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class StatusManager extends BukkitRunnable {
@@ -110,28 +117,30 @@ public class StatusManager extends BukkitRunnable {
             craft.sink();
         }
 
-        if(manOverboard) {
-            if (Config.CombatReleaseBanLength > 0) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-                        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 5);
-            }
-            if (Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (player == null || !player.isOnline()) {
-                            return;
-                        }
-                        player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 5);
-            }
+        if(Config.CombatReleaseBanLength <= 0 && !Config.EnableCombatReleaseKick)
+            return;
+        if(!manOverboard)
+            return;
+
+        if (Config.CombatReleaseBanLength > 0) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
+                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
+                }
+            }.runTaskLater(MovecraftCombat.getInstance(), 5);
         }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player == null || !player.isOnline()) {
+                    return;
+                }
+                player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
+            }
+        }.runTaskLater(MovecraftCombat.getInstance(), 5);
     }
 
     public void craftSunk(@NotNull Craft craft) {
@@ -188,10 +197,7 @@ public class StatusManager extends BukkitRunnable {
         if (craft.getW() != player.getWorld())
             return false;
 
-        double telX = (craft.getHitBox().getMinX() + craft.getHitBox().getMaxX())/2D;
-        double telZ = (craft.getHitBox().getMinZ() + craft.getHitBox().getMaxZ())/2D;
-        double telY = craft.getHitBox().getMaxY() + 1;
-        Location telPoint = new Location(craft.getW(), telX, telY, telZ);
-        return !(telPoint.distanceSquared(player.getLocation()) > Settings.ManOverboardDistSquared);
+        Location telPoint = MovecraftLocation.toBukkit(craft.getW(), craft.getHitBox().getMidPoint());
+        return telPoint.distanceSquared(player.getLocation()) < Settings.ManOverboardDistSquared;
     }
 }
