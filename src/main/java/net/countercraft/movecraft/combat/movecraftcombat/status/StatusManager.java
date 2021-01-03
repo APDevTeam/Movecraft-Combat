@@ -5,6 +5,7 @@ import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
+import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.*;
 import org.jetbrains.annotations.NotNull;
@@ -100,31 +101,36 @@ public class StatusManager extends BukkitRunnable {
         if(event.isCancelled())
             return;
 
+        boolean manOverboard = canManOverboard(player, craft);
+
         if(Config.CombatReleaseScuttle) {
             player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
             e.setCancelled(true);
             craft.setNotificationPlayer(null);
             craft.sink();
         }
-        if(Config.CombatReleaseBanLength > 0) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
-                    Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
-                }
-            }.runTaskLater(MovecraftCombat.getInstance(), 5);
-        }
-        if(Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if(player == null || !player.isOnline()) {
-                        return;
+
+        if(manOverboard) {
+            if (Config.CombatReleaseBanLength > 0) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Date expiry = new Date(System.currentTimeMillis() + Config.CombatReleaseBanLength * 1000);
+                        Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(player.getName(), I18nSupport.getInternationalisedString("Combat Release"), expiry, "Movecraft-Combat AutoBan");
                     }
-                    player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
-                }
-            }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                }.runTaskLater(MovecraftCombat.getInstance(), 5);
+            }
+            if (Config.CombatReleaseBanLength > 0 || Config.EnableCombatReleaseKick) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (player == null || !player.isOnline()) {
+                            return;
+                        }
+                        player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
+                    }
+                }.runTaskLater(MovecraftCombat.getInstance(), 5);
+            }
         }
     }
 
@@ -174,5 +180,18 @@ public class StatusManager extends BukkitRunnable {
         corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMinZ()));
         corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMaxZ()));
         return corners;
+    }
+
+    private boolean canManOverboard(Player player, Craft craft) {
+        if(craft.getDisabled())
+            return false;
+        if (craft.getW() != player.getWorld())
+            return false;
+
+        double telX = (craft.getHitBox().getMinX() + craft.getHitBox().getMaxX())/2D;
+        double telZ = (craft.getHitBox().getMinZ() + craft.getHitBox().getMaxZ())/2D;
+        double telY = craft.getHitBox().getMaxY() + 1;
+        Location telPoint = new Location(craft.getW(), telX, telY, telZ);
+        return !(telPoint.distanceSquared(player.getLocation()) > Settings.ManOverboardDistSquared);
     }
 }
