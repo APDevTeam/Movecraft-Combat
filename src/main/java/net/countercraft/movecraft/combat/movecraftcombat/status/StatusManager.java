@@ -108,8 +108,6 @@ public class StatusManager extends BukkitRunnable {
         if(event.isCancelled())
             return;
 
-        boolean manOverboard = canManOverboard(player, craft);
-
         if(Config.CombatReleaseScuttle) {
             player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
             e.setCancelled(true);
@@ -117,9 +115,9 @@ public class StatusManager extends BukkitRunnable {
             craft.sink();
         }
 
-        if(Config.CombatReleaseBanLength <= 0 && !Config.EnableCombatReleaseKick)
+        if(!Config.EnableCombatReleaseKick)
             return;
-        if(!manOverboard)
+        if(!canManOverboard(player, craft))
             return;
 
         if (Config.CombatReleaseBanLength > 0) {
@@ -175,20 +173,6 @@ public class StatusManager extends BukkitRunnable {
             return false;
 
         return WorldGuard6Utils.isInAirspace(craft);
-    }
-
-    // TODO: Move this to HitBox or somewhere in Utils of MC
-    private ArrayList<MovecraftLocation> getHitboxCorners(@NotNull HitBox hitbox) {
-        ArrayList<MovecraftLocation> corners = new ArrayList<>();
-        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMinZ()));
-        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMaxZ()));
-        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMaxY(), hitbox.getMinZ()));
-        corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMaxY(), hitbox.getMaxZ()));
-        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMinY(), hitbox.getMinZ()));
-        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMinY(), hitbox.getMaxZ()));
-        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMinZ()));
-        corners.add(new MovecraftLocation(hitbox.getMaxX(), hitbox.getMaxY(), hitbox.getMaxZ()));
-        return corners;
     }
 
     private boolean canManOverboard(Player player, Craft craft) {

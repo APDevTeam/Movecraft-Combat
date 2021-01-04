@@ -40,6 +40,8 @@ public class WorldGuard6Utils {
         }
     }
 
+
+    // TODO: Move this to HitBox or somewhere in Utils of MC
     private static ArrayList<MovecraftLocation> getHitboxCorners(@NotNull HitBox hitbox) {
         ArrayList<MovecraftLocation> corners = new ArrayList<>();
         corners.add(new MovecraftLocation(hitbox.getMinX(), hitbox.getMinY(), hitbox.getMinZ()));
