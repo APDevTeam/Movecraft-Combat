@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>1.4.0-SNAPSHOT.1</version>
+    <version>1.4.0-SNAPSHOT.2</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
