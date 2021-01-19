@@ -26,24 +26,10 @@ public class IgniteListener implements Listener {
 
         // replace blocks with fire occasionally, to prevent fast craft from simply ignoring fire
         if (Config.EnableFireballPenetration && event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL) {
-            Block testBlock = event.getBlock().getRelative(-1, 0, 0);
-            if (!testBlock.getType().isBurnable())
-                testBlock = event.getBlock().getRelative(1, 0, 0);
-            if (!testBlock.getType().isBurnable())
-                testBlock = event.getBlock().getRelative(0, 0, -1);
-            if (!testBlock.getType().isBurnable())
-                testBlock = event.getBlock().getRelative(0, 0, 1);
-
-            if (!testBlock.getType().isBurnable()) {
-                return;
-            }
-
-            // check to see if fire spread is allowed, don't check if worldguard integration is not enabled
-            if(!isFireSpreadAllowed(event.getBlock().getLocation())) {
-                return;
-            }
-            testBlock.setType(Material.AIR);
+            doFireballPenetration(event);
         }
+
+        // add surface fires to a craft's hitbox to prevent obstruction by fire
         if (Config.AddFiresToHitbox) {
             doAddFiresToHitbox(event);
         }
@@ -84,6 +70,26 @@ public class IgniteListener implements Listener {
             return;
 
         craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
+    }
+
+    private void doFireballPenetration(BlockIgniteEvent e) {
+        Block testBlock = e.getBlock().getRelative(-1, 0, 0);
+        if (!testBlock.getType().isBurnable())
+            testBlock = e.getBlock().getRelative(1, 0, 0);
+        if (!testBlock.getType().isBurnable())
+            testBlock = e.getBlock().getRelative(0, 0, -1);
+        if (!testBlock.getType().isBurnable())
+            testBlock = e.getBlock().getRelative(0, 0, 1);
+
+        if (!testBlock.getType().isBurnable()) {
+            return;
+        }
+
+        // check to see if fire spread is allowed, don't check if worldguard integration is not enabled
+        if(!isFireSpreadAllowed(e.getBlock().getLocation())) {
+            return;
+        }
+        testBlock.setType(Material.AIR);
     }
 
     private boolean isFireSpreadAllowed(Location l) {
