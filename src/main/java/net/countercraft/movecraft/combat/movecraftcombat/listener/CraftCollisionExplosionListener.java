@@ -42,7 +42,7 @@ public class CraftCollisionExplosionListener implements Listener {
         Location loc = c.getHitBox().getMidPoint().toBukkit(c.getW());
         Craft ret = null;
         long closestDistSquared = Long.MAX_VALUE;
-        Set<Craft> craftsList = CraftManager.getInstance().getCraftsInWorld(loc.getWorld());
+        Set<Craft> craftsList = CraftManager.getInstance().getCraftsInWorld(c.getW());
         craftsList.remove(c);
         for (Craft i : craftsList) {
             int midX = (i.getHitBox().getMaxX() + i.getHitBox().getMinX()) >> 1;

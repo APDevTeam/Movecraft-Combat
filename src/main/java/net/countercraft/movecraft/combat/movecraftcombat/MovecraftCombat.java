@@ -57,8 +57,8 @@ public final class MovecraftCombat extends JavaPlugin {
         //TODO other languages
         String[] languages = {"en", "no"};
         for (String s : languages) {
-            if (!new File(getDataFolder()  + "/localisation/mcclang_"+ s +".properties").exists()) {
-                this.saveResource("localisation/mcclang_"+ s +".properties", false);
+            if (!new File(getDataFolder() + "/localisation/mcclang_" + s + ".properties").exists()) {
+                this.saveResource("localisation/mcclang_" + s + ".properties", false);
             }
         }
         Config.Locale = getConfig().getString("Locale", "en");
@@ -73,17 +73,19 @@ public final class MovecraftCombat extends JavaPlugin {
 
         Object tool = getConfig().get("DirectorTool");
         Material directorTool = null;
-        if(tool instanceof String)
+        if (tool instanceof String)
             directorTool = Material.getMaterial((String) tool);
-        if(directorTool == null)
+        if (directorTool == null)
             getLogger().log(Level.SEVERE, "Failed to load director tool " + tool.toString());
         else
             Config.DirectorTool = directorTool;
-        for(Object o : getConfig().getList("TransparentBlocks")) {
-            if(o instanceof String)
-                Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
-            else
-                getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
+        if (getConfig().contains("TransparentBlocks")) {
+            for (Object o : getConfig().getList("TransparentBlocks")) {
+                if (o instanceof String)
+                    Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
+                else
+                    getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
+            }
         }
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
