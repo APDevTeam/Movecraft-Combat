@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.craft.CraftManager;
+import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -24,8 +25,10 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 
 public class DispenseListener implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void dispenseEvent(BlockDispenseEvent e) {
+        if(e.isCancelled())
+            return;
         if(!Config.EnableTNTTracking)
             return;
         if(e.getBlock().getType() != Material.DISPENSER)
