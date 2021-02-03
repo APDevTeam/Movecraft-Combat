@@ -1,9 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -130,17 +127,18 @@ public class CannonDirectorManager extends DirectorManager {
             if (w == null)
                 continue;
 
-            for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
+            ArrayList<TNTPrimed> allTNT = new ArrayList<>(w.getEntitiesByClass(TNTPrimed.class));
+            for (TNTPrimed tnt : allTNT) {
                 if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt)) {
                     continue;
                 }
                 tracking.put(tnt, tnt.getVelocity().lengthSquared());
 
                 Craft c = getDirectingCraft(tnt);
-                if(c == null) {
-                    c= CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+                if (c == null) {
+                    c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
 
-                    if(c == null || c.getSinking())
+                    if (c == null || c.getSinking())
                         continue;
                 }
 

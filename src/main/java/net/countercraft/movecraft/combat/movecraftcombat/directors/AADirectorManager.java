@@ -11,6 +11,8 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
+import java.util.ArrayList;
+
 
 public class AADirectorManager extends DirectorManager {
     private long lastCheck = 0;
@@ -29,7 +31,9 @@ public class AADirectorManager extends DirectorManager {
         for (World w : Bukkit.getWorlds()) {
             if (w == null)
                 continue;
-            for (SmallFireball fireball : w.getEntitiesByClass(SmallFireball.class)) {
+
+            ArrayList<SmallFireball> allFireballs = new ArrayList<>(w.getEntitiesByClass(SmallFireball.class));
+            for (SmallFireball fireball : allFireballs) {
                 if (fireball.getShooter() instanceof org.bukkit.entity.LivingEntity || w.getPlayers().size() == 0)
                     continue;
 
