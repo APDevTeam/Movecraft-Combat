@@ -112,6 +112,7 @@ public class StatusManager extends BukkitRunnable {
             player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
             e.setCancelled(true);
             craft.setNotificationPlayer(null);
+            craft.setCruising(false);
             craft.sink();
         }
 
