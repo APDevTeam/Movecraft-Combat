@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>1.4.0-SNAPSHOT.6</version>
+    <version>1.4.0-SNAPSHOT.7</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
@@ -42,10 +42,17 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>it.unimi</pattern>
+                                    <shadedPattern>net.countercraft.movecraft.combat.movecraftcombat.libs.it.unimi</shadedPattern>
+                                </relocation>
+                            </relocations>
                             <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>net.countercraft:movecraft*</include>
+                                    <include>it.unimi.dsi:fastutil*</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
