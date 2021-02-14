@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.*;
 
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
@@ -19,7 +20,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 public class CannonDirectorManager extends DirectorManager {
     private static CannonDirectorManager instance;
-    private final HashMap<TNTPrimed, Double> tracking = new HashMap<>();
+    private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastUpdate = 0;
     private long lastCheck = 0;
 

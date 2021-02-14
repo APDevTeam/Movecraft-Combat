@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>1.4.0-SNAPSHOT.5</version>
+    <version>1.4.0-SNAPSHOT.6</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
@@ -118,6 +118,12 @@
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
             <version>6.1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>8.3.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
