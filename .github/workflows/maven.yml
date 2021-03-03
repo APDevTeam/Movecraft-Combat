@@ -48,11 +48,11 @@ jobs:
     
     # Build Movecraft
     - name: Build Movecraft
-      run:  mvn -B package --file Movecraft/pom.xml
+      run:  mvn -B package -T 1C --file Movecraft/pom.xml
 
     # Build MCC
     - name: Build Movecraft-Combat
-      run: mvn -B package --file MC-Combat/pom.xml
+      run: mvn -B package -T 1C --file MC-Combat/pom.xml
 
     - name: Stage jar
       run: mkdir staging && cp MC-Combat/target/Movecraft-Combat*.jar staging
