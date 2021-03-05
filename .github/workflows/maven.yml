@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout MCC
+    - name: Checkout Movecraft-Combat
       uses: actions/checkout@v2
       with:
-        path: MC-Combat
+        path: Movecraft-Combat
     - name: Checkout Movecraft
       uses: actions/checkout@v2
       with:
