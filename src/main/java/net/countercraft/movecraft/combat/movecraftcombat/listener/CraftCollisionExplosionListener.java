@@ -17,7 +17,6 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 
 public class CraftCollisionExplosionListener implements Listener {
