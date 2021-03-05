@@ -1,8 +1,12 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import net.countercraft.movecraft.Movecraft;
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TorpedoDamage;
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.utils.CraftStatus;
+import net.countercraft.movecraft.utils.Pair;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +18,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 
 public class CraftCollisionExplosionListener implements Listener {
@@ -23,6 +28,16 @@ public class CraftCollisionExplosionListener implements Listener {
             return;
         if(e.getCraft().getNotificationPlayer() == null)
             return;
+        MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, "[DEBUG] testerino");
+
+        //check if the craft should sink
+        CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
+        if(status.isSinking()) {
+            //e.setCancelled(true);
+            //e.getCraft().setCruising(false);
+            e.getCraft().sink();
+            MovecraftCombat.getInstance().getLogger().log(Level.INFO, "[DEBUG] Dud sunk!");
+        }
 
         Craft craft = fastNearestCraftToCraft(e.getCraft());
         if(craft == null)
