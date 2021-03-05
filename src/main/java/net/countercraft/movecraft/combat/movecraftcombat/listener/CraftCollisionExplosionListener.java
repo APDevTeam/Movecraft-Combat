@@ -30,8 +30,8 @@ public class CraftCollisionExplosionListener implements Listener {
         //check if the craft should sink
         CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
         if(status.isSinking()) {
-            //e.setCancelled(true);
-            //e.getCraft().setCruising(false);
+            e.setCancelled(true);
+            e.getCraft().setCruising(false);
             e.getCraft().sink();
         }
 
