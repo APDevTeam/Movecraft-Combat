@@ -6,7 +6,7 @@
 
     <groupId>java.net.countercraft.movecraft.combat</groupId>
     <artifactId>Movecraft-Combat</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.1</version>
     <packaging>jar</packaging>
 
     <name>Movecraft-Combat</name>
@@ -107,30 +107,16 @@
             <systemPath>${project.basedir}/../Movecraft/target/Movecraft.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations-java5</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-core</artifactId>
-            <version>7.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>6.1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
             <version>8.3.1</version>
             <scope>compile</scope>
+        </dependency>
+        <!--Annotations-->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+            <version>RELEASE</version>
         </dependency>
     </dependencies>
 </project>

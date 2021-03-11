@@ -4,7 +4,6 @@ main: net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat
 api-version: 1.13
 prefix: Movecraft-Combat
 depend: [Movecraft]
-softdepend: [WorldGuard]
 authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
 website: https://github.com/APDevTeam

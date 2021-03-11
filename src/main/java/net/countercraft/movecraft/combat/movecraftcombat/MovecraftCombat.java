@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
 import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
@@ -28,7 +27,6 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance = null;
-    private static WorldGuardPlugin wgPlugin = null;
 
     private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
@@ -115,16 +113,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
 
-        Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
-        if(wg == null || !(wg instanceof WorldGuardPlugin)) {
-            getLogger().log(Level.FINE, "Movecraft Combat did not find a compatible version of WorldGuard. Disabling WorldGuard integration.");
-            wgPlugin = null;
-        }
-        else {
-            getLogger().log(Level.INFO, "Found a compatible version of WorldGuard. Enabling WorldGuard integration.");
-            wgPlugin = (WorldGuardPlugin) wg;
-        }
-
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
@@ -166,10 +154,6 @@ public final class MovecraftCombat extends JavaPlugin {
     @Override
     public void onDisable() {
         playerManager.shutDown();
-    }
-
-    public WorldGuardPlugin getWGPlugin() {
-        return wgPlugin;
     }
 
     public CannonDirectorManager getCannonDirectors() {

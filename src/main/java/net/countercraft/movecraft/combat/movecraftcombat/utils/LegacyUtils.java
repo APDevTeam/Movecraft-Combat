@@ -2,8 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.utils;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import org.bukkit.Material;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class LegacyUtils {
     private static Material web;

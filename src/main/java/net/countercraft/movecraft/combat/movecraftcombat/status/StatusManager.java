@@ -7,11 +7,9 @@ import net.countercraft.movecraft.combat.movecraftcombat.event.CombatReleaseEven
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
-import net.countercraft.movecraft.combat.movecraftcombat.utils.WorldGuard6Utils;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
-import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +19,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +41,7 @@ public class StatusManager extends BukkitRunnable {
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
         for(Player player : records.keySet()) {
-            if((currentTime - records.get(player)) > Config.DamageTimeout * 1000) {
+            if((currentTime - records.get(player)) > Config.DamageTimeout * 1000L) {
                 removeSet.add(player);
             }
         }
@@ -60,7 +57,7 @@ public class StatusManager extends BukkitRunnable {
             return false;
         if(!records.containsKey(player))
             return false;
-        return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000;
+        return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000L;
     }
 
     public void registerEvent(@Nullable Player player) {
@@ -68,7 +65,7 @@ public class StatusManager extends BukkitRunnable {
             return;
         if(player == null)
             return;
-        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000)
+        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000L)
             startCombat(player);
         records.put(player, System.currentTimeMillis());
     }
@@ -94,9 +91,6 @@ public class StatusManager extends BukkitRunnable {
         records.remove(player);
 
         stopCombat(player);
-
-        if(isInAirspace(craft))
-            return;
 
         if(player.hasPermission("movecraft.combat.bypass")) {
             return;
@@ -167,13 +161,6 @@ public class StatusManager extends BukkitRunnable {
         Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Leave Combat"));
         MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Leave Combat"));
-    }
-
-    private boolean isInAirspace(@NotNull Craft craft) {
-        if(MovecraftCombat.getInstance().getWGPlugin() == null)
-            return false;
-
-        return WorldGuard6Utils.isInAirspace(craft);
     }
 
     private boolean canManOverboard(Player player, Craft craft) {

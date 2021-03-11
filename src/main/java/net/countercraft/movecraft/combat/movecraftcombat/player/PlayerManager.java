@@ -1,8 +1,8 @@
 package net.countercraft.movecraft.combat.movecraftcombat.player;
 
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class PlayerManager {

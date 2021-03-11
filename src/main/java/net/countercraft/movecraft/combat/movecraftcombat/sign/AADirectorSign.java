@@ -16,8 +16,7 @@ import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.AADirectorManager;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
 
