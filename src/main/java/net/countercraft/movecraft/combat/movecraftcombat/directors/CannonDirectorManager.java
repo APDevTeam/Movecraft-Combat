@@ -41,8 +41,8 @@ public class CannonDirectorManager extends DirectorManager {
 
         processTracers();
         processDirectors();
-        // then, removed any exploded TNT from tracking
-        tracking.keySet().removeIf(tnt -> tnt.getFuseTicks() <= 0);
+        // then, removed any exploded or invalid TNT from tracking
+        tracking.keySet().removeIf(tnt -> !tnt.isValid() || tnt.getFuseTicks() <= 0);
         processTNTContactExplosives();
 
         lastCheck = System.currentTimeMillis();
@@ -55,7 +55,7 @@ public class CannonDirectorManager extends DirectorManager {
         if (ticksElapsed < Config.TracerRateTicks)
             return;
 
-        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16;
+        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
         maxDistSquared = maxDistSquared - 16;
         maxDistSquared = maxDistSquared * maxDistSquared;
 
@@ -212,9 +212,10 @@ public class CannonDirectorManager extends DirectorManager {
         // explode
         for (TNTPrimed tnt : tracking.keySet()) {
             double vel = tnt.getVelocity().lengthSquared();
-            if (vel < tracking.get(tnt) / 10.0) {
+            if (vel < tracking.getDouble(tnt) / 10.0) {
                 tnt.setFuseTicks(0);
-            } else {
+            }
+            else {
                 // update the tracking with the new velocity so gradual
                 // changes do not make TNT explode
                 tracking.put(tnt, vel);
@@ -223,6 +224,6 @@ public class CannonDirectorManager extends DirectorManager {
     }
 
     public void removeTNT(TNTPrimed tnt) {
-        tracking.remove(tnt);
+        tracking.removeDouble(tnt);
     }
 }

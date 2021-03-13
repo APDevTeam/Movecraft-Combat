@@ -80,6 +80,10 @@ public class IgniteListener implements Listener {
             return;
         }
 
+        /*
+         * NOTE: This calls a BlockIgniteEvent from within a listener for a BlockIgniteEvent
+         * the only way this doesn't get to infinite recursion is through the cause being SPREAD and this is only called on FIREBALL
+         */
         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(testBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getIgnitingEntity());
         Bukkit.getServer().getPluginManager().callEvent(igniteEvent);
         if(igniteEvent.isCancelled())
