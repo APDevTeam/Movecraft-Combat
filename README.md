@@ -1,5 +1,6 @@
 # Movecraft Combat Addon
- 
+![Combat](https://github.com/TylerS1066/Movecraft-Combat/actions/workflows/maven.yml/badge.svg)
+
 Home of the code for the following features:
  - AA Directors
  - Cannon Directors
