@@ -79,3 +79,6 @@ EnableAntiRadar: false # Enable invisibility for craft pilots to nullify minimap
 # Fire Behavior
 EnableFireballPenetration: false # Randomly replace blocks with fire when they are struck by fireballs.
 AddFiresToHitbox: true # Add fires lit on the surface of a craft to its hitbox so they don't obstruct it.
+
+# Piston Behavior
+ReImplementTranslocation: false

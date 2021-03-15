@@ -112,6 +112,8 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableFireballPenetration = getConfig().getBoolean("EnableFireballPenetration", false);
         Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
+        Config.ReImplementTranslocation = getConfig().getBoolean("ReImplementTranslocation", false);
+
 
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
@@ -132,6 +134,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
         getServer().getPluginManager().registerEvents(new TypesReloadedListener(), this);
+        getServer().getPluginManager().registerEvents(new PistonListener(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick

@@ -62,4 +62,6 @@ public class Config {
 
     // Add fires to craft hitbox
     public static boolean AddFiresToHitbox = true;
+
+    public static boolean ReImplementTranslocation = false;
 }
