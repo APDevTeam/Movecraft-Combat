@@ -19,7 +19,7 @@ public class PistonListener implements Listener
 
         Location headLocation = e.getBlock().getLocation().add(blockFaceToVector(e.getDirection()));
 
-        for(Entity ent : e.getBlock().getWorld().getNearbyEntities(headLocation, 1D, 1D, 1D)) {
+        for(Entity ent : e.getBlock().getWorld().getNearbyEntities(headLocation, 2D, 2D, 2D)) {
             if(ent.getType() != EntityType.PRIMED_TNT)
                 continue;
             if(!ent.getLocation().getBlock().getLocation().equals(headLocation) &&
