@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -10,14 +11,31 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class PistonListener implements Listener
 {
+    //Block.isPassable() would be perfect for this but only exists in 1.13+
+    private final HashSet<Material> passable = new HashSet<>(Arrays.asList(
+            Material.AIR,
+            Material.WATER,
+            Material.SIGN,
+            Material.WALL_SIGN
+    ));
+
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent e) {
         if(!Config.ReImplementTranslocation)
             return;
 
         Location headLocation = e.getBlock().getLocation().add(blockFaceToVector(e.getDirection()));
+        Vector direction = blockFaceToVector(e.getDirection()).multiply(-1D);
+        Location moveLocation = e.getBlock().getLocation().add(direction);
+
+        //This is disgusting but LEGACY_WATER does not exist below 1.13
+        if(!passable.contains(moveLocation.getBlock().getType()) && !moveLocation.getBlock().getType().name().contains("WATER"))
+            return;
 
         for(Entity ent : e.getBlock().getWorld().getNearbyEntities(headLocation, 2D, 2D, 2D)) {
             if(ent.getType() != EntityType.PRIMED_TNT)
@@ -26,7 +44,8 @@ public class PistonListener implements Listener
                     !ent.getLocation().getBlock().getLocation().equals(e.getBlock().getLocation()))
                 continue;
 
-            ent.teleport(getMoveLocation(ent.getLocation(), e.getBlock().getLocation(), blockFaceToVector(e.getDirection()).multiply(-1D)));
+            ent.teleport(getMoveLocation(ent.getLocation(), moveLocation, direction));
+            ent.setVelocity(new Vector());
         }
     }
 
@@ -48,14 +67,14 @@ public class PistonListener implements Listener
         return new Vector();
     }
 
-    private Location getMoveLocation(Location entityLocation, Location blockLocation, Vector direction)
+    private Location getMoveLocation(Location entityLocation, Location moveLocation, Vector direction)
     {
         if(direction.getX() != 0)
-            entityLocation.setX(blockLocation.getX() + direction.getX());
+            entityLocation.setX(moveLocation.getX());
         else if(direction.getY() != 0)
-            entityLocation.setY(blockLocation.getY() + direction.getY());
+            entityLocation.setY(moveLocation.getY());
         else if(direction.getZ() != 0)
-            entityLocation.setZ(blockLocation.getZ() + direction.getZ());
+            entityLocation.setZ(moveLocation.getZ());
 
         return entityLocation;
     }
