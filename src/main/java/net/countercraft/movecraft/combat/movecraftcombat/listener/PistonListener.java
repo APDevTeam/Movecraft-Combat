@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -11,19 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 public class PistonListener implements Listener
 {
-    //Block.isPassable() would be perfect for this but only exists in 1.13+
-    private final HashSet<Material> passable = new HashSet<>(Arrays.asList(
-            Material.AIR,
-            Material.WATER,
-            Material.SIGN,
-            Material.WALL_SIGN
-    ));
-
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent e) {
         if(!Config.ReImplementTranslocation)
@@ -33,8 +21,8 @@ public class PistonListener implements Listener
         Vector direction = blockFaceToVector(e.getDirection()).multiply(-1D);
         Location moveLocation = e.getBlock().getLocation().add(direction);
 
-        //This is disgusting but LEGACY_WATER does not exist below 1.13
-        if(!passable.contains(moveLocation.getBlock().getType()) && !moveLocation.getBlock().getType().name().contains("WATER"))
+        //Block.isPassable() would be perfect for this but only exists in 1.13+
+        if(moveLocation.getBlock().getType().isSolid())
             return;
 
         for(Entity ent : e.getBlock().getWorld().getNearbyEntities(headLocation, 2D, 2D, 2D)) {
