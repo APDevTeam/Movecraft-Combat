@@ -112,6 +112,15 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableFireballPenetration = getConfig().getBoolean("EnableFireballPenetration", false);
         Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
+        new LegacyUtils();
+
+        if(LegacyUtils.getInstance().isPostTranslocation()) {
+            Config.ReImplementTNTTranslocation = getConfig().getBoolean("ReImplementTNTTranslocation", false);
+
+            if(Config.ReImplementTNTTranslocation) {
+                getServer().getPluginManager().registerEvents(new PistonListener(), this);
+            }
+        }
 
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
@@ -147,8 +156,6 @@ public final class MovecraftCombat extends JavaPlugin {
         radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
         FireballManager fireballManager = new FireballManager();
         fireballManager.runTaskTimer(this, 0, 20);      // Every 1 second
-
-        new LegacyUtils();
     }
 
     @Override

@@ -62,4 +62,7 @@ public class Config {
 
     // Add fires to craft hitbox
     public static boolean AddFiresToHitbox = true;
+
+    // 1.12+ TNT-Translocation
+    public static boolean ReImplementTNTTranslocation = false;
 }
