@@ -1,12 +1,14 @@
 package net.countercraft.movecraft.combat.movecraftcombat.utils;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 
 public class LegacyUtils {
     private static Material web;
     private boolean isLegacy;
+    private boolean isPostTranslocation;
     private static LegacyUtils instance;
 
     public static LegacyUtils getInstance() {
@@ -23,6 +25,7 @@ public class LegacyUtils {
             int versionNumber = Integer.valueOf(parts[1]);
             //Check if the server is 1.12 and lower or 1.13 and higher
             isLegacy = versionNumber <= 12;
+            isPostTranslocation = versionNumber > 10;
 
             if(isLegacy) {
                 web = Material.getMaterial("WEB");
@@ -48,5 +51,9 @@ public class LegacyUtils {
 
     public boolean isLegacy() {
         return isLegacy;
+    }
+
+    public boolean isPostTranslocation() {
+        return isPostTranslocation;
     }
 }
