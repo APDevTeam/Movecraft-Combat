@@ -12,6 +12,8 @@ import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSuppor
 import net.countercraft.movecraft.combat.movecraftcombat.player.PlayerManager;
 import net.countercraft.movecraft.combat.movecraftcombat.radar.RadarManager;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.CraftType;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.plugin.Plugin;
@@ -177,10 +179,20 @@ public final class MovecraftCombat extends JavaPlugin {
 
     public void reloadTypes() {
         for(String s : getConfig().getStringList("AADirectorsAllowed")) {
-            Config.AADirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
+            CraftType type = CraftManager.getInstance().getCraftTypeFromString(s);
+
+            if(type != null)
+                Config.AADirectorsAllowed.add(type);
+            else
+                getLogger().info(I18nSupport.getInternationalisedString("Startup - Failed Load Type") + ": '" + s.toUpperCase() + "'");
         }
         for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
-            Config.CannonDirectorsAllowed.add(CraftManager.getInstance().getCraftTypeFromString(s));
+            CraftType type = CraftManager.getInstance().getCraftTypeFromString(s);
+
+            if(type != null)
+                Config.CannonDirectorsAllowed.add(type);
+            else
+                getLogger().info(I18nSupport.getInternationalisedString("Startup - Failed Load Type") + ": '" + s.toUpperCase() + "'");
         }
     }
 }
