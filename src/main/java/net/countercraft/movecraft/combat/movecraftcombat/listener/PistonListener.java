@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
+import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,7 +34,7 @@ public class PistonListener implements Listener {
         if(!Config.ReImplementTNTTranslocation)
             return;
 
-        doTranslocation(e.getBlock(), e.getDirection(), false);
+        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), false);
     }
 
     private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, boolean pistonHead) {
