@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -9,11 +10,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class PistonListener implements Listener {
@@ -22,34 +25,55 @@ public class PistonListener implements Listener {
         if(!Config.ReImplementTNTTranslocation)
             return;
 
-        doPistonTranslocation(e.getBlock(), e.getDirection());
+        doTranslocation(e.getBlock(), e.getDirection(), true);
     }
 
-    private void doPistonTranslocation(Block piston, BlockFace direction) {
-        Block moveBlock = piston.getRelative(direction.getOppositeFace()).getLocation().getBlock();
-        if(!moveBlock.isEmpty() && !moveBlock.isLiquid() && !moveBlock.getType().name().contains("SIGN"))
+    @EventHandler
+    public void onPistonExtend(BlockPistonExtendEvent e) {
+        if(!Config.ReImplementTNTTranslocation)
             return;
 
-        Location moveLoc = getMoveLocation(moveBlock);
+        doTranslocation(e.getBlock(), e.getDirection(), false);
+    }
 
-        for(TNTPrimed tnt : getTNTInPiston(piston, direction)) {
+    private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, boolean pistonHead) {
+        Block moveBlock = piston.getRelative(direction.getOppositeFace());
+        if(!isValidMoveBlock(moveBlock))
+            return;
+
+        Location moveLoc = getCenterLocation(moveBlock);
+
+        ArrayList<Block> blocks = new ArrayList<>();
+        blocks.add(piston);
+        if(pistonHead)
+            blocks.add(piston.getRelative(direction));
+
+        for(TNTPrimed tnt : getTNTInBlocks(blocks, piston.getWorld())) {
             tnt.teleport(moveLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
             tnt.setVelocity(new Vector());
         }
     }
 
+    private boolean isValidMoveBlock(@NotNull Block moveBlock) {
+        if(moveBlock.isEmpty() || moveBlock.isLiquid())
+            return true;
+
+        String typeName = moveBlock.getType().name();
+        return typeName.contains("SIGN") || typeName.contains("BUTTON")
+                || typeName.contains("LEVER") || typeName.contains("TORCH");
+    }
+
     @NotNull
-    private Location getMoveLocation(@NotNull Block moveBlock) {
+    private Location getCenterLocation(@NotNull Block moveBlock) {
         Location moveLoc = new Location(moveBlock.getWorld(), moveBlock.getLocation().getBlockX(), moveBlock.getLocation().getBlockY(), moveBlock.getLocation().getBlockZ());
         moveLoc.add(0.5D, 0.5D, 0.5D);
         return moveLoc;
     }
 
     @NotNull
-    private HashSet<TNTPrimed> getTNTInPiston(@NotNull Block piston, @NotNull BlockFace direction) {
-        Block head = piston.getRelative(direction);
+    private HashSet<TNTPrimed> getTNTInBlocks(@NotNull ArrayList<Block> blocks, @NotNull World w) {
         HashSet<TNTPrimed> tntSet = new HashSet<>();
-        for(Entity e : piston.getWorld().getEntities()) {
+        for(Entity e : w.getEntities()) {
             if(!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
                 continue;
 
@@ -58,11 +82,14 @@ public class PistonListener implements Listener {
                 continue;
 
             Location loc = tnt.getLocation();
-            if(!isInBlock(loc, piston) && !isInBlock(loc, head))
-                continue;
-
-            tntSet.add(tnt);
+            for(Block b : blocks) {
+                if(isInBlock(loc, b)) {
+                    tntSet.add(tnt);
+                    break;
+                }
+            }
         }
+
         return tntSet;
     }
 
