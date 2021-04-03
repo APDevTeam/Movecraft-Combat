@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import java.util.*;
-import java.util.logging.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
