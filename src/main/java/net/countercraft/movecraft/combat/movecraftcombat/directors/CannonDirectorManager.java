@@ -157,7 +157,8 @@ public class CannonDirectorManager extends DirectorManager {
                 Vector tntVector = tnt.getVelocity();
                 // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
                 // We're only interested in the horizontal speed for now since that's all directors *should* affect.
-                double horizontalSpeed = new Vector(tntVector.getX(),0,tntVector.getY()).length();
+                tntVector.setY(0);
+                double horizontalSpeed = tntVector.length();
                 tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
                 Block targetBlock = p.getTargetBlock(Config.Transparent, Config.CannonDirectorRange);
                 Vector targetVector;
