@@ -20,7 +20,7 @@ Devevlopment builds can be found on the [GitHub Actions tab](https://github.com/
 Stable builds can be found on [our SpigotMC page](https://www.spigotmc.org/resources/movecraft-combat.81574/).
 
 ## Building
-This plugin requires that the user setup and build their [Movecraft](https://github.com/APDevTeam/Movecraft) development environment, and then clone this into the same folder as your Movecraft development environment such that both MC-Combat and Movecraft are contained in the same folder.  This plugin also requires you to build the latest version of 1.13.2 using build tools.
+This plugin requires that the user setup and build their [Movecraft](https://github.com/APDevTeam/Movecraft) development environment, and then clone this into the same folder as your Movecraft development environment such that both Movecraft-Combat and Movecraft are contained in the same folder.  This plugin also requires you to build the latest version of 1.13.2 using build tools.
 
 ```
 java -jar BuildTools.jar --rev 1.13.2
