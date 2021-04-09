@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
@@ -73,7 +72,7 @@ public class ExplosionListener implements Listener {
             return;
         Entity tnt = e.getEntity();
         if (e.getEntityType() == EntityType.PRIMED_TNT && Config.TracerRateTicks != 0) {
-            long maxDistSquared = Bukkit.getServer().getViewDistance() * 16;
+            long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
             maxDistSquared = maxDistSquared - 16;
             maxDistSquared = maxDistSquared * maxDistSquared;
 

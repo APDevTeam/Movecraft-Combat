@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
-import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -26,6 +26,7 @@ public class PistonListener implements Listener {
         if(!Config.ReImplementTNTTranslocation)
             return;
 
+        Bukkit.broadcastMessage("Retracting " + e.getBlock() + " towards " + e.getDirection());
         doTranslocation(e.getBlock(), e.getDirection(), true);
     }
 
@@ -34,6 +35,7 @@ public class PistonListener implements Listener {
         if(!Config.ReImplementTNTTranslocation)
             return;
 
+        Bukkit.broadcastMessage("Extending " + e.getBlock() + " towards " + e.getDirection());
         doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), false);
     }
 
