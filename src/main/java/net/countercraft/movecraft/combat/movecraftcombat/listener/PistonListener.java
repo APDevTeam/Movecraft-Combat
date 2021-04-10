@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
-import net.countercraft.movecraft.utils.Pair;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -79,34 +78,40 @@ public class PistonListener implements Listener {
             if(tnt.getFuseTicks() <= 0)
                 continue;
 
-            Location loc = tnt.getLocation();
-            if(isInBlock(loc, piston)) {
-                Pair<Double, Double> offsets = getOffset(loc, getCenterLocation(piston));
-                if(isInBlock(offsets))
-                    searchResults.add(new SearchEntry(tnt, offsets.getLeft(), offsets.getRight()));
-            }
-            else if(pistonHead != null && isInBlock(loc, pistonHead)) {
-                Pair<Double, Double> offsets = getOffset(loc, getCenterLocation(pistonHead));
-                if(isInBlock(offsets))
-                    searchResults.add(new SearchEntry(tnt, offsets.getLeft(), offsets.getRight()));
+            SearchEntry pistonEntry = getEntry(tnt, piston);
+            if(pistonEntry != null)
+                searchResults.add(pistonEntry);
+            else if(pistonHead != null) {
+                SearchEntry headEntry = getEntry(tnt, pistonHead);
+                if(headEntry != null)
+                    searchResults.add(headEntry);
             }
         }
         return searchResults;
     }
 
-    private boolean isInBlock(@NotNull Location loc, @Nullable Block b) {
-        return loc.getBlock() != b;
-    }
+    @Nullable
+    private SearchEntry getEntry(@NotNull TNTPrimed tnt, @NotNull Block block) {
+        Location tntLoc = tnt.getLocation();
+        Location blockLoc = getCenterLocation(block);
+        if(tntLoc.getBlockX() != blockLoc.getBlockX()
+                || tntLoc.getBlockY() != blockLoc.getBlockY()
+                || tntLoc.getBlockZ() != tntLoc.getBlockZ())
+            return null;
 
-    @NotNull
-    private Pair<Double, Double> getOffset(@NotNull Location one, @NotNull Location two) {
-        double xOffset = one.getX() - two.getX();
-        double zOffset = one.getZ() - two.getZ();
-        return new Pair<>(xOffset, zOffset);
-    }
+        double xOffset = tntLoc.getX() - blockLoc.getX();
+        if(Math.abs(xOffset) > 0.021)
+            return null;
 
-    private boolean isInBlock(@NotNull Pair<Double, Double> offsets) {
-        return Math.abs(offsets.getLeft()) < 0.021 && Math.abs(offsets.getRight()) < 0.021;
+        double yOffset = tntLoc.getY() - blockLoc.getY();
+        if(Math.abs(yOffset) > 0.021)
+            return null;
+
+        double zOffset = tntLoc.getZ() - blockLoc.getZ();
+        if(Math.abs(zOffset) > 0.021)
+            return null;
+
+        return new SearchEntry(tnt, xOffset, zOffset);
     }
 
     private static class SearchEntry {
