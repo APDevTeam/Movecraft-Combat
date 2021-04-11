@@ -27,7 +27,7 @@ public class PistonListener implements Listener {
         if(e.isSticky())
             dir = dir.getOppositeFace();
 
-        doTranslocation(e.getBlock(), dir, true);
+        doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
     }
 
     @EventHandler
@@ -35,15 +35,15 @@ public class PistonListener implements Listener {
         if(!Config.ReImplementTNTTranslocation)
             return;
 
-        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), false);
+        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
     }
 
-    private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, boolean pistonHead) {
+    private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, @Nullable Block pistonHead) {
         Block moveBlock = piston.getRelative(direction.getOppositeFace());
         if(!isValidMoveBlock(moveBlock))
             return;
 
-        HashSet<SearchEntry> searchResults = getTNT(piston, pistonHead ? piston.getRelative(direction) : null);
+        HashSet<SearchEntry> searchResults = getTNT(piston, pistonHead, direction);
 
         Location moveLoc = getCenterLocation(moveBlock);
         for(SearchEntry se : searchResults) {
@@ -68,7 +68,7 @@ public class PistonListener implements Listener {
     }
 
     @NotNull
-    private HashSet<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead) {
+    private HashSet<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead, @NotNull BlockFace direction) {
         HashSet<SearchEntry> searchResults = new HashSet<>();
         for(Entity e : piston.getWorld().getEntities()) {
             if(!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
@@ -78,38 +78,51 @@ public class PistonListener implements Listener {
             if(tnt.getFuseTicks() <= 0)
                 continue;
 
-            SearchEntry pistonEntry = getEntry(tnt, piston);
-            if(pistonEntry != null)
+            SearchEntry pistonEntry = getEntry(tnt, piston, null);
+            if(pistonEntry != null) {
                 searchResults.add(pistonEntry);
-            else if(pistonHead != null) {
-                SearchEntry headEntry = getEntry(tnt, pistonHead);
-                if(headEntry != null)
-                    searchResults.add(headEntry);
+                continue;
+            }
+
+            if(pistonHead != null) {
+                SearchEntry headEntry = getEntry(tnt, pistonHead, direction);
+                if(headEntry == null)
+                    continue;
+
+                searchResults.add(headEntry);
             }
         }
         return searchResults;
     }
 
     @Nullable
-    private SearchEntry getEntry(@NotNull TNTPrimed tnt, @NotNull Block block) {
+    private SearchEntry getEntry(@NotNull TNTPrimed tnt, @NotNull Block block, @Nullable BlockFace direction) {
+        // Null direction means this is a loose check, only for center within block.
+        // A non-null direction means this is a strict check, which means it must be within 0.021 offset in everything but the opposite of the direction given
+
         Location tntLoc = tnt.getLocation();
         Location blockLoc = getCenterLocation(block);
+
         if(tntLoc.getBlockX() != blockLoc.getBlockX()
                 || tntLoc.getBlockY() != blockLoc.getBlockY()
                 || tntLoc.getBlockZ() != tntLoc.getBlockZ())
             return null;
 
-        double xOffset = tntLoc.getX() - blockLoc.getX();
-        if(Math.abs(xOffset) > 0.021)
-            return null;
 
-        double yOffset = tntLoc.getY() - blockLoc.getY();
-        if(Math.abs(yOffset) > 0.021)
-            return null;
+        double xOffset = tntLoc.getX() - blockLoc.getX();
+        if(direction != null && Math.abs(xOffset) > 0.021) {
+            if( !(xOffset < 0.0 && direction == BlockFace.EAST)
+                    && !(xOffset > 0.0 && direction == BlockFace.WEST) )
+                return null;
+        }
+
 
         double zOffset = tntLoc.getZ() - blockLoc.getZ();
-        if(Math.abs(zOffset) > 0.021)
-            return null;
+        if(direction != null && Math.abs(zOffset) > 0.021) {
+            if( !(zOffset > 0.0 && direction == BlockFace.NORTH)
+                    && !(zOffset < 0.0 && direction == BlockFace.SOUTH) )
+                return null;
+        }
 
         return new SearchEntry(tnt, xOffset, zOffset);
     }
