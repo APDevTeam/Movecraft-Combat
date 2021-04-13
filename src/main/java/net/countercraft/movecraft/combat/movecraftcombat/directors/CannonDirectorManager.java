@@ -154,34 +154,28 @@ public class CannonDirectorManager extends DirectorManager {
                 if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
                     continue;
                 }
-                Vector tv = tnt.getVelocity();
-                double speed = tv.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
-                tv = tv.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
+                Vector tntVector = tnt.getVelocity();
+                // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
+                // We're only interested in the horizontal speed for now since that's all directors *should* affect.
+                tntVector.setY(0);
+                double horizontalSpeed = tntVector.length();
+                tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
                 Block targetBlock = p.getTargetBlock(Config.Transparent, Config.CannonDirectorRange);
                 Vector targetVector;
-                if (targetBlock == null) { // the player is looking at nothing, shoot in that general direction
+                // This is horrible but I'm not sure how else to do it, targetBlock == null doesn't work because getTargetBlock never returns null.
+                if (targetBlock.getType().equals(Material.AIR)) { // the player is looking at nothing, shoot in that general direction
                     targetVector = p.getLocation().getDirection();
                 } else { // shoot directly at the block the player is looking at (IE: with convergence)
                     targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
-                    targetVector = targetVector.normalize();
                 }
-                if (targetVector.getX() - tv.getX() > 0.7) {
-                    tv.setX(tv.getX() + 0.7);
-                } else if (targetVector.getX() - tv.getX() < -0.7) {
-                    tv.setX(tv.getX() - 0.7);
-                } else {
-                    tv.setX(targetVector.getX());
-                }
-                if (targetVector.getZ() - tv.getZ() > 0.7) {
-                    tv.setZ(tv.getZ() + 0.7);
-                } else if (targetVector.getZ() - tv.getZ() < -0.7) {
-                    tv.setZ(tv.getZ() - 0.7);
-                } else {
-                    tv.setZ(targetVector.getZ());
-                }
-                tv = tv.multiply(speed); // put the original speed back in, but now along a different trajectory
-                tv.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
-                tnt.setVelocity(tv);
+                // Remove the y-component from the TargetVector and normalize
+                targetVector = (new Vector(targetVector.getX(), 0,targetVector.getZ())).normalize();
+                // Now set the TNT vector, making sure it falls within the maximum and minimum deflection
+                tntVector.setX(Math.min(Math.max(targetVector.getX(), tntVector.getX()-0.7), tntVector.getX()+0.7));
+                tntVector.setZ(Math.min(Math.max(targetVector.getZ(), tntVector.getZ()-0.7), tntVector.getZ()+0.7));
+                tntVector = tntVector.multiply(horizontalSpeed); // put the original speed back in, but now along a different trajectory
+                tntVector.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
+                tnt.setVelocity(tntVector);
             }
         }
 
