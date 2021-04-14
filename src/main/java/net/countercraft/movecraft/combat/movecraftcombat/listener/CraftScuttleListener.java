@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import net.countercraft.movecraft.events.CraftScuttleEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 
-import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 
 public class CraftScuttleListener implements Listener {

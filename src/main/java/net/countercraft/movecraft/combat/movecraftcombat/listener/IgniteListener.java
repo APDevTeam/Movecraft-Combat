@@ -4,7 +4,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.utils.MathUtils;
+import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,7 +64,8 @@ public class IgniteListener implements Listener {
         if (craft == null || craft.getHitBox().isEmpty())
             return;
 
-        craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
+        // TODO: ADD THIS BEFORE USING ANYWHERE!
+        //craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
     }
 
     private void doFireballPenetration(BlockIgniteEvent e) {

@@ -13,12 +13,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.utils.MathUtils;
+import net.countercraft.movecraft.util.MathUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.AADirectorManager;
 import org.jetbrains.annotations.Nullable;
 
-import static net.countercraft.movecraft.utils.ChatUtils.ERROR_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 
 public class AADirectorSign implements Listener {
