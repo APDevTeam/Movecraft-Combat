@@ -4,7 +4,7 @@ import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TorpedoDamage;
 import net.countercraft.movecraft.craft.CraftManager;
-//import net.countercraft.movecraft.util.CraftStatus;
+import net.countercraft.movecraft.craft.CraftStatus;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,14 +27,12 @@ public class CraftCollisionExplosionListener implements Listener {
             return;
 
         //check if the craft should sink
-        /* TODO: UNCOMMENT THIS BEFORE USING ANYWHERE!
         CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
         if(status.isSinking()) {
             e.setCancelled(true);
             e.getCraft().setCruising(false);
             e.getCraft().sink();
         }
-        */
 
         Craft craft = fastNearestCraftToCraft(e.getCraft());
         if(craft == null)

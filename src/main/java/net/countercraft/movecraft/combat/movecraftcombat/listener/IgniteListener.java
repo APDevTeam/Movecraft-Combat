@@ -5,6 +5,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.util.MathUtils;
+import net.countercraft.movecraft.util.hitboxes.MutableHitBox;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,7 +38,6 @@ public class IgniteListener implements Listener {
         if(craft == null)
             return null; //return null if no craft found
 
-        //TODO move this to a locIsAdjacentToCraft method
         if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(1,0,0))) {
             return craft;
         }
@@ -59,16 +59,21 @@ public class IgniteListener implements Listener {
         return null;
     }
 
-    private void doAddFiresToHitbox(BlockIgniteEvent e) {
+    private void doAddFiresToHitbox(@NotNull BlockIgniteEvent e) {
         final Craft craft = adjacentCraft(e.getBlock().getLocation());
         if (craft == null || craft.getHitBox().isEmpty())
             return;
 
-        // TODO: ADD THIS BEFORE USING ANYWHERE!
-        //craft.getHitBox().add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
+        // TODO: This needs to be possible from within Movecraft's API
+        MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
+
+        hitbox.add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
     }
 
-    private void doFireballPenetration(BlockIgniteEvent e) {
+    private void doFireballPenetration(@NotNull BlockIgniteEvent e) {
+        if(e.getIgnitingEntity() == null)
+            return;
+
         Block testBlock = e.getBlock().getRelative(-1, 0, 0);
         if (!testBlock.getType().isBurnable())
             testBlock = e.getBlock().getRelative(1, 0, 0);
