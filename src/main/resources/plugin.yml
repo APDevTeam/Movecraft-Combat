@@ -6,7 +6,7 @@ prefix: Movecraft-Combat
 depend: [Movecraft]
 authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
-website: https://github.com/APDevTeam
+website: https://github.com/TylerS1066/Movecraft-Combat
 commands:
   tracersetting:
     description: Configure tracer settings

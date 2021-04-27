@@ -105,7 +105,7 @@ public class PistonListener implements Listener {
 
         if(tntLoc.getBlockX() != blockLoc.getBlockX()
                 || tntLoc.getBlockY() != blockLoc.getBlockY()
-                || tntLoc.getBlockZ() != tntLoc.getBlockZ())
+                || tntLoc.getBlockZ() != blockLoc.getBlockZ())
             return null;
 
 
