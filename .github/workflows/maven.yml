@@ -16,6 +16,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'APDevTeam/Movecraft'
+        ref: 'legacy'
         path: Movecraft
     - name: Set up JDK 8
       uses: actions/setup-java@v1
