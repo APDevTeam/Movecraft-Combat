@@ -86,13 +86,29 @@ public class DispenseListener implements Listener {
         Bukkit.broadcastMessage(" " + Arrays.toString(d.getInventory().getContents()));
         Bukkit.broadcastMessage(" " + Arrays.toString(d.getSnapshotInventory().getContents()));
 
-        if(!d.getInventory().contains(item, 1)) {
-            Bukkit.broadcastMessage("Does not contain");
-            return false;
-        }
+        for(int i = 0; i < d.getInventory().getSize(); i++) {
+            ItemStack temp = d.getInventory().getItem(i);
+            if(temp == null || !temp.isSimilar(item))
+                continue;
 
-        Bukkit.broadcastMessage("Does contain");
-        d.getInventory().remove(item);
-        return true;
+            int count = temp.getAmount();
+
+            if(count == 1) { // Dispensers with 2 items are weird, handle carefully!  Also item counts are 1 below what they should be...
+                count -= 2;
+                temp.setAmount(count);
+                Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
+                    if(d.getLocation().getBlock().getType() != Material.DISPENSER)
+                        return;
+                    d.getInventory().addItem(item);
+                });
+                return true;
+            }
+            else if (count >= 0) {
+                count -= 1;
+                temp.setAmount(count);
+                return true;
+            }
+        }
+        return false;
     }
 }
