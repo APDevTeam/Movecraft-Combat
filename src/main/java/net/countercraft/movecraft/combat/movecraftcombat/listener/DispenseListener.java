@@ -24,6 +24,8 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
+import java.util.Arrays;
+
 
 public class DispenseListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
@@ -42,7 +44,7 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtractItem(d.getInventory(), e.getItem()))
+        if(!subtractItem(d, e.getItem()))
             return;
 
         // Spawn TNT
@@ -79,11 +81,16 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
-        if(!inv.contains(item, 1))
+    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
+        Bukkit.broadcastMessage("Subtracting " + item + " from " + d);
+        if(!d.getInventory().contains(item, 1)) {
+            Bukkit.broadcastMessage("Does not contain");
+            Bukkit.broadcastMessage(" " + Arrays.toString(d.getInventory().getContents()));
             return false;
+        }
 
-        inv.remove(item);
+        Bukkit.broadcastMessage("Does contain");
+        d.getInventory().remove(item);
         return true;
     }
 }
