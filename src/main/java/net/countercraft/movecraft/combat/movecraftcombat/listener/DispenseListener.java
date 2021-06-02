@@ -83,9 +83,11 @@ public class DispenseListener implements Listener {
 
     private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
         Bukkit.broadcastMessage("Subtracting " + item + " from " + d);
+        Bukkit.broadcastMessage(" " + Arrays.toString(d.getInventory().getContents()));
+        Bukkit.broadcastMessage(" " + Arrays.toString(d.getSnapshotInventory().getContents()));
+
         if(!d.getInventory().contains(item, 1)) {
             Bukkit.broadcastMessage("Does not contain");
-            Bukkit.broadcastMessage(" " + Arrays.toString(d.getInventory().getContents()));
             return false;
         }
 
