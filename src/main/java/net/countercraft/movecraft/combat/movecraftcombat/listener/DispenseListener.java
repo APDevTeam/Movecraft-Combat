@@ -55,6 +55,8 @@ public class DispenseListener implements Listener {
 
         if(Config.Debug)
             MovecraftCombat.getInstance().getLogger().info("Spawned custom TNT!: " + l + ", " + velocity);
+        Bukkit.broadcastMessage(" " + Arrays.toString(d.getInventory().getContents()));
+        Bukkit.broadcastMessage(" " + Arrays.toString(d.getSnapshotInventory().getContents()));
 
         for(Player p : Bukkit.getServer().getOnlinePlayers()) {
             p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);
