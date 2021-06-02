@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.event.EventPriority;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -40,9 +41,9 @@ public class DispenseListener implements Listener {
         e.setCancelled(true);
 
         // Subtract item yourself
-        //Dispenser d = (Dispenser) e.getBlock().getState();
-        //if(!subtractItem(d, e.getItem()))
-        //    return;
+        Dispenser d = (Dispenser) e.getBlock().getState();
+        if(!subtractItem(d.getInventory(), e.getItem()))
+            return;
 
         // Spawn TNT
         Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
@@ -78,31 +79,11 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
-        for(int i = 0; i < d.getInventory().getSize(); i++) {
-            ItemStack temp = d.getInventory().getItem(i);
-            Bukkit.broadcastMessage(temp == null ? "Slot " + i + " is null" : "Slot " + i + " has " + temp.getAmount() + " of type " + temp.getType());
-            if(temp == null || !temp.isSimilar(item))
-                continue;
+    private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
+        if(!inv.contains(item, 1))
+            return false;
 
-            int count = temp.getAmount();
-
-            if(count == 1) { // Dispensers with 2 items are weird, handle carefully!  Also item counts are 1 below what they should be...
-                count -= 2;
-                temp.setAmount(count);
-                Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
-                    if(d.getLocation().getBlock().getType() != Material.DISPENSER)
-                        return;
-                    d.getInventory().addItem(item);
-                });
-                return true;
-            }
-            else if (count >= 0) {
-                count -= 1;
-                temp.setAmount(count);
-                return true;
-            }
-        }
-        return false;
+        inv.remove(item);
+        return true;
     }
 }
