@@ -40,12 +40,12 @@ public class DispenseListener implements Listener {
         e.setCancelled(true);
 
         // Subtract item yourself
-        Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtractItem(d, e.getItem()))
-            return;
+        //Dispenser d = (Dispenser) e.getBlock().getState();
+        //if(!subtractItem(d, e.getItem()))
+        //    return;
 
         // Spawn TNT
-        Location l = e.getVelocity().toLocation(d.getLocation().getWorld());
+        Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
         TNTPrimed tnt = (TNTPrimed) l.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
