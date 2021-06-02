@@ -44,12 +44,8 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
-            if(d.getLocation().getBlock().getType() != Material.DISPENSER)
-                return;
-
-            d.getInventory().remove(e.getItem());
-        });
+        if(!subtractItem(d, e.getItem()))
+            return;
 
         // Spawn TNT
         Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
@@ -83,5 +79,28 @@ public class DispenseListener implements Listener {
         v.setX(0.02 * Math.cos(angle));
         v.setZ(0.02 * Math.sin(angle));
         return v;
+    }
+
+    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
+        int count = item.getAmount();
+        for(int i = 0; i < d.getInventory().getSize(); i++) {
+            ItemStack temp = d.getInventory().getItem(i);
+            if(temp == null || !temp.isSimilar(item))
+                continue;
+
+            if(temp.getAmount() == count) {
+                d.getInventory().remove(temp);
+                return true;
+            }
+            else if(temp.getAmount() > count) {
+                count -= temp.getAmount();
+                d.getInventory().remove(temp);
+            }
+            else {
+                temp.setAmount(temp.getAmount() - count);
+                return true;
+            }
+        }
+        return false;
     }
 }
