@@ -81,6 +81,7 @@ public class DispenseListener implements Listener {
     private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
         for(int i = 0; i < d.getInventory().getSize(); i++) {
             ItemStack temp = d.getInventory().getItem(i);
+            Bukkit.broadcastMessage(temp == null ? "Slot " + i + " is null" : "Slot " + i + " has " + temp.getAmount() + " of type " + temp.getType());
             if(temp == null || !temp.isSimilar(item))
                 continue;
 
