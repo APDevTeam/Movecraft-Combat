@@ -24,8 +24,6 @@ import net.countercraft.movecraft.combat.movecraftcombat.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
-import java.util.Arrays;
-
 
 public class DispenseListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
@@ -44,8 +42,12 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtractItem(d, e.getItem()))
-            return;
+        Inventory inv = d.getInventory();
+        if(!subtractItem(inv, e.getItem())) {
+            Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
+                subtractItem(inv, e.getItem());
+            });
+        }
 
         // Spawn TNT
         Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
@@ -81,20 +83,18 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
+    private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
         int count = item.getAmount();
-        for(int i = 0; i < d.getInventory().getSize(); i++) {
-            ItemStack temp = d.getInventory().getItem(i);
+        for(int i = 0; i < inv.getSize(); i++) {
+            ItemStack temp = inv.getItem(i);
             if(temp == null || !temp.isSimilar(item))
                 continue;
 
-            if(temp.getAmount() == count) {
-                d.getInventory().remove(temp);
-                return true;
-            }
-            else if(temp.getAmount() > count) {
+            if(temp.getAmount() <= count) {
                 count -= temp.getAmount();
-                d.getInventory().remove(temp);
+                inv.remove(temp);
+                if(count == 0)
+                    return true;
             }
             else {
                 temp.setAmount(temp.getAmount() - count);
