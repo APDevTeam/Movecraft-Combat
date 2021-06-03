@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.event.EventPriority;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -41,11 +42,15 @@ public class DispenseListener implements Listener {
 
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
-        if(!subtractItem(d, e.getItem()))
-            return;
+        Inventory inv = d.getInventory();
+        if(!subtractItem(inv, e.getItem())) {
+            Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
+                subtractItem(inv, e.getItem());
+            });
+        }
 
         // Spawn TNT
-        Location l = e.getVelocity().toLocation(d.getLocation().getWorld());
+        Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
         TNTPrimed tnt = (TNTPrimed) l.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
@@ -78,27 +83,19 @@ public class DispenseListener implements Listener {
         return v;
     }
 
-    private boolean subtractItem(@NotNull Dispenser d, @NotNull ItemStack item) {
-        for(int i = 0; i < d.getInventory().getSize(); i++) {
-            ItemStack temp = d.getInventory().getItem(i);
+    private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
+        int count = item.getAmount();
+        for(int i = 0; i < inv.getSize(); i++) {
+            ItemStack temp = inv.getItem(i);
             if(temp == null || !temp.isSimilar(item))
                 continue;
 
-            int count = temp.getAmount();
-
-            if(count == 1) { // Dispensers with 2 items are weird, handle carefully!  Also item counts are 1 below what they should be...
-                count -= 2;
-                temp.setAmount(count);
-                Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
-                    if(d.getLocation().getBlock().getType() != Material.DISPENSER)
-                        return;
-                    d.getInventory().addItem(item);
-                });
-                return true;
+            if(temp.getAmount() <= count) {
+                count -= temp.getAmount();
+                inv.remove(temp);
             }
-            else if (count >= 0) {
-                count -= 1;
-                temp.setAmount(count);
+            else {
+                temp.setAmount(temp.getAmount() - count);
                 return true;
             }
         }
