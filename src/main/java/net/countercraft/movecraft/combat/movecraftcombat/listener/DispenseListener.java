@@ -93,8 +93,6 @@ public class DispenseListener implements Listener {
             if(temp.getAmount() <= count) {
                 count -= temp.getAmount();
                 inv.remove(temp);
-                if(count == 0)
-                    return true;
             }
             else {
                 temp.setAmount(temp.getAmount() - count);
