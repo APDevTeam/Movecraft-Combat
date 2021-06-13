@@ -1,12 +1,13 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.DamageType;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
 
 
 public class DamageRecord {
-    private final Player cause;
+    private final OfflinePlayer cause;
     private final DamageType type;
     private final long time;
 
@@ -16,7 +17,7 @@ public class DamageRecord {
         time = System.currentTimeMillis();
     }
 
-    public Player getCause() {
+    public OfflinePlayer getCause() {
         return cause;
     }
 

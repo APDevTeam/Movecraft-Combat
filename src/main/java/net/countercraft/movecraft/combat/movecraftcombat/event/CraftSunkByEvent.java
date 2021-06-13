@@ -2,8 +2,11 @@ package net.countercraft.movecraft.combat.movecraftcombat.event;
 
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageRecord;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.NameUtils;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +48,7 @@ public class CraftSunkByEvent extends CraftEvent {
     @NotNull
     public String causesToString() {
         DamageRecord latestDamage = getLastRecord();
-        HashSet<Player> players = new HashSet<>();
+        HashSet<OfflinePlayer> players = new HashSet<>();
         for(DamageRecord r : this.causes) {
             players.add(r.getCause());
         }
@@ -56,13 +59,13 @@ public class CraftSunkByEvent extends CraftEvent {
         assert this.craft.getNotificationPlayer() != null;
         stringBuilder.append(this.craft.getNotificationPlayer().getDisplayName());
         stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
-        stringBuilder.append(latestDamage.getCause().getDisplayName());
+        stringBuilder.append(NameUtils.offlineToName(latestDamage.getCause()));
         if(players.size() < 1)
             return stringBuilder.toString();
 
         stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - With Assists")).append(" ");
-        for(Player p : players) {
-            stringBuilder.append(p.getDisplayName());
+        for(OfflinePlayer p : players) {
+            stringBuilder.append(NameUtils.offlineToName(p));
             stringBuilder.append(", ");
         }
         return stringBuilder.substring(0, stringBuilder.length() - 2);
