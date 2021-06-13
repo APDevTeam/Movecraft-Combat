@@ -8,14 +8,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
 public class CraftSunkByEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final HashSet<DamageRecord> causes;
+    private final ArrayList<DamageRecord> causes;
 
-    public CraftSunkByEvent(@NotNull Craft craft, @NotNull HashSet<DamageRecord> causes) {
+    public CraftSunkByEvent(@NotNull Craft craft, @NotNull ArrayList<DamageRecord> causes) {
         super(craft);
         this.causes = causes;
     }
@@ -31,19 +33,13 @@ public class CraftSunkByEvent extends CraftEvent {
     }
 
     @Nullable
-    public HashSet<DamageRecord> getCauses() {
+    public ArrayList<DamageRecord> getCauses() {
         return this.causes;
     }
 
     @Nullable
     public DamageRecord getLastRecord() {
-        DamageRecord latestDamage = null;
-        for(DamageRecord r : this.causes) {
-            if(latestDamage == null || r.getTime() > latestDamage.getTime())
-                latestDamage = r;
-        }
-        assert latestDamage != null;
-        return latestDamage;
+        return causes.get(causes.size() - 1);
     }
 
     @NotNull

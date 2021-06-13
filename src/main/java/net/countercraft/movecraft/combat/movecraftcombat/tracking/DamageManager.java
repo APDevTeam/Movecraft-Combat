@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -16,7 +17,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 public class DamageManager extends BukkitRunnable {
     private static DamageManager instance;
-    private final HashMap<Craft, HashSet<DamageRecord>> damageRecords = new HashMap<>();
+    private final HashMap<Craft, ArrayList<DamageRecord>> damageRecords = new HashMap<>();
 
     public DamageManager() {
         instance = this;
@@ -42,11 +43,11 @@ public class DamageManager extends BukkitRunnable {
         Bukkit.getServer().getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
 
         if(damageRecords.containsKey(craft) && damageRecords.get(craft) != null) {
-            HashSet<DamageRecord> craftRecords = damageRecords.get(craft);
+            ArrayList<DamageRecord> craftRecords = damageRecords.get(craft);
             craftRecords.add(damageRecord);
         }
         else {
-            HashSet<DamageRecord> craftRecords = new HashSet<>();
+            ArrayList<DamageRecord> craftRecords = new ArrayList<>();
             craftRecords.add(damageRecord);
             damageRecords.put(craft, craftRecords);
         }
