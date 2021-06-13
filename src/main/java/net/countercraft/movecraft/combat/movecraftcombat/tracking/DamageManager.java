@@ -72,7 +72,7 @@ public class DamageManager extends BukkitRunnable {
         }
         if(causes.size() == 0)
             return;
-        CraftSunkByEvent e = new CraftSunkByEvent(craft, causes);
+        CraftSunkByEvent e = new CraftSunkByEvent(craft, damageRecords.get(craft));
         Bukkit.getServer().getPluginManager().callEvent(e);
         Bukkit.broadcastMessage(e.causesToString());
         damageRecords.remove(craft);
