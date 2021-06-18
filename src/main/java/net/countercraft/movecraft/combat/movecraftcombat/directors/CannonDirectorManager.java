@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.directors;
 import java.util.*;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import net.countercraft.movecraft.combat.movecraftcombat.utils.DirectorUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import org.bukkit.*;
@@ -160,7 +161,7 @@ public class CannonDirectorManager extends DirectorManager {
                 tntVector.setY(0);
                 double horizontalSpeed = tntVector.length();
                 tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
-                Block targetBlock = p.getTargetBlock(Config.Transparent, Config.CannonDirectorRange);
+                Block targetBlock = DirectorUtils.getDirectorBlock(p);
                 Vector targetVector;
                 // This is horrible but I'm not sure how else to do it, targetBlock == null doesn't work because getTargetBlock never returns null.
                 if (targetBlock.getType().equals(Material.AIR)) { // the player is looking at nothing, shoot in that general direction
