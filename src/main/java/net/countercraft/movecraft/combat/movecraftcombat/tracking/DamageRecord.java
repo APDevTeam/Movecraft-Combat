@@ -13,7 +13,7 @@ public class DamageRecord {
     private final long time;
     private boolean killShot;
 
-    public DamageRecord(@NotNull Player cause, @NotNull OfflinePlayer damaged, @NotNull DamageType type) {
+    public DamageRecord(@NotNull OfflinePlayer cause, @NotNull OfflinePlayer damaged, @NotNull DamageType type) {
         this.cause = cause;
         this.damaged = damaged;
         this.type = type;
