@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.movecraftcombat.tracking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
@@ -60,20 +59,16 @@ public class DamageManager extends BukkitRunnable {
             return;
         if(!damageRecords.containsKey(craft))
             return;
-        if(damageRecords.get(craft).isEmpty()) {
+        ArrayList<DamageRecord> records = damageRecords.get(craft);
+        if(records.isEmpty()) {
             damageRecords.remove(craft);
             return;
         }
 
-        HashSet<DamageRecord> causes = new HashSet<>();
-        long currentTime = System.currentTimeMillis();
-        for(DamageRecord r : damageRecords.get(craft)) {
-            if(currentTime - r.getTime() < Config.DamageTimeout * 1000L && r.getCause() != craft.getNotificationPlayer())
-                causes.add(r);
-        }
-        if(causes.size() == 0)
-            return;
-        CraftSunkByEvent e = new CraftSunkByEvent(craft, damageRecords.get(craft));
+        // Set last damage record as kill shot
+        records.get(records.size() - 1).setKillShot(true);
+
+        CraftSunkByEvent e = new CraftSunkByEvent(craft, records);
         Bukkit.getServer().getPluginManager().callEvent(e);
         Bukkit.broadcastMessage(e.causesToString());
         damageRecords.remove(craft);
