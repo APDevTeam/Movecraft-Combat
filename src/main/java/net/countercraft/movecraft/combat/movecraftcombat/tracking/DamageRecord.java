@@ -8,12 +8,14 @@ import org.bukkit.entity.Player;
 
 public class DamageRecord {
     private final OfflinePlayer cause;
+    private final OfflinePlayer damaged;
     private final DamageType type;
     private final long time;
     private boolean killShot;
 
-    public DamageRecord(@NotNull Player cause, @NotNull DamageType type) {
+    public DamageRecord(@NotNull Player cause, @NotNull OfflinePlayer damaged, @NotNull DamageType type) {
         this.cause = cause;
+        this.damaged = damaged;
         this.type = type;
         time = System.currentTimeMillis();
         killShot = false;
@@ -21,6 +23,10 @@ public class DamageRecord {
 
     public OfflinePlayer getCause() {
         return cause;
+    }
+
+    public OfflinePlayer getDamaged() {
+        return damaged;
     }
 
     public DamageType getType() {

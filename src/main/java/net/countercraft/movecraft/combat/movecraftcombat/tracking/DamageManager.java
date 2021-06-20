@@ -38,7 +38,7 @@ public class DamageManager extends BukkitRunnable {
         if(Config.Debug)
             Bukkit.broadcast((craft.getNotificationPlayer() != null ? craft.getNotificationPlayer().getDisplayName() : "None ") + "'s craft was damaged by a " + type + " by " + cause.getDisplayName(), "movecraft.combat.debug");
 
-        DamageRecord damageRecord = new DamageRecord(cause, type);
+        DamageRecord damageRecord = new DamageRecord(craft.getNotificationPlayer(), cause, type);
         Bukkit.getServer().getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
 
         if(damageRecords.containsKey(craft) && damageRecords.get(craft) != null) {
