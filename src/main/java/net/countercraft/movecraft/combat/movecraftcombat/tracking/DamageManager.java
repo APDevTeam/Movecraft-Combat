@@ -6,6 +6,7 @@ import java.util.HashMap;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.DamageType;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 
 public class DamageManager extends BukkitRunnable {
     private static DamageManager instance;
-    private final HashMap<Craft, ArrayList<DamageRecord>> damageRecords = new HashMap<>();
+    private final HashMap<PlayerCraft, ArrayList<DamageRecord>> damageRecords = new HashMap<>();
 
     public DamageManager() {
         instance = this;
@@ -34,11 +35,13 @@ public class DamageManager extends BukkitRunnable {
     }
 
 
-    public void addDamageRecord(@NotNull Craft craft, @NotNull Player cause, @NotNull DamageType type) {
-        if(Config.Debug)
-            Bukkit.broadcast((craft.getNotificationPlayer() != null ? craft.getNotificationPlayer().getDisplayName() : "None ") + "'s craft was damaged by a " + type + " by " + cause.getDisplayName(), "movecraft.combat.debug");
+    public void addDamageRecord(@NotNull PlayerCraft craft, @NotNull Player cause, @NotNull DamageType type) {
+        if(Config.Debug) {
+            craft.getPlayer();
+            Bukkit.broadcast(craft.getPlayer().getDisplayName() + "'s craft was damaged by a " + type + " by " + cause.getDisplayName(), "movecraft.combat.debug");
+        }
 
-        DamageRecord damageRecord = new DamageRecord(craft.getNotificationPlayer(), cause, type);
+        DamageRecord damageRecord = new DamageRecord(craft.getPlayer(), cause, type);
         Bukkit.getServer().getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
 
         if(damageRecords.containsKey(craft) && damageRecords.get(craft) != null) {
@@ -52,11 +55,7 @@ public class DamageManager extends BukkitRunnable {
         }
     }
 
-    public void craftSunk(@NotNull Craft craft) {
-        if(craft.getNotificationPlayer() == null)
-            return;
-        if(craft.getType().getCruiseOnPilot())
-            return;
+    public void craftSunk(@NotNull PlayerCraft craft) {
         if(!damageRecords.containsKey(craft))
             return;
         ArrayList<DamageRecord> records = damageRecords.get(craft);
@@ -75,7 +74,7 @@ public class DamageManager extends BukkitRunnable {
 
     }
 
-    public void craftReleased(@NotNull Craft craft) {
+    public void craftReleased(@NotNull PlayerCraft craft) {
         damageRecords.remove(craft);
     }
 }

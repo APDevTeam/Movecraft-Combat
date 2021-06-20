@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,11 +24,11 @@ public class ProjectileHitListener implements Listener {
         Fireball fireball = (Fireball) e.getEntity();
 
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-        if(craft == null)
+        if(craft == null || !(craft instanceof PlayerCraft))
             return;
         if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
             return;
 
-        FireballTracking.getInstance().damagedCraft(craft, fireball);
+        FireballTracking.getInstance().damagedCraft((PlayerCraft) craft, fireball);
     }
 }

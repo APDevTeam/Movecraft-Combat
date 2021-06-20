@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.listener;
 import net.countercraft.movecraft.combat.movecraftcombat.config.Config;
 import net.countercraft.movecraft.combat.movecraftcombat.fireballs.FireballManager;
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,12 +26,13 @@ public class ProjectileLaunchListener implements Listener {
         FireballManager.getInstance().addFireball(fireball);
 
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-        if(craft == null)
+        if(craft == null || !(craft instanceof PlayerCraft))
             return;
         if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
             return;
 
-        FireballTracking.getInstance().dispensedFireball(craft, fireball);
-        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
+        PlayerCraft playerCraft = (PlayerCraft) craft;
+        FireballTracking.getInstance().dispensedFireball(playerCraft, fireball);
+        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
     }
 }

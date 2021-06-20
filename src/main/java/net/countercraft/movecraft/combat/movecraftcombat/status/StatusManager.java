@@ -9,6 +9,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.event.CombatStopEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -73,19 +74,19 @@ public class StatusManager extends BukkitRunnable {
     public void craftReleased(@NotNull CraftReleaseEvent e) {
         if(!Config.EnableCombatReleaseTracking)
             return;
-        Craft craft = e.getCraft();
-        if(craft.getSinking() || craft.getNotificationPlayer() == null)
-            return;
 
-        CraftReleaseEvent.Reason reason = e.getReason();
-        if(craft.getType().getMustBeSubcraft())
+        Craft craft = e.getCraft();
+        if(craft.getSinking())
             return;
+        if(!(craft instanceof PlayerCraft))
+            return;
+        CraftReleaseEvent.Reason reason = e.getReason();
         if(reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
             return;
         if(craft.getType().getCruiseOnPilot())
             return;
 
-        Player player = craft.getNotificationPlayer();
+        Player player = ((PlayerCraft) craft).getPlayer();
         if(!isInCombat(player))
             return;
         records.remove(player);
@@ -136,15 +137,13 @@ public class StatusManager extends BukkitRunnable {
         }.runTaskLater(MovecraftCombat.getInstance(), 5);
     }
 
-    public void craftSunk(@NotNull Craft craft) {
+    public void craftSunk(@NotNull PlayerCraft craft) {
         if(!Config.EnableCombatReleaseTracking)
             return;
-        if(craft.getNotificationPlayer() == null)
-            return;
-        if(craft.getType().getCruiseOnPilot())
+       if(craft.getType().getCruiseOnPilot())
             return;
 
-        Player player = craft.getNotificationPlayer();
+        Player player = craft.getPlayer();
         records.remove(player);
         stopCombat(player);
     }

@@ -6,6 +6,7 @@ import java.util.Random;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.*;
 import org.bukkit.event.EventPriority;
@@ -145,15 +146,16 @@ public class ExplosionListener implements Listener {
             return;
         Fireball fireball = (Fireball) e.getEntity();
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
-        if(craft == null)
+        if(craft == null || !(craft instanceof PlayerCraft))
             return;
+        PlayerCraft playerCraft = (PlayerCraft) craft;
         if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
-            FireballTracking.getInstance().damagedCraft(craft, fireball);
+            FireballTracking.getInstance().damagedCraft(playerCraft, fireball);
             return;
         }
         for(Block b : e.blockList()) {
             if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
-                FireballTracking.getInstance().damagedCraft(craft, fireball);
+                FireballTracking.getInstance().damagedCraft(playerCraft, fireball);
                 return;
             }
         }

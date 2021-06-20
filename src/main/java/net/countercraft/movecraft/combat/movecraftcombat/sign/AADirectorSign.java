@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.movecraftcombat.sign;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSupport;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,7 +53,7 @@ public class AADirectorSign implements Listener {
             return;
         }
 
-        if (!Config.AADirectorsAllowed.contains(foundCraft.getType())) {
+        if (!Config.AADirectorsAllowed.contains(foundCraft.getType()) || !(foundCraft instanceof PlayerCraft)) {
             player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
             return;
         }
@@ -64,7 +65,7 @@ public class AADirectorSign implements Listener {
             return;
         }
 
-        aa.addDirector(foundCraft, event.getPlayer());
+        aa.addDirector((PlayerCraft) foundCraft, event.getPlayer());
         player.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
         if (MovecraftCombat.getInstance().getCannonDirectors().isDirector(player)) {
             MovecraftCombat.getInstance().getCannonDirectors().removeDirector(player);

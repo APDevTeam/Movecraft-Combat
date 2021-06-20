@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.DirectorUtils;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.*;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
@@ -143,15 +144,17 @@ public class CannonDirectorManager extends DirectorManager {
                     if (c == null || c.getSinking())
                         continue;
                 }
+                if(!(c instanceof PlayerCraft))
+                    continue;
 
                 MovecraftLocation midpoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
                 int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
                 int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-                if (!hasDirector(c) || distX >= Config.CannonDirectorDistance || distY >= Config.CannonDirectorDistance || distZ >= Config.CannonDirectorDistance) {
+                if (!hasDirector((PlayerCraft) c) || distX >= Config.CannonDirectorDistance || distY >= Config.CannonDirectorDistance || distZ >= Config.CannonDirectorDistance) {
                     continue;
                 }
-                Player p = getDirector(c);
+                Player p = getDirector((PlayerCraft) c);
                 if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
                     continue;
                 }
@@ -164,9 +167,10 @@ public class CannonDirectorManager extends DirectorManager {
                 Block targetBlock = DirectorUtils.getDirectorBlock(p);
                 Vector targetVector;
                 // This is horrible but I'm not sure how else to do it, targetBlock == null doesn't work because getTargetBlock never returns null.
-                if (targetBlock.getType().equals(Material.AIR)) { // the player is looking at nothing, shoot in that general direction
+                if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) { // the player is looking at nothing, shoot in that general direction
                     targetVector = p.getLocation().getDirection();
-                } else { // shoot directly at the block the player is looking at (IE: with convergence)
+                }
+                else { // shoot directly at the block the player is looking at (IE: with convergence)
                     targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
                 }
                 // Remove the y-component from the TargetVector and normalize

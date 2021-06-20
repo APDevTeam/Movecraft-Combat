@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -26,12 +27,12 @@ public class TNTTracking {
     }
 
 
-    public void dispensedTNT(@NotNull Craft craft, @NotNull TNTPrimed tnt) {
+    public void dispensedTNT(@NotNull PlayerCraft craft, @NotNull TNTPrimed tnt) {
         Player sender;
         if(MovecraftCombat.getInstance().getCannonDirectors().hasDirector(craft))
             sender = MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft);
         else
-            sender = craft.getNotificationPlayer();
+            sender = craft.getPlayer();
         if(sender == null)
             return;
 
@@ -46,9 +47,10 @@ public class TNTTracking {
         UUID sender = UUID.fromString(meta.get(0).asString());
         Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
 
-        if(cause == null || !cause.isOnline())
+        if(cause == null || !cause.isOnline() || !(craft instanceof PlayerCraft))
             return;
-        DamageManager.getInstance().addDamageRecord(craft, cause, new TNTCannonDamage());
-        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
+        PlayerCraft playerCraft = (PlayerCraft) craft;
+        DamageManager.getInstance().addDamageRecord(playerCraft, cause, new TNTCannonDamage());
+        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
     }
 }

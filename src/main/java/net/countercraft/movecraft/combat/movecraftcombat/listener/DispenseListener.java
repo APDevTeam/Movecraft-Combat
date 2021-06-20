@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.listener;
 
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.Inventory;
@@ -51,7 +52,7 @@ public class DispenseListener implements Listener {
 
         // Spawn TNT
         Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
-        TNTPrimed tnt = (TNTPrimed) l.getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
+        TNTPrimed tnt = (TNTPrimed) e.getBlock().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
 
@@ -64,14 +65,15 @@ public class DispenseListener implements Listener {
 
         // Find nearest craft
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getBlock().getLocation());
-        if(craft == null)
+        if(craft == null || !(craft instanceof PlayerCraft))
             return;
         if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))
             return;
 
         // Report to tracking
-        TNTTracking.getInstance().dispensedTNT(craft, tnt);
-        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
+        PlayerCraft playerCraft = (PlayerCraft) craft;
+        TNTTracking.getInstance().dispensedTNT(playerCraft, tnt);
+        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
     }
 
     @NotNull

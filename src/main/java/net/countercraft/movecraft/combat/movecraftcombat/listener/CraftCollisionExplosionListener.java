@@ -5,6 +5,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.status.StatusManager;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TorpedoDamage;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.CraftStatus;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +36,7 @@ public class CraftCollisionExplosionListener implements Listener {
         }
 
         Craft craft = fastNearestCraftToCraft(e.getCraft());
-        if(craft == null)
+        if(craft == null || !(craft instanceof PlayerCraft))
             return;
         if(craft == e.getCraft()) {
             return;
@@ -43,7 +44,7 @@ public class CraftCollisionExplosionListener implements Listener {
         if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
 
-        DamageManager.getInstance().addDamageRecord(craft, e.getCraft().getNotificationPlayer(), new TorpedoDamage());
+        DamageManager.getInstance().addDamageRecord((PlayerCraft) craft, e.getCraft().getNotificationPlayer(), new TorpedoDamage());
         StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
     }
 

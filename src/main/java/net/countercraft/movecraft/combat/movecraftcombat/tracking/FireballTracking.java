@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.FireballDamage;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.TNTCannonDamage;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
@@ -28,16 +29,15 @@ public class FireballTracking {
     }
 
 
-    public void dispensedFireball(@NotNull Craft craft, @NotNull Fireball fireball) {
+    public void dispensedFireball(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
         if(!Config.EnableFireballTracking)
             return;
-
         Player sender;
         if(MovecraftCombat.getInstance().getAADirectors().hasDirector(craft)) {
             sender = MovecraftCombat.getInstance().getAADirectors().getDirector(craft);
         }
         else {
-            sender = craft.getNotificationPlayer();
+            sender = craft.getPlayer();
         }
         if(sender == null)
             return;
@@ -45,7 +45,7 @@ public class FireballTracking {
         fireball.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
     }
 
-    public void damagedCraft(@NotNull Craft craft, @NotNull Fireball fireball) {
+    public void damagedCraft(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
         if(!Config.EnableFireballTracking)
             return;
 
@@ -59,6 +59,6 @@ public class FireballTracking {
             return;
 
         DamageManager.getInstance().addDamageRecord(craft, cause, new FireballDamage());
-        StatusManager.getInstance().registerEvent(craft.getNotificationPlayer());
+        StatusManager.getInstance().registerEvent(craft.getPlayer());
     }
 }

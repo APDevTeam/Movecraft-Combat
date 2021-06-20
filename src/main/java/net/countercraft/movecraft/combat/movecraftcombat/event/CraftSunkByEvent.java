@@ -4,6 +4,7 @@ import net.countercraft.movecraft.combat.movecraftcombat.localisation.I18nSuppor
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.DamageRecord;
 import net.countercraft.movecraft.combat.movecraftcombat.utils.NameUtils;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +21,7 @@ public class CraftSunkByEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
     private final ArrayList<DamageRecord> causes;
 
-    public CraftSunkByEvent(@NotNull Craft craft, @NotNull ArrayList<DamageRecord> causes) {
+    public CraftSunkByEvent(@NotNull PlayerCraft craft, @NotNull ArrayList<DamageRecord> causes) {
         super(craft);
         this.causes = causes;
     }
@@ -56,8 +57,7 @@ public class CraftSunkByEvent extends CraftEvent {
         players.remove(latestDamage.getCause());
 
         StringBuilder stringBuilder = new StringBuilder();
-        assert this.craft.getNotificationPlayer() != null;
-        stringBuilder.append(this.craft.getNotificationPlayer().getDisplayName());
+        stringBuilder.append(((PlayerCraft) this.craft).getPlayer().getDisplayName());
         stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
         stringBuilder.append(NameUtils.offlineToName(latestDamage.getCause()));
         if(players.size() < 1)

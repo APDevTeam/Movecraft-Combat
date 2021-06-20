@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.movecraftcombat.directors;
 
 import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -38,10 +39,10 @@ public class AADirectorManager extends DirectorManager {
                     continue;
 
                 Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-                if (c == null || !hasDirector(c))
+                if (c == null || !(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
                     continue;
 
-                Player p = getDirector(c);
+                Player p = getDirector((PlayerCraft) c);
 
                 MovecraftLocation midPoint = c.getHitBox().getMidPoint();
                 int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
@@ -52,7 +53,7 @@ public class AADirectorManager extends DirectorManager {
 
                 fireball.setShooter(p);
 
-                if (p.getInventory().getItemInMainHand().getType() != Config.DirectorTool)
+                if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool)
                     continue;
 
                 Vector fv = fireball.getVelocity();
