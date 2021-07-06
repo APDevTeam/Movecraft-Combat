@@ -42,10 +42,10 @@ public class CannonDirectorManager extends DirectorManager {
         }
 
         processTracers();
+        processTNTContactExplosives(); //Changed the order so newly directed TNT is not affected by Contact Explosives
         processDirectors();
         // then, removed any exploded or invalid TNT from tracking
         tracking.keySet().removeIf(tnt -> !tnt.isValid() || tnt.getFuseTicks() <= 0);
-        processTNTContactExplosives();
 
         lastCheck = System.currentTimeMillis();
     }
@@ -166,7 +166,6 @@ public class CannonDirectorManager extends DirectorManager {
                 tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
                 Block targetBlock = DirectorUtils.getDirectorBlock(p);
                 Vector targetVector;
-                // This is horrible but I'm not sure how else to do it, targetBlock == null doesn't work because getTargetBlock never returns null.
                 if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) { // the player is looking at nothing, shoot in that general direction
                     targetVector = p.getLocation().getDirection();
                 }
@@ -211,7 +210,8 @@ public class CannonDirectorManager extends DirectorManager {
         // explode
         for (TNTPrimed tnt : tracking.keySet()) {
             double vel = tnt.getVelocity().lengthSquared();
-            if (vel < tracking.getDouble(tnt) / 10.0) {
+            if (vel < tracking.getDouble(tnt) / Config.ContactExplosivesMaxImpulseFactor) {
+                tnt.setVelocity(new Vector(0,0,0)); //freeze it in place to prevent sliding
                 tnt.setFuseTicks(0);
             }
             else {

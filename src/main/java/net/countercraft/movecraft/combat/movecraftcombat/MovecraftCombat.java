@@ -69,6 +69,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
+        Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
         reloadTypes();
 
         Object tool = getConfig().get("DirectorTool");

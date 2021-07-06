@@ -43,6 +43,7 @@ TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  Se
 
 # Contact Explosives
 EnableContactExplosives: true # Enable TNT contact explosives
+ContactExplosivesMaxImpulseFactor: 10.0
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
