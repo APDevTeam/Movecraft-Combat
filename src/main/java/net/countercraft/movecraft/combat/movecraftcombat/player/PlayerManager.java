@@ -62,6 +62,9 @@ public class PlayerManager {
 
     private void savePlayer(Player player) {
         PlayerConfig config = onlinePlayers.get(player);
+        if(config == null) // TODO: Not sure the side effects of this
+            return;
+
         config.save();
     }
 
