@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftDamagedByEvent;
+import net.countercraft.movecraft.combat.movecraftcombat.event.CraftReleasedByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.event.CraftSunkByEvent;
 import net.countercraft.movecraft.combat.movecraftcombat.tracking.damagetype.DamageType;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -75,6 +76,16 @@ public class DamageManager extends BukkitRunnable {
     }
 
     public void craftReleased(@NotNull PlayerCraft craft) {
+        if(!damageRecords.containsKey(craft))
+            return;
+        ArrayList<DamageRecord> records = damageRecords.get(craft);
+        if(records.isEmpty()) {
+            damageRecords.remove(craft);
+            return;
+        }
+
+        CraftReleasedByEvent e = new CraftReleasedByEvent(craft, records);
+        Bukkit.getServer().getPluginManager().callEvent(e);
         damageRecords.remove(craft);
     }
 }
