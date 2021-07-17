@@ -20,6 +20,7 @@ public class Config {
 
     // Contact Explosives
     public static boolean EnableContactExplosives = true;
+    public static double ContactExplosivesMaxImpulseFactor = 10;
 
     // Cannon Directors
     public static int CannonDirectorDistance = 100;
