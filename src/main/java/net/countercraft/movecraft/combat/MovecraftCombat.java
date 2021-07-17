@@ -1,6 +1,5 @@
 package net.countercraft.movecraft.combat;
 
-import java.util.logging.Level;
 import net.countercraft.movecraft.combat.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
