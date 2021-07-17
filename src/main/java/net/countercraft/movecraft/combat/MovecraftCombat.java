@@ -1,33 +1,31 @@
 package net.countercraft.movecraft.combat;
 
-import java.io.File;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.logging.Level;
-
+import net.countercraft.movecraft.combat.commands.TracerModeCommand;
+import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
+import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.fireballs.FireballManager;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
-import net.countercraft.movecraft.combat.commands.TracerModeCommand;
-import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.player.PlayerManager;
 import net.countercraft.movecraft.combat.radar.RadarManager;
 import net.countercraft.movecraft.combat.sign.AADirectorSign;
 import net.countercraft.movecraft.combat.sign.CannonDirectorSign;
+import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.combat.tracking.DamageManager;
 import net.countercraft.movecraft.combat.utils.LegacyUtils;
+import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.CraftType;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.combat.movecraftcombat.sign.*;
-import net.countercraft.movecraft.combat.movecraftcombat.listener.*;
-import net.countercraft.movecraft.combat.tracking.DamageManager;
-import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.movecraftcombat.directors.*;
-import net.countercraft.movecraft.combat.config.Config;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 
 public final class MovecraftCombat extends JavaPlugin {
