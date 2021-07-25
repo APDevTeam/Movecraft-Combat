@@ -1,6 +1,6 @@
 name: Movecraft-Combat
 version: ${project.version}
-main: net.countercraft.movecraft.combat.movecraftcombat.MovecraftCombat
+main: net.countercraft.movecraft.combat.MovecraftCombat
 api-version: 1.13
 prefix: Movecraft-Combat
 depend: [Movecraft]
