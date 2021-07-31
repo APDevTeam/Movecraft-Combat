@@ -17,13 +17,13 @@ import net.countercraft.movecraft.craft.Craft;
 public class ProjectileLaunchListener implements Listener {
     @EventHandler
     public void projectileLaunchEvent(ProjectileLaunchEvent e) {
-        if(!Config.EnableFireballTracking)
-            return;
-
         if(!(e.getEntity() instanceof SmallFireball))
             return;
         SmallFireball fireball = (SmallFireball) e.getEntity();
         FireballManager.getInstance().addFireball(fireball);
+
+        if(!Config.EnableFireballTracking)
+            return;
 
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
         if(craft == null || !(craft instanceof PlayerCraft))
