@@ -90,8 +90,8 @@
         </repository>
         <repository>
             <id>github</id>
-            <name>GitHub APDevTeam Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/APDevTeam/*</url>
+            <name>GitHub APDevTeam/Movecraft Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/APDevTeam/Movecraft</url>
         </repository>
     </repositories>
 
