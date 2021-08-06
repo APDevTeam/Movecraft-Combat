@@ -108,6 +108,7 @@
             <groupId>net.countercraft.movecraft</groupId>
             <artifactId>Movecraft</artifactId>
             <version>LATEST</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
