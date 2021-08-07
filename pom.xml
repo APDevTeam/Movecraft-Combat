@@ -111,10 +111,9 @@
         </dependency>
         <!--Movecraft-->
         <dependency>
-            <groupId>net.countercraft.movecraft</groupId>
-            <artifactId>Movecraft</artifactId>
+            <groupId>net.countercraft</groupId>
+            <artifactId>movecraft</artifactId>
             <version>LATEST</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
