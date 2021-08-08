@@ -17,11 +17,13 @@ import net.countercraft.movecraft.combat.tracking.DamageManager;
 import net.countercraft.movecraft.combat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.CraftType;
+import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -91,8 +93,10 @@ public final class MovecraftCombat extends JavaPlugin {
         if(getConfig().contains("DurabilityOverride")) {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
-            for (String str : temp.keySet()) {
-                Config.DurabilityOverride.put(Material.getMaterial(str.toUpperCase()), (Integer) temp.get(str));
+            for (Map.Entry<String, Object> entry : temp.entrySet()) {
+                EnumSet<Material> materials = Tags.getMaterialsFromString(entry.getKey());
+                for(Material m : materials)
+                    Config.DurabilityOverride.put(m, (Integer) entry.getValue());
             }
         }
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
