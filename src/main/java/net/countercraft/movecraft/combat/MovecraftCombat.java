@@ -85,7 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
         if (getConfig().contains("TransparentBlocks")) {
             for (Object o : getConfig().getList("TransparentBlocks")) {
                 if (o instanceof String)
-                    Config.Transparent.add(Material.getMaterial(((String) o).toUpperCase()));
+                    Config.Transparent.addAll(Tags.getMaterialsFromString((String) o));
                 else
                     getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
             }
