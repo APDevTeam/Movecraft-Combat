@@ -85,7 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
         if (getConfig().contains("TransparentBlocks")) {
             for (Object o : getConfig().getList("TransparentBlocks")) {
                 if (o instanceof String)
-                    Config.Transparent.addAll(Tags.getMaterialsFromString((String) o));
+                    Config.Transparent.addAll(Tags.parseMaterials((String) o));
                 else
                     getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
             }
@@ -94,7 +94,7 @@ public final class MovecraftCombat extends JavaPlugin {
             Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
             Config.DurabilityOverride = new HashMap<>();
             for (Map.Entry<String, Object> entry : temp.entrySet()) {
-                EnumSet<Material> materials = Tags.getMaterialsFromString(entry.getKey());
+                EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
                 for(Material m : materials)
                     Config.DurabilityOverride.put(m, (Integer) entry.getValue());
             }
