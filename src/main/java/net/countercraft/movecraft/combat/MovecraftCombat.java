@@ -1,5 +1,6 @@
 package net.countercraft.movecraft.combat;
 
+import net.countercraft.movecraft.combat.blastoverride.BlastResistanceOverride;
 import net.countercraft.movecraft.combat.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
@@ -47,6 +48,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
+        BlastResistanceOverride.enable();
 
         Config.Debug = getConfig().getBoolean("Debug", false);
 
@@ -167,6 +169,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        BlastResistanceOverride.disable();
         playerManager.shutDown();
     }
 
