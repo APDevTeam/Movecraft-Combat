@@ -6,6 +6,7 @@ Home of the code for the following features:
  - Cannon Directors
  - Contact Explosives
  - Durability Override
+ - Blast Resistance Override
  - Fireball Lifespan
  - TNT Tracers
  - Damage Tracking
