@@ -34,6 +34,10 @@ public class Config {
     // Durability Override
     public static HashMap<Material, Integer> DurabilityOverride = null;
 
+    // Blast Resistance Override
+    public static Boolean ForceRevertToVanilla = null;
+    public static HashMap<Material, Float> BlastResistanceOverride = null;
+
     // Fireball Lifespan
     public static int FireballLifespan = 6;
 

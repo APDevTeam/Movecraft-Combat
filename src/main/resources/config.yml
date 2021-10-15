@@ -52,6 +52,11 @@ DurabilityOverride: # List of block IDs: ignore percent
   END_STONE: 80
   END_STONE_BRICKS: 80
 
+# Blast Resistance Override
+ForceRevertToVanilla: False # Revert all values to vanilla
+BlastResistanceOverride: # List of block IDs: modify native blast resistance
+  "#glass": 9.0
+
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds
 

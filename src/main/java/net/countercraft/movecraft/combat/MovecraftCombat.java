@@ -101,6 +101,16 @@ public final class MovecraftCombat extends JavaPlugin {
                     Config.DurabilityOverride.put(m, (Integer) entry.getValue());
             }
         }
+        Config.ForceRevertToVanilla = getConfig().getBoolean("ForceRevertToVanilla", false);
+        if(getConfig().contains("BlastResistanceOverride")) {
+            Map<String, Object> temp = getConfig().getConfigurationSection("BlastResistanceOverride").getValues(false);
+            Config.BlastResistanceOverride = new HashMap<>();
+            for (Map.Entry<String, Object> entry : temp.entrySet()) {
+                EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
+                for(Material m : materials)
+                    Config.BlastResistanceOverride.put(m, (Float) entry.getValue());
+            }
+        }
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
