@@ -48,8 +48,6 @@ public final class MovecraftCombat extends JavaPlugin {
 
         saveDefaultConfig();
 
-        BlastResistanceOverride.enable();
-
         Config.Debug = getConfig().getBoolean("Debug", false);
 
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
@@ -107,8 +105,9 @@ public final class MovecraftCombat extends JavaPlugin {
             Config.BlastResistanceOverride = new HashMap<>();
             for (Map.Entry<String, Object> entry : temp.entrySet()) {
                 EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
-                for(Material m : materials)
-                    Config.BlastResistanceOverride.put(m, (Float) entry.getValue());
+                for(Material m : materials) {
+                    Config.BlastResistanceOverride.put(m, ((Double) entry.getValue()).floatValue());
+                }
             }
         }
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
@@ -175,11 +174,13 @@ public final class MovecraftCombat extends JavaPlugin {
         radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
         FireballManager fireballManager = new FireballManager();
         fireballManager.runTaskTimer(this, 0, 20);      // Every 1 second
+
+        BlastResistanceOverride.enable(); // Override blast resistance values (Needs to load after config options)
     }
 
     @Override
     public void onDisable() {
-        BlastResistanceOverride.disable();
+        BlastResistanceOverride.disable(); // Revert blast resistance values to vanilla
         playerManager.shutDown();
     }
 

@@ -31,7 +31,7 @@ public class BlockOverride {
      * @throws IllegalArgumentException If the field name is NULL or the field doesn't exist.
      * @throws RuntimeException If we don't have security clearance.
      */
-    public void setBlastResistance(Float br) {
+    public void setBlastResistance(float br) {
         try {
             // Write the value directly
             FieldUtils.writeField(getField("durability"), block, br);
