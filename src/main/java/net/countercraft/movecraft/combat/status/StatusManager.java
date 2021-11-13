@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 
 public class StatusManager extends BukkitRunnable {
@@ -42,10 +43,9 @@ public class StatusManager extends BukkitRunnable {
     public void run() {
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
-        for(Player player : records.keySet()) {
-            if((currentTime - records.get(player)) > Config.DamageTimeout * 1000L) {
-                removeSet.add(player);
-            }
+        for(var entry : records.entrySet()) {
+            if((currentTime - entry.getValue()) > Config.DamageTimeout * 1000L)
+                removeSet.add(entry.getKey());
         }
         for(Player player : removeSet) {
             stopCombat(player);
@@ -59,6 +59,7 @@ public class StatusManager extends BukkitRunnable {
             return false;
         if(!records.containsKey(player))
             return false;
+
         return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000L;
     }
 
@@ -94,9 +95,8 @@ public class StatusManager extends BukkitRunnable {
 
         stopCombat(player);
 
-        if(player.hasPermission("movecraft.combat.bypass")) {
+        if(player.hasPermission("movecraft.combat.bypass"))
             return;
-        }
 
         MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
@@ -130,9 +130,9 @@ public class StatusManager extends BukkitRunnable {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (player == null || !player.isOnline()) {
+                if(!player.isOnline())
                     return;
-                }
+
                 player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
             }
         }.runTaskLater(MovecraftCombat.getInstance(), 5);
