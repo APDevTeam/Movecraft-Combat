@@ -53,7 +53,7 @@ public class CannonDirectorSign implements Listener {
             return;
         }
 
-        if (!Config.CannonDirectorsAllowed.contains(foundCraft.getType()) || !(foundCraft instanceof PlayerCraft)) {
+        if (!foundCraft.getType().getBoolProperty(CannonDirectorManager.ALLOW_CANNON_DIRECTOR_SIGN) || !(foundCraft instanceof PlayerCraft)) {
             player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Not Allowed On Craft"));
             return;
         }

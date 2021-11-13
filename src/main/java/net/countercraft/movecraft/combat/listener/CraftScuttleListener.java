@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.listener;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.radar.RadarManager;
 import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.craft.type.CraftType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,7 +41,7 @@ public class CraftScuttleListener implements Listener {
         Player p = e.getCause();
         if(p == null)
             return;
-        if(e.getCraft().getType().getCruiseOnPilot())
+        if(e.getCraft().getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
         RadarManager.getInstance().endInvisible(p);

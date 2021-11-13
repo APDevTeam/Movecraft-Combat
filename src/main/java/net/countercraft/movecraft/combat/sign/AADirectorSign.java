@@ -53,7 +53,7 @@ public class AADirectorSign implements Listener {
             return;
         }
 
-        if (!Config.AADirectorsAllowed.contains(foundCraft.getType()) || !(foundCraft instanceof PlayerCraft)) {
+        if (!foundCraft.getType().getBoolProperty(AADirectorManager.ALLOW_AA_DIRECTOR_SIGN) || !(foundCraft instanceof PlayerCraft)) {
             player.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
             return;
         }

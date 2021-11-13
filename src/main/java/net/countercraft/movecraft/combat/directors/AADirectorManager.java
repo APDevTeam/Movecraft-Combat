@@ -2,7 +2,10 @@ package net.countercraft.movecraft.combat.directors;
 
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.type.CraftType;
+import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.SmallFireball;
@@ -16,6 +19,11 @@ import java.util.ArrayList;
 
 
 public class AADirectorManager extends DirectorManager {
+    public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
+    static {
+        CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
+    }
+
     private long lastCheck = 0;
 
     public void run() {

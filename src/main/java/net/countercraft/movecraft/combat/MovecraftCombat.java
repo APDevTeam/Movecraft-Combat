@@ -15,8 +15,6 @@ import net.countercraft.movecraft.combat.sign.CannonDirectorSign;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.combat.tracking.DamageManager;
 import net.countercraft.movecraft.combat.utils.LegacyUtils;
-import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.craft.CraftType;
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -72,7 +70,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
         Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
-        reloadTypes();
 
         Object tool = getConfig().get("DirectorTool");
         Material directorTool = null;
@@ -147,7 +144,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
-        getServer().getPluginManager().registerEvents(new TypesReloadedListener(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
@@ -180,24 +176,5 @@ public final class MovecraftCombat extends JavaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
-    }
-
-    public void reloadTypes() {
-        for(String s : getConfig().getStringList("AADirectorsAllowed")) {
-            CraftType type = CraftManager.getInstance().getCraftTypeFromString(s);
-
-            if(type != null)
-                Config.AADirectorsAllowed.add(type);
-            else
-                getLogger().info(I18nSupport.getInternationalisedString("Startup - Failed Load Type") + ": '" + s.toUpperCase() + "'");
-        }
-        for(String s : getConfig().getStringList("CannonDirectorsAllowed")) {
-            CraftType type = CraftManager.getInstance().getCraftTypeFromString(s);
-
-            if(type != null)
-                Config.CannonDirectorsAllowed.add(type);
-            else
-                getLogger().info(I18nSupport.getInternationalisedString("Startup - Failed Load Type") + ": '" + s.toUpperCase() + "'");
-        }
     }
 }

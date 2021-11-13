@@ -3,7 +3,6 @@ package net.countercraft.movecraft.combat.config;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.bukkit.Material;
-import net.countercraft.movecraft.craft.CraftType;
 import org.bukkit.Particle;
 
 
@@ -16,7 +15,6 @@ public class Config {
     // AA Directors
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
-    public static HashSet<CraftType> AADirectorsAllowed = new HashSet<>();
 
     // Contact Explosives
     public static boolean EnableContactExplosives = true;
@@ -25,7 +23,6 @@ public class Config {
     // Cannon Directors
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;
-    public static HashSet<CraftType> CannonDirectorsAllowed = new HashSet<>();
 
     // Directors
     public static Material DirectorTool = null;

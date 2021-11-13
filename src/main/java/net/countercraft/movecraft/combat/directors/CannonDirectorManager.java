@@ -7,6 +7,8 @@ import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.combat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.type.CraftType;
+import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.*;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
@@ -21,6 +23,11 @@ import net.countercraft.movecraft.combat.config.Config;
 
 
 public class CannonDirectorManager extends DirectorManager {
+    public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
+    static {
+        CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
+    }
+
     private static CannonDirectorManager instance;
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastUpdate = 0;

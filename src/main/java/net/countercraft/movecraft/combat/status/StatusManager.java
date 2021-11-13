@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -83,7 +84,7 @@ public class StatusManager extends BukkitRunnable {
         CraftReleaseEvent.Reason reason = e.getReason();
         if(reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
             return;
-        if(craft.getType().getCruiseOnPilot())
+        if(craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
         Player player = ((PlayerCraft) craft).getPlayer();
@@ -140,7 +141,7 @@ public class StatusManager extends BukkitRunnable {
     public void craftSunk(@NotNull PlayerCraft craft) {
         if(!Config.EnableCombatReleaseTracking)
             return;
-       if(craft.getType().getCruiseOnPilot())
+       if(craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
         Player player = craft.getPlayer();
