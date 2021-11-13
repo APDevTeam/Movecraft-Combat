@@ -13,7 +13,6 @@
 
     <description>Combat features of Movecraft</description>
     <properties>
-        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>https://github.com/TylerS1066/Movecraft-Combat</url>
@@ -26,8 +25,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>13</source>
+                    <target>13</target>
                 </configuration>
             </plugin>
             <plugin>
