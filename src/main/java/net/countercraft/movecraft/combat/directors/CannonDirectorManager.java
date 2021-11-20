@@ -10,6 +10,7 @@ import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.*;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
@@ -103,17 +104,14 @@ public class CannonDirectorManager extends DirectorManager {
                             public void run() {
                                 Material cobweb = LegacyUtils.getInstance().getCobweb();
                                 if(cobweb != null)
-                                    fp.sendBlockChange(loc, cobweb, (byte) 0);
+                                    fp.sendBlockChange(loc, cobweb.createBlockData());
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                        // then remove it
+                        // then restore it
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                // fp.sendBlockChange(loc,
-                                // fw.getBlockAt(loc).getType(),
-                                // fw.getBlockAt(loc).getData());
-                                fp.sendBlockChange(loc, Material.AIR, (byte) 0);
+                                fp.sendBlockChange(loc, loc.getBlock().getBlockData());
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 160);
                     }
