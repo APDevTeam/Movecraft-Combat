@@ -38,7 +38,7 @@ public class TranslateListener implements Listener {
                 @Override
                 public void run() {
                     for(var loc : difference)
-                        p.spawnParticle(Config.TracerParticle, loc.toBukkit(w), 0, 0.0, 0.0, 0.0);
+                        p.spawnParticle(Config.TracerParticle, loc.toBukkit(w).add(0.5, 0.5, 0.5), 0, 0.0, 0.0, 0.0);
                 }
             }.runTaskLater(MovecraftCombat.getInstance(), 1);
         }
