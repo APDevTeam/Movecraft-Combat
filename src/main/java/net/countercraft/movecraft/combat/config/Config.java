@@ -63,4 +63,7 @@ public class Config {
 
     // 1.12+ TNT-Translocation
     public static boolean ReImplementTNTTranslocation = false;
+
+    // Movement tracers
+    public static boolean MovementTracers = false;
 }

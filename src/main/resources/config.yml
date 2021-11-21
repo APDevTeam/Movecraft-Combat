@@ -85,3 +85,6 @@ AddFiresToHitbox: true # Add fires lit on the surface of a craft to its hitbox s
 
 # TNT Translocation Behavior
 ReImplementTNTTranslocation: false # Re-implement TNT translocation in 1.11+, ignored in 1.10
+
+# Movement Tracers
+MovementTracers: false # Add particle tracers to the movement of crafts (note: the performance impact is untested!)

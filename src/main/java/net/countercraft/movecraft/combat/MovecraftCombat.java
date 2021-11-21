@@ -126,6 +126,8 @@ public final class MovecraftCombat extends JavaPlugin {
             }
         }
 
+        Config.MovementTracers = getConfig().getBoolean("MovementTracers", false);
+
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
@@ -142,6 +144,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
+        getServer().getPluginManager().registerEvents(new TranslateListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
