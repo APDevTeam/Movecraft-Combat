@@ -20,7 +20,7 @@ public class CraftSinkListener implements Listener {
         DamageManager.getInstance().craftSunk(playerCraft);
         StatusManager.getInstance().craftSunk(playerCraft);
 
-        Player p = playerCraft.getPlayer();
+        Player p = playerCraft.getPilot();
         RadarManager.getInstance().endPilot(p);
         RadarManager.getInstance().endInvisible(p);
     }

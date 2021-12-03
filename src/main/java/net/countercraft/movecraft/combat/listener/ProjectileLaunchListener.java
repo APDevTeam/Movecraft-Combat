@@ -33,6 +33,6 @@ public class ProjectileLaunchListener implements Listener {
 
         PlayerCraft playerCraft = (PlayerCraft) craft;
         FireballTracking.getInstance().dispensedFireball(playerCraft, fireball);
-        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
+        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

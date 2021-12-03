@@ -31,12 +31,11 @@ public class FireballTracking {
         if(!Config.EnableFireballTracking)
             return;
         Player sender;
-        if(MovecraftCombat.getInstance().getAADirectors().hasDirector(craft)) {
+        if(MovecraftCombat.getInstance().getAADirectors().hasDirector(craft))
             sender = MovecraftCombat.getInstance().getAADirectors().getDirector(craft);
-        }
-        else {
-            sender = craft.getPlayer();
-        }
+        else
+            sender = craft.getPilot();
+
         if(sender == null)
             return;
 
@@ -57,6 +56,6 @@ public class FireballTracking {
             return;
 
         DamageManager.getInstance().addDamageRecord(craft, cause, new FireballDamage());
-        StatusManager.getInstance().registerEvent(craft.getPlayer());
+        StatusManager.getInstance().registerEvent(craft.getPilot());
     }
 }

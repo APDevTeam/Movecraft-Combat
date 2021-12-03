@@ -54,7 +54,7 @@ public class CraftReleasedByEvent extends CraftEvent {
         players.remove(latestDamage.getCause());
 
         StringBuilder sb = new StringBuilder();
-        sb.append(((PlayerCraft) this.craft).getPlayer().getDisplayName());
+        sb.append(((PlayerCraft) this.craft).getPilot().getDisplayName());
         sb.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
         sb.append(NameUtils.offlineToName(latestDamage.getCause()));
         if(players.size() < 1)

@@ -73,7 +73,7 @@ public class DispenseListener implements Listener {
         // Report to tracking
         PlayerCraft playerCraft = (PlayerCraft) craft;
         TNTTracking.getInstance().dispensedTNT(playerCraft, tnt);
-        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
+        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
     }
 
     @NotNull

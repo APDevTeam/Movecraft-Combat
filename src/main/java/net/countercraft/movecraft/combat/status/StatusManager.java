@@ -88,7 +88,7 @@ public class StatusManager extends BukkitRunnable {
         if(craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
-        Player player = ((PlayerCraft) craft).getPlayer();
+        Player player = ((PlayerCraft) craft).getPilot();
         if(!isInCombat(player))
             return;
         records.remove(player);
@@ -144,7 +144,7 @@ public class StatusManager extends BukkitRunnable {
        if(craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
-        Player player = craft.getPlayer();
+        Player player = craft.getPilot();
         records.remove(player);
         stopCombat(player);
     }

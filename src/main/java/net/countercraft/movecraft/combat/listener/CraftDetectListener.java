@@ -15,7 +15,7 @@ public class CraftDetectListener implements Listener {
         if(!(e.getCraft() instanceof PlayerCraft))
             return;
 
-        Player p = ((PlayerCraft) e.getCraft()).getPlayer();
+        Player p = ((PlayerCraft) e.getCraft()).getPilot();
 
         RadarManager.getInstance().startPilot(p);
         Craft c = e.getCraft();

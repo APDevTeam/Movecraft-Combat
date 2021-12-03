@@ -32,7 +32,7 @@ public class TNTTracking {
         if(MovecraftCombat.getInstance().getCannonDirectors().hasDirector(craft))
             sender = MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft);
         else
-            sender = craft.getPlayer();
+            sender = craft.getPilot();
         if(sender == null)
             return;
 
@@ -51,6 +51,6 @@ public class TNTTracking {
             return;
         PlayerCraft playerCraft = (PlayerCraft) craft;
         DamageManager.getInstance().addDamageRecord(playerCraft, cause, new TNTCannonDamage());
-        StatusManager.getInstance().registerEvent(playerCraft.getPlayer());
+        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

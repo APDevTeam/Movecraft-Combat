@@ -20,7 +20,7 @@ public class CraftReleaseListener implements Listener {
         PlayerCraft playerCraft = (PlayerCraft) e.getCraft();
         DamageManager.getInstance().craftReleased(playerCraft);
 
-        Player p = playerCraft.getPlayer();
+        Player p = playerCraft.getPilot();
         RadarManager.getInstance().endPilot(p);
         RadarManager.getInstance().endInvisible(p);
     }
