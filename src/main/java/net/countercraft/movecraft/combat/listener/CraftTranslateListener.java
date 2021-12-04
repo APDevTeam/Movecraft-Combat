@@ -13,10 +13,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class TranslateListener implements Listener {
+public class CraftTranslateListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void translateEvent(CraftTranslateEvent e) {
         if(!Config.MovementTracers)
+            return;
+        if(e.getNewHitBox().isEmpty() || e.getOldHitBox().isEmpty())
             return;
 
         final World w = e.getCraft().getWorld();
