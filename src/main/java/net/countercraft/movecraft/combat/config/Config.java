@@ -3,7 +3,7 @@ package net.countercraft.movecraft.combat.config;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 
 
 public class Config {
@@ -26,7 +26,7 @@ public class Config {
 
     // Directors
     public static Material DirectorTool = null;
-    public static HashSet<Material> Transparent = new HashSet<>();
+    public static EnumSet<Material> Transparent = EnumSet.noneOf(Material.class);
 
     // TNT Tracers
     public static double TracerRateTicks = 5.0;
