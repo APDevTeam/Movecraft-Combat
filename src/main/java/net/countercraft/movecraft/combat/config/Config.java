@@ -28,9 +28,6 @@ public class Config {
     public static Material DirectorTool = null;
     public static HashSet<Material> Transparent = new HashSet<>();
 
-    // Fireball Lifespan
-    public static int FireballLifespan = 6;
-
     // TNT Tracers
     public static double TracerRateTicks = 5.0;
     public static long TracerMinDistanceSqrd = 360;

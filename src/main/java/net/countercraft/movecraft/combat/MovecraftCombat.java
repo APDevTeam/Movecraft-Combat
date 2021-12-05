@@ -5,8 +5,8 @@ import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
-import net.countercraft.movecraft.combat.fireballs.FireballManager;
-import net.countercraft.movecraft.combat.features.DurabilityOverride.DurabilityOverride;
+import net.countercraft.movecraft.combat.features.DurabilityOverride;
+import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -86,7 +86,7 @@ public final class MovecraftCombat extends JavaPlugin {
             }
         }
         DurabilityOverride.load(getConfig());
-        Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
+        FireballLifespan.load(getConfig());
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
@@ -152,8 +152,8 @@ public final class MovecraftCombat extends JavaPlugin {
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         RadarManager radarManager = new RadarManager();
         radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
-        FireballManager fireballManager = new FireballManager();
-        fireballManager.runTaskTimer(this, 0, 20);      // Every 1 second
+        FireballLifespan fireballLifespan = new FireballLifespan();
+        fireballLifespan.runTaskTimer(this, 0, 20);      // Every 1 second
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features.DurabilityOverride;
+package net.countercraft.movecraft.combat.features;
 
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
