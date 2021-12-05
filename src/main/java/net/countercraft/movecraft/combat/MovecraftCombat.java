@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
+import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -93,6 +94,7 @@ public final class MovecraftCombat extends JavaPlugin {
         DurabilityOverride.load(getConfig());
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());
+        MovementTracers.load(getConfig());
 
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
@@ -120,8 +122,6 @@ public final class MovecraftCombat extends JavaPlugin {
             }
         }
 
-        Config.MovementTracers = getConfig().getBoolean("MovementTracers", false);
-
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
@@ -134,7 +134,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
-        getServer().getPluginManager().registerEvents(new CraftTranslateListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
@@ -143,6 +142,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
         getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
         getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
+        getServer().getPluginManager().registerEvents(new MovementTracers(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick

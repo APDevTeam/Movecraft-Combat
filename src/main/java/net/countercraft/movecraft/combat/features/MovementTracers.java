@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.listener;
+package net.countercraft.movecraft.combat.features;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.config.Config;
@@ -7,16 +7,24 @@ import net.countercraft.movecraft.util.hitboxes.HitBox;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
-public class CraftTranslateListener implements Listener {
+public class MovementTracers implements Listener {
+    public static boolean MovementTracers = false;
+
+    public static void load(@NotNull FileConfiguration config) {
+        MovementTracers = config.getBoolean("MovementTracers", false);
+    }
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void translateEvent(CraftTranslateEvent e) {
-        if(!Config.MovementTracers)
+    public void onCraftTranslate(CraftTranslateEvent e) {
+        if(!MovementTracers)
             return;
         if(e.getNewHitBox().isEmpty() || e.getOldHitBox().isEmpty())
             return;
