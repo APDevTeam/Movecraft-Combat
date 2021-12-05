@@ -4,13 +4,11 @@ import java.util.*;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
-import net.countercraft.movecraft.combat.utils.LegacyUtils;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import org.bukkit.*;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 import org.bukkit.block.Block;
@@ -102,9 +100,7 @@ public class CannonDirectorManager extends DirectorManager {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Material cobweb = LegacyUtils.getInstance().getCobweb();
-                                if(cobweb != null)
-                                    fp.sendBlockChange(loc, cobweb.createBlockData());
+                                fp.sendBlockChange(loc, Material.COBWEB.createBlockData());
                             }
                         }.runTaskLater(MovecraftCombat.getInstance(), 5);
                         // then restore it

@@ -45,7 +45,4 @@ public class Config {
     public static boolean EnableCombatReleaseKick = true;
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
-    
-    // 1.12+ TNT-Translocation
-    public static boolean ReImplementTNTTranslocation = false;
 }

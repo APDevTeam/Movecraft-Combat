@@ -1,9 +1,9 @@
-package net.countercraft.movecraft.combat.listener;
+package net.countercraft.movecraft.combat.features;
 
-import net.countercraft.movecraft.combat.config.Config;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
@@ -16,11 +16,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Set;
 
-public class PistonListener implements Listener {
+public class ReImplementTNTTranslocation implements Listener {
+    public static boolean ReImplementTNTTranslocation = false;
+
+    public static void load(@NotNull FileConfiguration config) {
+        ReImplementTNTTranslocation = config.getBoolean("ReImplementTNTTranslocation", false);
+    }
+
     @EventHandler
-    public void onPistonRetract(BlockPistonRetractEvent e) {
-        if(!Config.ReImplementTNTTranslocation)
+    public void onPistonExtend(BlockPistonExtendEvent e) {
+        if(!ReImplementTNTTranslocation)
+            return;
+
+        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
+    }
+
+    @EventHandler
+    public void onPistonRetract(@NotNull BlockPistonRetractEvent e) {
+        if(!ReImplementTNTTranslocation)
             return;
 
         BlockFace dir = e.getDirection();
@@ -30,25 +45,17 @@ public class PistonListener implements Listener {
         doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
     }
 
-    @EventHandler
-    public void onPistonExtend(BlockPistonExtendEvent e) {
-        if(!Config.ReImplementTNTTranslocation)
-            return;
-
-        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
-    }
 
     private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, @Nullable Block pistonHead) {
         Block moveBlock = piston.getRelative(direction.getOppositeFace());
         if(!isValidMoveBlock(moveBlock))
             return;
 
-        HashSet<SearchEntry> searchResults = getTNT(piston, pistonHead, direction);
+        Set<SearchEntry> searchResults = getTNT(piston, pistonHead, direction);
 
         Location moveLoc = getCenterLocation(moveBlock);
-        for(SearchEntry se : searchResults) {
+        for(SearchEntry se : searchResults)
             se.translocateTo(moveLoc);
-        }
     }
 
     private boolean isValidMoveBlock(@NotNull Block moveBlock) {
@@ -68,8 +75,8 @@ public class PistonListener implements Listener {
     }
 
     @NotNull
-    private HashSet<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead, @NotNull BlockFace direction) {
-        HashSet<SearchEntry> searchResults = new HashSet<>();
+    private Set<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead, @NotNull BlockFace direction) {
+        Set<SearchEntry> searchResults = new HashSet<>();
         for(Entity e : piston.getWorld().getEntities()) {
             if(!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
                 continue;

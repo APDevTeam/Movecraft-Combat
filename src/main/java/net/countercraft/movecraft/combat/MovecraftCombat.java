@@ -11,6 +11,7 @@ import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.MovementTracers;
+import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -18,7 +19,6 @@ import net.countercraft.movecraft.combat.sign.AADirectorSign;
 import net.countercraft.movecraft.combat.sign.CannonDirectorSign;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.combat.tracking.DamageManager;
-import net.countercraft.movecraft.combat.utils.LegacyUtils;
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -95,6 +95,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());
         MovementTracers.load(getConfig());
+        ReImplementTNTTranslocation.load(getConfig());
 
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
@@ -111,16 +112,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
-
-        new LegacyUtils();
-
-        if(LegacyUtils.getInstance().isPostTranslocation()) {
-            Config.ReImplementTNTTranslocation = getConfig().getBoolean("ReImplementTNTTranslocation", false);
-
-            if(Config.ReImplementTNTTranslocation) {
-                getServer().getPluginManager().registerEvents(new PistonListener(), this);
-            }
-        }
 
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());
@@ -143,6 +134,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
         getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
         getServer().getPluginManager().registerEvents(new MovementTracers(), this);
+        getServer().getPluginManager().registerEvents(new ReImplementTNTTranslocation(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
