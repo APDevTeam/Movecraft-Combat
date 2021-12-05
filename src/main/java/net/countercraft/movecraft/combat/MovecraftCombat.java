@@ -5,12 +5,12 @@ import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
+import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
-import net.countercraft.movecraft.combat.radar.RadarManager;
 import net.countercraft.movecraft.combat.sign.AADirectorSign;
 import net.countercraft.movecraft.combat.sign.CannonDirectorSign;
 import net.countercraft.movecraft.combat.status.StatusManager;
@@ -102,7 +102,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
-        Config.EnableAntiRadar = getConfig().getBoolean("EnableAntiRadar", false);
+        AntiRadar.load(getConfig());
         Config.EnableFireballPenetration = getConfig().getBoolean("EnableFireballPenetration", false);
         Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
@@ -122,14 +122,11 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new CraftDetectListener(), this);
         getServer().getPluginManager().registerEvents(new CraftReleaseListener(), this);
         getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
-        getServer().getPluginManager().registerEvents(new CraftSinkListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new IgniteListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
@@ -138,7 +135,9 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
+        getServer().getPluginManager().registerEvents(new AntiRadar(), this);
         getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
+        getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
@@ -150,8 +149,6 @@ public final class MovecraftCombat extends JavaPlugin {
         damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
-        RadarManager radarManager = new RadarManager();
-        radarManager.runTaskTimer(this, 0, 12000);      // Every 10 minutes
         FireballLifespan fireballLifespan = new FireballLifespan();
         fireballLifespan.runTaskTimer(this, 0, 20);      // Every 1 second
     }

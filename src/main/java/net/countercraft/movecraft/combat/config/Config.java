@@ -46,9 +46,6 @@ public class Config {
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
     
-    // Anti-Player Radar
-    public static boolean EnableAntiRadar = false;
-
     // Fireball Penetration
     public static boolean EnableFireballPenetration = true;
 
