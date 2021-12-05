@@ -25,12 +25,8 @@ import net.countercraft.movecraft.combat.tracking.TNTTracking;
 
 
 public class ExplosionListener implements Listener {
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(EntityExplodeEvent e) {
-        if(e.isCancelled()) {
-            return;
-        }
-
         processDurabilityOverride(e);
         processTracers(e);
         processTNTTracking(e);
@@ -40,8 +36,6 @@ public class ExplosionListener implements Listener {
 
 
     private void processDurabilityOverride(@NotNull EntityExplodeEvent e) {
-        if (e.getEntity() == null)
-            return;
         if (e.getEntityType() != EntityType.PRIMED_TNT)
             return;
         if(Config.DurabilityOverride == null)
@@ -60,7 +54,7 @@ public class ExplosionListener implements Listener {
             if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
                 continue;
             }
-            if(new Random( b.getX()*b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) > Config.DurabilityOverride.get(b.getType())) {
+            if(new Random((long) b.getX() *b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) > Config.DurabilityOverride.get(b.getType())) {
                 continue;
             }
             removeList.add(b);
@@ -69,8 +63,6 @@ public class ExplosionListener implements Listener {
     }
 
     private void processTracers(@NotNull EntityExplodeEvent e) {
-        if (e.getEntity() == null)
-            return;
         Entity tnt = e.getEntity();
         if (e.getEntityType() == EntityType.PRIMED_TNT && Config.TracerRateTicks != 0) {
             long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
@@ -87,9 +79,10 @@ public class ExplosionListener implements Listener {
                 if (p.getLocation().distanceSquared(tnt.getLocation()) < maxDistSquared && p.getLocation().distanceSquared(tnt.getLocation()) >= Config.TracerMinDistanceSqrd) {  // we use squared because its faster
                     final Location loc = tnt.getLocation();
                     final Player fp = p;
-                    final World fw = e.getEntity().getWorld();
 
                     String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                    if(mode == null)
+                        continue;
                     if (mode.equals("BLOCKS")) {
                         // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
                         new BukkitRunnable() {
@@ -120,8 +113,6 @@ public class ExplosionListener implements Listener {
     }
 
     private void processTNTTracking(@NotNull EntityExplodeEvent e) {
-        if (e.getEntity() == null)
-            return;
         if (e.getEntityType() != EntityType.PRIMED_TNT)
             return;
 
@@ -140,13 +131,11 @@ public class ExplosionListener implements Listener {
     private void processFireballTracking(@NotNull EntityExplodeEvent e) {
         if(!Config.EnableFireballTracking)
             return;
-        if(e.getEntity() == null)
-            return;
         if(!(e.getEntity() instanceof Fireball))
             return;
         Fireball fireball = (Fireball) e.getEntity();
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
-        if(craft == null || !(craft instanceof PlayerCraft))
+        if(!(craft instanceof PlayerCraft))
             return;
         PlayerCraft playerCraft = (PlayerCraft) craft;
         if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
