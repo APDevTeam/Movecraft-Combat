@@ -5,6 +5,7 @@ import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
+import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
@@ -86,8 +87,13 @@ public final class MovecraftCombat extends JavaPlugin {
                     getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
             }
         }
+
+        AddFiresToHitbox.load(getConfig());
+        AntiRadar.load(getConfig());
         DurabilityOverride.load(getConfig());
         FireballLifespan.load(getConfig());
+        FireballPenetration.load(getConfig());
+
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
         Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
@@ -103,9 +109,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
-        AntiRadar.load(getConfig());
-        FireballPenetration.load(getConfig());
-        Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
         new LegacyUtils();
 
@@ -127,7 +130,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftScuttleListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new IgniteListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
@@ -136,9 +138,11 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
+        getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
         getServer().getPluginManager().registerEvents(new AntiRadar(), this);
         getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
         getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
+        getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick

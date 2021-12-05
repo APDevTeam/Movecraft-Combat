@@ -46,9 +46,6 @@ public class Config {
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
     
-    // Add fires to craft hitbox
-    public static boolean AddFiresToHitbox = true;
-
     // 1.12+ TNT-Translocation
     public static boolean ReImplementTNTTranslocation = false;
 
