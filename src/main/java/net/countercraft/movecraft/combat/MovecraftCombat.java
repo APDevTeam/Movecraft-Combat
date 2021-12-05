@@ -8,6 +8,7 @@ import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
+import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -103,7 +104,7 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
         Config.CombatReleaseScuttle = getConfig().getBoolean("CombatReleaseScuttle", true);
         AntiRadar.load(getConfig());
-        Config.EnableFireballPenetration = getConfig().getBoolean("EnableFireballPenetration", false);
+        FireballPenetration.load(getConfig());
         Config.AddFiresToHitbox = getConfig().getBoolean("AddFiresToHitbox", true);
 
         new LegacyUtils();

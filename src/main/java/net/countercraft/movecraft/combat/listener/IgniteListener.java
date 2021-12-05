@@ -18,15 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class IgniteListener implements Listener {
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockIgnite(BlockIgniteEvent event) {
-        if (event.isCancelled())
-            return;
-
-        // replace blocks with fire occasionally, to prevent fast craft from simply ignoring fire
-        if (Config.EnableFireballPenetration && event.getCause() == BlockIgniteEvent.IgniteCause.FIREBALL)
-            doFireballPenetration(event);
-
         // add surface fires to a craft's hitbox to prevent obstruction by fire
         if (Config.AddFiresToHitbox)
             doAddFiresToHitbox(event);
@@ -68,33 +61,5 @@ public class IgniteListener implements Listener {
         MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
 
         hitbox.add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
-    }
-
-    private void doFireballPenetration(@NotNull BlockIgniteEvent e) {
-        if(e.getIgnitingEntity() == null)
-            return;
-
-        Block testBlock = e.getBlock().getRelative(-1, 0, 0);
-        if (!testBlock.getType().isBurnable())
-            testBlock = e.getBlock().getRelative(1, 0, 0);
-        if (!testBlock.getType().isBurnable())
-            testBlock = e.getBlock().getRelative(0, 0, -1);
-        if (!testBlock.getType().isBurnable())
-            testBlock = e.getBlock().getRelative(0, 0, 1);
-
-        if (!testBlock.getType().isBurnable()) {
-            return;
-        }
-
-        /*
-         * NOTE: This calls a BlockIgniteEvent from within a listener for a BlockIgniteEvent
-         * the only way this doesn't get to infinite recursion is through the cause being SPREAD and this is only called on FIREBALL
-         */
-        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(testBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getIgnitingEntity());
-        Bukkit.getServer().getPluginManager().callEvent(igniteEvent);
-        if(igniteEvent.isCancelled())
-            return;
-
-        testBlock.setType(Material.AIR);
     }
 }
