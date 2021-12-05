@@ -1,9 +1,9 @@
 package net.countercraft.movecraft.combat.config;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+
+import java.util.HashSet;
 
 
 public class Config {
@@ -27,9 +27,6 @@ public class Config {
     // Directors
     public static Material DirectorTool = null;
     public static HashSet<Material> Transparent = new HashSet<>();
-
-    // Durability Override
-    public static HashMap<Material, Integer> DurabilityOverride = null;
 
     // Fireball Lifespan
     public static int FireballLifespan = 6;

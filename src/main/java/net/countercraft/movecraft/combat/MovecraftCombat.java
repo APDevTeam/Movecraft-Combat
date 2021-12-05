@@ -6,6 +6,7 @@ import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.fireballs.FireballManager;
+import net.countercraft.movecraft.combat.features.DurabilityOverride.DurabilityOverride;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -21,9 +22,6 @@ import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 
@@ -87,15 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
                     getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
             }
         }
-        if(getConfig().contains("DurabilityOverride")) {
-            Map<String, Object> temp = getConfig().getConfigurationSection("DurabilityOverride").getValues(false);
-            Config.DurabilityOverride = new HashMap<>();
-            for (Map.Entry<String, Object> entry : temp.entrySet()) {
-                EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
-                for(Material m : materials)
-                    Config.DurabilityOverride.put(m, (Integer) entry.getValue());
-            }
-        }
+        DurabilityOverride.load(getConfig());
         Config.FireballLifespan = getConfig().getInt("FireballLifespan", 6);
         Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
         Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
@@ -147,6 +137,8 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftTranslateListener(), this);
         getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
+
+        getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick

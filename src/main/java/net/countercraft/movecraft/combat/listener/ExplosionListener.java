@@ -1,66 +1,40 @@
 package net.countercraft.movecraft.combat.listener;
 
-import java.util.HashSet;
-import java.util.Random;
-
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.tracking.FireballTracking;
+import net.countercraft.movecraft.combat.tracking.TNTTracking;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
-import org.bukkit.*;
-import org.bukkit.event.EventPriority;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.*;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.combat.tracking.TNTTracking;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(EntityExplodeEvent e) {
-        processDurabilityOverride(e);
         processTracers(e);
         processTNTTracking(e);
         processFireballTracking(e);
         processDirectors(e);
     }
 
-
-    private void processDurabilityOverride(@NotNull EntityExplodeEvent e) {
-        if (e.getEntityType() != EntityType.PRIMED_TNT)
-            return;
-        if(Config.DurabilityOverride == null)
-            return;
-
-        // Sorry for the following monster conditional statement, it is necessary to avoid spalling.
-        // Basically it runs a random number based on the XYZ of the block and the system time if the block has explosion resistance
-        // And then it also removes the block if no adjacent blocks are air (IE: the explosion skipped a block)
-        HashSet<Block> removeList = new HashSet<>();
-        for(Block b : e.blockList()) {
-            if(!(b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty() || b.getRelative(BlockFace.UP).isEmpty() ||
-                    b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty())) {
-                removeList.add(b);
-                continue;
-            }
-            if(Config.DurabilityOverride == null || !Config.DurabilityOverride.containsKey(b.getType())) {
-                continue;
-            }
-            if(new Random((long) b.getX() *b.getY()*b.getZ()+(System.currentTimeMillis() >> 12)).nextInt(100) > Config.DurabilityOverride.get(b.getType())) {
-                continue;
-            }
-            removeList.add(b);
-        }
-        e.blockList().removeAll(removeList);
-    }
 
     private void processTracers(@NotNull EntityExplodeEvent e) {
         Entity tnt = e.getEntity();
