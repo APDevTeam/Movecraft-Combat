@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.features;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
 import net.countercraft.movecraft.util.hitboxes.HitBox;
 import org.bukkit.Bukkit;
@@ -14,6 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import static net.countercraft.movecraft.combat.features.TNTTracers.TracerParticle;
 
 public class MovementTracers implements Listener {
     public static boolean MovementTracers = false;
@@ -48,7 +49,7 @@ public class MovementTracers implements Listener {
                 @Override
                 public void run() {
                     for(var loc : difference)
-                        p.spawnParticle(Config.TracerParticle, loc.toBukkit(w).add(0.5, 0.5, 0.5), 0, 0.0, 0.0, 0.0);
+                        p.spawnParticle(TracerParticle, loc.toBukkit(w).add(0.5, 0.5, 0.5), 0, 0.0, 0.0, 0.0);
                 }
             }.runTaskLater(MovecraftCombat.getInstance(), 1);
         }

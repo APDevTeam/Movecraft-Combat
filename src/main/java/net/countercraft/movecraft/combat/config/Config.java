@@ -28,12 +28,6 @@ public class Config {
     public static Material DirectorTool = null;
     public static EnumSet<Material> Transparent = EnumSet.noneOf(Material.class);
 
-    // TNT Tracers
-    public static double TracerRateTicks = 5.0;
-    public static long TracerMinDistanceSqrd = 360;
-    public static Particle TracerParticle = null;
-    public static Particle ExplosionParticle = null;
-
     // Damage Tracking
     public static boolean EnableFireballTracking = false;
     public static boolean EnableTNTTracking = true;

@@ -12,6 +12,7 @@ import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
+import net.countercraft.movecraft.combat.features.TNTTracers;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -96,12 +97,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballPenetration.load(getConfig());
         MovementTracers.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
-
-        Config.TracerRateTicks = getConfig().getDouble("TracerRateTicks", 5.0);
-        Config.TracerMinDistanceSqrd = getConfig().getLong("TracerMinDistance", 60);
-        Config.TracerMinDistanceSqrd *= Config.TracerMinDistanceSqrd;
-        Config.TracerParticle = Particle.valueOf(getConfig().getString("TracerParticles", "FIREWORKS_SPARK"));
-        Config.ExplosionParticle = Particle.valueOf(getConfig().getString("ExplosionParticles", "VILLAGER_ANGRY"));
+        TNTTracers.load(getConfig());
 
 
         Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
@@ -135,6 +131,9 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
         getServer().getPluginManager().registerEvents(new MovementTracers(), this);
         getServer().getPluginManager().registerEvents(new ReImplementTNTTranslocation(), this);
+        var tntTracers = new TNTTracers();
+        getServer().getPluginManager().registerEvents(tntTracers, this);
+        tntTracers.runTaskTimer(this, 0, 1);
 
         aaDirectors = new AADirectorManager();
         aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
