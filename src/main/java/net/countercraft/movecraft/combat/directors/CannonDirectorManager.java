@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.directors;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.Directors;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -87,7 +88,7 @@ public class CannonDirectorManager extends DirectorManager {
                     continue;
                 }
                 Player p = getDirector((PlayerCraft) c);
-                if (p == null || p.getInventory().getItemInMainHand().getType() != Config.DirectorTool) {
+                if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool) {
                     continue;
                 }
                 Vector tntVector = tnt.getVelocity();

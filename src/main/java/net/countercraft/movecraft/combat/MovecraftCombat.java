@@ -7,6 +7,7 @@ import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
+import net.countercraft.movecraft.combat.features.Directors;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
@@ -73,25 +74,9 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
         Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
 
-        Object tool = getConfig().get("DirectorTool");
-        Material directorTool = null;
-        if (tool instanceof String)
-            directorTool = Material.getMaterial((String) tool);
-        if (directorTool == null)
-            getLogger().log(Level.SEVERE, "Failed to load director tool " + tool.toString());
-        else
-            Config.DirectorTool = directorTool;
-        if (getConfig().contains("TransparentBlocks")) {
-            for (Object o : getConfig().getList("TransparentBlocks")) {
-                if (o instanceof String)
-                    Config.Transparent.addAll(Tags.parseMaterials((String) o));
-                else
-                    getLogger().log(Level.SEVERE, "Failed to load transparent " + o.toString());
-            }
-        }
-
         AddFiresToHitbox.load(getConfig());
         AntiRadar.load(getConfig());
+        Directors.load(getConfig());
         DurabilityOverride.load(getConfig());
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());

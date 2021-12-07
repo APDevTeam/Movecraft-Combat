@@ -1,11 +1,5 @@
 package net.countercraft.movecraft.combat.config;
 
-import org.bukkit.Material;
-import org.bukkit.Particle;
-
-import java.util.EnumSet;
-
-
 public class Config {
     public static boolean Debug = false;
 
@@ -23,10 +17,6 @@ public class Config {
     // Cannon Directors
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;
-
-    // Directors
-    public static Material DirectorTool = null;
-    public static EnumSet<Material> Transparent = EnumSet.noneOf(Material.class);
 
     // Damage Tracking
     public static boolean EnableFireballTracking = false;

@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.utils;
 
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.Directors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,38 +20,37 @@ public class DirectorUtils {
         while (itr.hasNext()) {
             Block block = itr.next();
             Material material = block.getType();
-            if (Config.Transparent == null) {
-                if (!material.equals(Material.AIR)) {
+            if(Directors.Transparent == null) {
+                if (!material.equals(Material.AIR))
                     return block;
-                }
-            } else {
-                if (!Config.Transparent.contains(material)) {
+            }
+            else {
+                if(!Directors.Transparent.contains(material))
                     return block;
-                }
             }
         }
         return null;
     }
 
 
-    private static int distanceToRender(Location location) {
+    private static int distanceToRender(@NotNull Location location) {
         int chunkDisplacementX,chunkDisplacementZ;
         int renderDistance = Bukkit.getServer().getViewDistance() << 4;
         int chunkX = location.getChunk().getX() << 4; //minimum x and z positions in the chunk
         int chunkZ = location.getChunk().getZ() << 4;
-        if (location.getDirection().getX() > 0) { //get the number that must be added to the coordinate to move it
+        if (location.getDirection().getX() > 0) //get the number that must be added to the coordinate to move it
             chunkDisplacementX = 15 - location.getBlockX()+chunkX; //to the edge of the chunk
-        } else {
+        else
             chunkDisplacementX = chunkX - location.getBlockX();
-        }
-        if (location.getDirection().getZ() > 0) {
+
+        if (location.getDirection().getZ() > 0)
             chunkDisplacementZ = 15 - location.getBlockZ()+chunkZ;
-        } else {
+        else
             chunkDisplacementZ = chunkZ - location.getBlockZ();
-        }
+
         //add a quarter rotation to make the maths easier
         //now theta = 0 is in the positive X direction
-        double theta =Math.toRadians((location.getYaw() + 90F) % 360F);
+        double theta = Math.toRadians((location.getYaw() + 90F) % 360F);
 
         //We then take the sine of the angle times the X magnitude or the sine of the angle times the z magnitude,
         //whichever is smaller to establish the distance the ray travels before bumping into either edge of render.
