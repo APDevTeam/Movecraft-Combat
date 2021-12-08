@@ -7,14 +7,16 @@ import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Directors {
+public class Directors extends BukkitRunnable {
     public static Material DirectorTool = null;
-    public static EnumSet<Material> Transparent = EnumSet.noneOf(Material.class);
+    public static Set<Material> Transparent = null;
 
     public static void load(@NotNull FileConfiguration config) {
         Object tool = config.get("DirectorTool");
@@ -26,17 +28,21 @@ public class Directors {
         else
             DirectorTool = directorTool;
 
-        if(config.contains("TransparentBlocks")) {
-            var transparent = config.getList("TransparentBlocks");
-            if(transparent == null)
-                throw new IllegalStateException();
+        if(!config.contains("TransparentBlocks")) {
+            Transparent = new HashSet<>();
+            return;
+        }
+        var transparent = config.getList("TransparentBlocks");
+        if(transparent == null)
+            throw new IllegalStateException();
 
-            for(Object o : transparent) {
-                if(o instanceof String)
-                    Transparent.addAll(Tags.parseMaterials((String) o));
-                else
-                    MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
+        for(Object o : transparent) {
+            if(o instanceof String) {
+                var tagged = Tags.parseMaterials((String) o);
+                Transparent = new HashSet<>(tagged);
             }
+            else
+                MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
         }
     }
 
@@ -73,5 +79,10 @@ public class Directors {
             return null;
 
         return director;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

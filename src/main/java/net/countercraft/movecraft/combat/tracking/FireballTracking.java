@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.AADirectors;
 import net.countercraft.movecraft.combat.tracking.damagetype.FireballDamage;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -31,8 +32,8 @@ public class FireballTracking {
         if(!Config.EnableFireballTracking)
             return;
         Player sender;
-        if(MovecraftCombat.getInstance().getAADirectors().hasDirector(craft))
-            sender = MovecraftCombat.getInstance().getAADirectors().getDirector(craft);
+        if(AADirectors.getInstance() != null && AADirectors.getInstance().hasDirector(craft))
+            sender = AADirectors.getInstance().getDirector(craft);
         else
             sender = craft.getPilot();
 

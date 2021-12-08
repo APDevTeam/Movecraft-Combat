@@ -3,8 +3,8 @@ package net.countercraft.movecraft.combat;
 import net.countercraft.movecraft.combat.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.config.Config;
-import net.countercraft.movecraft.combat.directors.AADirectorManager;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
+import net.countercraft.movecraft.combat.features.AADirectors;
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.Directors;
@@ -17,23 +17,17 @@ import net.countercraft.movecraft.combat.features.TNTTracers;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
-import net.countercraft.movecraft.combat.sign.AADirectorSign;
 import net.countercraft.movecraft.combat.sign.CannonDirectorSign;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.combat.tracking.DamageManager;
-import net.countercraft.movecraft.util.Tags;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.logging.Level;
 
 
 public final class MovecraftCombat extends JavaPlugin {
     private static MovecraftCombat instance = null;
 
-    private AADirectorManager aaDirectors;
     private CannonDirectorManager cannonDirectors;
     private PlayerManager playerManager;
 
@@ -106,9 +100,11 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
-        getServer().getPluginManager().registerEvents(new AADirectorSign(), this);
         getServer().getPluginManager().registerEvents(new CannonDirectorSign(), this);
 
+        var aaDirectors = new AADirectors();
+        getServer().getPluginManager().registerEvents(aaDirectors, this);
+        aaDirectors.runTaskTimer(this, 0, 1);
         getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
         getServer().getPluginManager().registerEvents(new AntiRadar(), this);
         getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
@@ -120,8 +116,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(tntTracers, this);
         tntTracers.runTaskTimer(this, 0, 1);
 
-        aaDirectors = new AADirectorManager();
-        aaDirectors.runTaskTimer(this, 0, 1);           // Every tick
         cannonDirectors = new CannonDirectorManager();
         cannonDirectors.runTaskTimer(this, 0, 1);       // Every tick
         playerManager = new PlayerManager();
@@ -141,10 +135,6 @@ public final class MovecraftCombat extends JavaPlugin {
 
     public CannonDirectorManager getCannonDirectors() {
         return cannonDirectors;
-    }
-
-    public AADirectorManager getAADirectors() {
-        return aaDirectors;
     }
 
     public PlayerManager getPlayerManager() {

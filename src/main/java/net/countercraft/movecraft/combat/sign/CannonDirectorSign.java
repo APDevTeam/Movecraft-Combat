@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.sign;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
+import net.countercraft.movecraft.combat.features.AADirectors;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.ChatColor;
@@ -67,9 +68,8 @@ public class CannonDirectorSign implements Listener {
 
         cannons.addDirector((PlayerCraft) foundCraft, event.getPlayer());
         player.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
-        if (MovecraftCombat.getInstance().getAADirectors().isDirector(player)) {
-            MovecraftCombat.getInstance().getAADirectors().removeDirector(player);
-        }
+        if(AADirectors.getInstance() != null && AADirectors.getInstance().isDirector(player))
+            AADirectors.getInstance().removeDirector(player);
     }
 
     private boolean isSign(@Nullable Block block){
