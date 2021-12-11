@@ -61,8 +61,6 @@ public final class MovecraftCombat extends JavaPlugin {
         Config.Locale = getConfig().getString("Locale", "en");
         I18nSupport.init();
 
-        Config.AADirectorDistance = getConfig().getInt("AADirectorDistance", 50);
-        Config.AADirectorRange = getConfig().getInt("AADirectorRange", 120);
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
         Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);

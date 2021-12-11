@@ -16,6 +16,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
@@ -33,6 +34,8 @@ public class AADirectors extends Directors implements Listener {
     private static AADirectors instance;
     private static final String HEADER = "AA Director";
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
+    public static int AADirectorDistance = 50;
+    public static int AADirectorRange = 120;
 
     static {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
@@ -41,6 +44,11 @@ public class AADirectors extends Directors implements Listener {
     @Nullable
     public static AADirectors getInstance() {
         return instance;
+    }
+
+    public static void load(@NotNull FileConfiguration config) {
+        AADirectorDistance = config.getInt("AADirectorDistance", 50);
+        AADirectorRange = config.getInt("AADirectorRange", 120);
     }
 
 
@@ -61,9 +69,8 @@ public class AADirectors extends Directors implements Listener {
                 continue;
 
             var allFireballs = w.getEntitiesByClass(SmallFireball.class);
-            for(SmallFireball fireball : allFireballs) {
+            for(SmallFireball fireball : allFireballs)
                 processFireball(w, fireball);
-            }
         }
 
         lastCheck = System.currentTimeMillis();
@@ -83,7 +90,7 @@ public class AADirectors extends Directors implements Listener {
         int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
         int distY = Math.abs(midPoint.getY() - fireball.getLocation().getBlockY());
         int distZ = Math.abs(midPoint.getZ() - fireball.getLocation().getBlockZ());
-        if(distX > Config.AADirectorDistance || distY > Config.AADirectorDistance || distZ > Config.AADirectorDistance)
+        if(distX > AADirectorDistance || distY > AADirectorDistance || distZ > AADirectorDistance)
             return;
 
         fireball.setShooter(p);
@@ -95,7 +102,7 @@ public class AADirectors extends Directors implements Listener {
         double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = p.getTargetBlock(Directors.Transparent, Config.AADirectorRange);
+        Block targetBlock = p.getTargetBlock(Transparent, AADirectorRange);
         Vector targetVector;
         if(targetBlock == null) // the player is looking at nothing, shoot in that general direction
             targetVector = p.getLocation().getDirection();
@@ -168,7 +175,10 @@ public class AADirectors extends Directors implements Listener {
             return;
         }
 
-        if(action == Action.LEFT_CLICK_BLOCK && isDirector(p)) {
+        if(action == Action.LEFT_CLICK_BLOCK) {
+            if(!isDirector(p))
+                return;
+
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Longer Directing"));
             return;

@@ -6,10 +6,6 @@ public class Config {
     // Localisation
     public static String Locale = "en";
 
-    // AA Directors
-    public static int AADirectorDistance = 50;
-    public static int AADirectorRange = 120;
-
     // Contact Explosives
     public static boolean EnableContactExplosives = true;
     public static double ContactExplosivesMaxImpulseFactor = 10;
