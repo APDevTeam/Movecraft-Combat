@@ -43,20 +43,18 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
-        if (!folder.exists()) {
+        if(!folder.exists()) {
             getLogger().info("Created userdata directory");
             folder.mkdirs();
         }
 
-        //TODO other languages
         String[] languages = {"en", "no"};
-        for (String s : languages) {
-            if (!new File(getDataFolder() + "/localisation/mcclang_" + s + ".properties").exists()) {
-                this.saveResource("localisation/mcclang_" + s + ".properties", false);
+        for(String s : languages) {
+            if(!new File(getDataFolder() + "/localisation/mcclang_" + s + ".properties").exists()) {
+                saveResource("localisation/mcclang_" + s + ".properties", false);
             }
         }
-        Config.Locale = getConfig().getString("Locale", "en");
-        I18nSupport.init();
+        I18nSupport.load(getConfig());
 
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
         Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);

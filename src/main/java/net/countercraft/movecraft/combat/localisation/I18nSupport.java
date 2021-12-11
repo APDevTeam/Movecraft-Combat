@@ -2,26 +2,32 @@ package net.countercraft.movecraft.combat.localisation;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.config.Config;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.util.Properties;
 import java.util.logging.Level;
 
 public class I18nSupport {
+    public static String Locale = "en";
+
     private static Properties langFile;
 
-    public static void init() {
+    public static void load(@NotNull FileConfiguration config) {
+        Locale = config.getString("Locale", "en");
+
         langFile = new Properties();
 
         File langDirectory = new File(MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/localisation");
-        if (!langDirectory.exists()) {
+        if (!langDirectory.exists())
             langDirectory.mkdirs();
-        }
 
         InputStream stream = null;
-
         try {
-            stream = new FileInputStream(langDirectory.getAbsolutePath()+"/mcclang_" + Config.Locale + ".properties");
-        } catch (FileNotFoundException e) {
+            stream = new FileInputStream(langDirectory.getAbsolutePath() + "/mcclang_" + Locale + ".properties");
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -32,7 +38,8 @@ public class I18nSupport {
 
         try {
             langFile.load(stream);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

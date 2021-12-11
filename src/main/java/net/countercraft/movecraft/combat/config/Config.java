@@ -2,9 +2,6 @@ package net.countercraft.movecraft.combat.config;
 
 @Deprecated(forRemoval = true)
 public class Config {
-    // Localisation
-    public static String Locale = "en";
-
     // Contact Explosives
     public static boolean EnableContactExplosives = true;
     public static double ContactExplosivesMaxImpulseFactor = 10;
