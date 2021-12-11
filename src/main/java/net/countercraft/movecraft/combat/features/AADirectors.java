@@ -31,8 +31,10 @@ import org.jetbrains.annotations.Nullable;
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class AADirectors extends Directors implements Listener {
+    @Deprecated(forRemoval = true)
     private static AADirectors instance;
     private static final String HEADER = "AA Director";
+
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
@@ -41,7 +43,7 @@ public class AADirectors extends Directors implements Listener {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
     }
 
-    @Nullable
+    @Nullable @Deprecated(forRemoval = true)
     public static AADirectors getInstance() {
         return instance;
     }
@@ -55,6 +57,7 @@ public class AADirectors extends Directors implements Listener {
     private long lastCheck = 0;
 
     public AADirectors() {
+        super();
         instance = this;
     }
 
@@ -184,9 +187,8 @@ public class AADirectors extends Directors implements Listener {
             return;
         }
 
+        clearDirector(p);
         addDirector(foundCraft, p);
         p.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
-        if(MovecraftCombat.getInstance().getCannonDirectors().isDirector(p))
-            MovecraftCombat.getInstance().getCannonDirectors().removeDirector(p);
     }
 }

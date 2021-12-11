@@ -15,8 +15,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Directors extends BukkitRunnable {
+    private static Set<Directors> instances = new HashSet<>();
+
     public static Material DirectorTool = null;
     public static Set<Material> Transparent = null;
+
 
     public static void load(@NotNull FileConfiguration config) {
         Object tool = config.get("DirectorTool");
@@ -47,7 +50,13 @@ public class Directors extends BukkitRunnable {
     }
 
 
+
     private final HashBiMap<PlayerCraft, Player> directors = HashBiMap.create();
+
+
+    public Directors() {
+        instances.add(this);
+    }
 
     public void addDirector(@NotNull PlayerCraft craft, @NotNull Player player) {
         if(directors.containsValue(player))
@@ -70,6 +79,11 @@ public class Directors extends BukkitRunnable {
 
     public void removeDirector(@NotNull Player player) {
         directors.inverse().remove(player);
+    }
+
+    public void clearDirector(@NotNull Player player) {
+        for(var instance : instances)
+            instance.removeDirector(player);
     }
 
     @Nullable
