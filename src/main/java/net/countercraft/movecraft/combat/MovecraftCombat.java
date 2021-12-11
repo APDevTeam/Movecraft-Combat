@@ -42,7 +42,7 @@ public final class MovecraftCombat extends JavaPlugin {
         saveDefaultConfig();
 
 
-        File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
+        File folder = new File(getDataFolder(), "userdata");
         if(!folder.exists()) {
             getLogger().info("Created userdata directory");
             folder.mkdirs();
@@ -55,9 +55,6 @@ public final class MovecraftCombat extends JavaPlugin {
             }
         }
         I18nSupport.load(getConfig());
-
-        Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
-        Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
 
         AddFiresToHitbox.load(getConfig());
         AntiRadar.load(getConfig());
@@ -87,7 +84,9 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
 
-        getServer().getPluginManager().registerEvents(new DamageTracking(), this);
+        var damageTracking = new DamageTracking();
+        getServer().getPluginManager().registerEvents(damageTracking, this);
+
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1);
@@ -97,6 +96,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1);
         getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
+        new FireballLifespan().runTaskTimer(this, 0, 20);      // Every 1 second
         getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
         getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
         getServer().getPluginManager().registerEvents(new MovementTracers(), this);
@@ -109,8 +109,6 @@ public final class MovecraftCombat extends JavaPlugin {
 
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
-        FireballLifespan fireballLifespan = new FireballLifespan();
-        fireballLifespan.runTaskTimer(this, 0, 20);      // Every 1 second
     }
 
     @Override

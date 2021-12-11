@@ -80,35 +80,6 @@ public class CannonDirectors extends Directors implements Listener {
         if (ticksElapsed <= 0)
             return;
 
-        processTNTContactExplosives(); //Changed the order so newly directed TNT is not affected by Contact Explosives
-        processDirectors();
-        // then, removed any exploded or invalid TNT from tracking
-        tracking.keySet().removeIf(tnt -> !tnt.isValid() || tnt.getFuseTicks() <= 0);
-
-        lastCheck = System.currentTimeMillis();
-    }
-
-    @Deprecated(forRemoval = true)
-    private void processTNTContactExplosives() {
-        if(!Config.EnableContactExplosives)
-            return;
-        // now check to see if any has abruptly changed velocity, and should
-        // explode
-        for(TNTPrimed tnt : tracking.keySet()) {
-            double vel = tnt.getVelocity().lengthSquared();
-            if (vel < tracking.getDouble(tnt) / Config.ContactExplosivesMaxImpulseFactor) {
-                tnt.setVelocity(new Vector(0,0,0)); //freeze it in place to prevent sliding
-                tnt.setFuseTicks(0);
-            }
-            else {
-                // update the tracking with the new velocity so gradual
-                // changes do not make TNT explode
-                tracking.put(tnt, vel);
-            }
-        }
-    }
-
-    private void processDirectors() {
         // see if there is any new rapid moving TNT in the worlds
         for(World w : Bukkit.getWorlds()) {
             if(w == null || w.getPlayers().size() == 0)
@@ -118,6 +89,11 @@ public class CannonDirectors extends Directors implements Listener {
             for(TNTPrimed tnt : allTNT)
                 processTNT(tnt);
         }
+
+        // then, removed any exploded or invalid TNT from tracking
+        tracking.keySet().removeIf(tnt -> !tnt.isValid() || tnt.getFuseTicks() <= 0);
+
+        lastCheck = System.currentTimeMillis();
     }
 
     private void processTNT(@NotNull TNTPrimed tnt) {
