@@ -68,19 +68,19 @@ public class AADirectors extends Directors implements Listener {
             return;
 
         for(World w : Bukkit.getWorlds()) {
-            if(w == null)
+            if(w == null || w.getPlayers().size() == 0)
                 continue;
 
             var allFireballs = w.getEntitiesByClass(SmallFireball.class);
             for(SmallFireball fireball : allFireballs)
-                processFireball(w, fireball);
+                processFireball(fireball);
         }
 
         lastCheck = System.currentTimeMillis();
     }
 
-    private void processFireball(@NotNull World w, @NotNull SmallFireball fireball) {
-        if(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity || w.getPlayers().size() == 0)
+    private void processFireball(@NotNull SmallFireball fireball) {
+        if(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
             return;
 
         Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());

@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.config.Config;
-import net.countercraft.movecraft.combat.directors.CannonDirectorManager;
 import net.countercraft.movecraft.combat.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.tracking.TNTTracking;
 import net.countercraft.movecraft.craft.Craft;
@@ -24,8 +23,7 @@ public class ExplosionListener implements Listener {
     public void entityExplodeEvent(EntityExplodeEvent e) {
         processTNTTracking(e);
         processFireballTracking(e);
-        processDirectors(e);
-    }
+   }
 
 
     private void processTNTTracking(@NotNull EntityExplodeEvent e) {
@@ -63,12 +61,6 @@ public class ExplosionListener implements Listener {
                 FireballTracking.getInstance().damagedCraft(playerCraft, fireball);
                 return;
             }
-        }
-    }
-
-    private void processDirectors(@NotNull EntityExplodeEvent e) {
-        if(e.getEntity() instanceof TNTPrimed) {
-            CannonDirectorManager.getInstance().removeTNT((TNTPrimed) e.getEntity());
         }
     }
 }

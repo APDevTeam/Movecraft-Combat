@@ -65,7 +65,7 @@ public class DispenseListener implements Listener {
 
         // Find nearest craft
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getBlock().getLocation());
-        if(craft == null || !(craft instanceof PlayerCraft))
+        if(!(craft instanceof PlayerCraft))
             return;
         if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))
             return;
