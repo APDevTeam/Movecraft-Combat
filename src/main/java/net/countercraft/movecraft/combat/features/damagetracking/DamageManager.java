@@ -60,9 +60,37 @@ public class DamageManager implements Listener {
         }
     }
 
-    public void craftSunk(@NotNull PlayerCraft craft) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCraftRelease(@NotNull CraftReleaseEvent e) {
+        if(!(e.getCraft() instanceof PlayerCraft))
+            return;
+
+        PlayerCraft craft = (PlayerCraft) e.getCraft();
         if(!damageRecords.containsKey(craft))
             return;
+
+        List<DamageRecord> records = damageRecords.get(craft);
+        if(records.isEmpty()) {
+            damageRecords.remove(craft);
+            return;
+        }
+
+        // Call event
+        CraftReleasedByEvent event = new CraftReleasedByEvent(craft, records);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        damageRecords.remove(craft);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCraftSink(@NotNull CraftSinkEvent e) {
+        if(!(e.getCraft() instanceof PlayerCraft))
+            return;
+
+        PlayerCraft craft = (PlayerCraft) e.getCraft();
+        if(!damageRecords.containsKey(craft))
+            return;
+
         List<DamageRecord> records = damageRecords.get(craft);
         if(records.isEmpty()) {
             damageRecords.remove(craft);
@@ -72,41 +100,12 @@ public class DamageManager implements Listener {
         // Set last damage record as kill shot
         records.get(records.size() - 1).setKillShot(true);
 
-        CraftSunkByEvent e = new CraftSunkByEvent(craft, records);
-        Bukkit.getServer().getPluginManager().callEvent(e);
-        Bukkit.broadcastMessage(e.causesToString());
+        // Call event
+        CraftSunkByEvent event = new CraftSunkByEvent(craft, records);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        Bukkit.broadcastMessage(event.causesToString());
         damageRecords.remove(craft);
-    }
-
-    public void craftReleased(@NotNull PlayerCraft craft) {
-        if(!damageRecords.containsKey(craft))
-            return;
-        List<DamageRecord> records = damageRecords.get(craft);
-        if(records.isEmpty()) {
-            damageRecords.remove(craft);
-            return;
-        }
-
-        CraftReleasedByEvent e = new CraftReleasedByEvent(craft, records);
-        Bukkit.getServer().getPluginManager().callEvent(e);
-        damageRecords.remove(craft);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onCraftRelease(@NotNull CraftReleaseEvent e) {
-        if(!(e.getCraft() instanceof PlayerCraft))
-            return;
-
-        craftReleased((PlayerCraft) e.getCraft());
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onCraftSink(@NotNull CraftSinkEvent e) {
-        if(!(e.getCraft() instanceof PlayerCraft))
-            return;
-
-        PlayerCraft playerCraft = (PlayerCraft) e.getCraft();
-        craftSunk(playerCraft);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

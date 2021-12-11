@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -23,7 +24,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.combat.tracking.TNTTracking;
 
 
 public class DispenseListener implements Listener {
@@ -55,9 +55,6 @@ public class DispenseListener implements Listener {
         TNTPrimed tnt = (TNTPrimed) e.getBlock().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
-
-        if(Config.Debug)
-            MovecraftCombat.getInstance().getLogger().info("Spawned custom TNT!: " + l + ", " + velocity);
 
         for(Player p : Bukkit.getServer().getOnlinePlayers()) {
             p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);

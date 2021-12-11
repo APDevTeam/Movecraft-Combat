@@ -1,16 +1,16 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
 import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.tracking.FireballTracking;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import net.countercraft.movecraft.util.MathUtils;
-import net.countercraft.movecraft.craft.Craft;
 
 
 public class ProjectileLaunchListener implements Listener {

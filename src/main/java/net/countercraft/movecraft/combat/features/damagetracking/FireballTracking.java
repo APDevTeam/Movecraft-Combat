@@ -1,33 +1,34 @@
-package net.countercraft.movecraft.combat.tracking;
+package net.countercraft.movecraft.combat.features.damagetracking;
+
+import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.AADirectors;
+import net.countercraft.movecraft.combat.features.damagetracking.types.FireballDamage;
+import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.craft.PlayerCraft;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.features.AADirectors;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageManager;
-import net.countercraft.movecraft.combat.features.damagetracking.types.FireballDamage;
-import net.countercraft.movecraft.craft.PlayerCraft;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.jetbrains.annotations.NotNull;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Fireball;
-import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.config.Config;
-
-
 public class FireballTracking {
+    @Nullable @Deprecated(forRemoval = true)
     private static FireballTracking instance;
 
-    public FireballTracking() {
-        instance = this;
-    }
-
+    @Nullable @Deprecated(forRemoval = true)
     public static FireballTracking getInstance() {
         return instance;
     }
 
+
+    public FireballTracking() {
+        instance = this;
+    }
 
     public void dispensedFireball(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
         if(!Config.EnableFireballTracking)

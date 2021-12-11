@@ -1,33 +1,38 @@
-package net.countercraft.movecraft.combat.tracking;
+package net.countercraft.movecraft.combat.features.damagetracking;
+
+import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.CannonDirectors;
+import net.countercraft.movecraft.combat.features.damagetracking.types.TNTCannonDamage;
+import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.PlayerCraft;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.features.CannonDirectors;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageManager;
-import net.countercraft.movecraft.combat.features.damagetracking.types.TNTCannonDamage;
-import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.craft.PlayerCraft;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.jetbrains.annotations.NotNull;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
-import net.countercraft.movecraft.craft.Craft;
-
-
 public class TNTTracking {
-    private static TNTTracking instance;
+    @Nullable @Deprecated(forRemoval = true)
+    private static TNTTracking instance = null;
 
-    public TNTTracking() {
-        instance = this;
-    }
-
+    @Nullable @Deprecated(forRemoval = true)
     public static TNTTracking getInstance() {
         return instance;
     }
 
+
+    @NotNull
+    private final DamageManager manager;
+
+    public TNTTracking(@NotNull DamageManager manager) {
+        this.manager = manager;
+        instance = this;
+    }
 
     public void dispensedTNT(@NotNull PlayerCraft craft, @NotNull TNTPrimed tnt) {
         Player sender;
@@ -52,7 +57,7 @@ public class TNTTracking {
         if(cause == null || !cause.isOnline() || !(craft instanceof PlayerCraft))
             return;
         PlayerCraft playerCraft = (PlayerCraft) craft;
-        DamageManager.getInstance().addDamageRecord(playerCraft, cause, new TNTCannonDamage());
+        manager.addDamageRecord(playerCraft, cause, new TNTCannonDamage());
         StatusManager.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

@@ -1,8 +1,7 @@
 package net.countercraft.movecraft.combat.config;
 
+@Deprecated(forRemoval = true)
 public class Config {
-    public static boolean Debug = false;
-
     // Localisation
     public static String Locale = "en";
 

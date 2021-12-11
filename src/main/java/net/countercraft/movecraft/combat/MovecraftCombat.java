@@ -42,8 +42,6 @@ public final class MovecraftCombat extends JavaPlugin {
         saveDefaultConfig();
 
 
-        Config.Debug = getConfig().getBoolean("Debug", false);
-
         File folder = new File(MovecraftCombat.getInstance().getDataFolder(), "userdata");
         if (!folder.exists()) {
             getLogger().info("Created userdata directory");
