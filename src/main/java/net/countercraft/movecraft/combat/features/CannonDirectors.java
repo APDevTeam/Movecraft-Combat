@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.features;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;
@@ -18,6 +19,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -37,8 +39,6 @@ import java.util.UUID;
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class CannonDirectors extends Directors implements Listener {
-    @Deprecated(forRemoval = true)
-    private static CannonDirectors instance;
     private static final String HEADER = "Cannon Director";
 
     public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
@@ -47,8 +47,19 @@ public class CannonDirectors extends Directors implements Listener {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
     }
 
-    @Nullable
-    @Deprecated(forRemoval = true)
+    public static int CannonDirectorDistance = 100;
+    public static int CannonDirectorRange = 120;
+
+    public static void load(@NotNull FileConfiguration config) {
+        CannonDirectorDistance = config.getInt("CannonDirectorsDistance", 100);
+        CannonDirectorRange = config.getInt("CannonDirectorRange", 120);
+    }
+
+
+    @Nullable @Deprecated(forRemoval = true)
+    private static CannonDirectors instance;
+
+    @Nullable @Deprecated(forRemoval = true)
     public static CannonDirectors getInstance() {
         return instance;
     }
@@ -57,8 +68,10 @@ public class CannonDirectors extends Directors implements Listener {
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastCheck = 0;
 
+
     public CannonDirectors() {
         super();
+        instance = this;
     }
 
     @Override
@@ -127,8 +140,8 @@ public class CannonDirectors extends Directors implements Listener {
         int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
         int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
         int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-        if(!hasDirector((PlayerCraft) c) || distX >= Config.CannonDirectorDistance
-                || distY >= Config.CannonDirectorDistance || distZ >= Config.CannonDirectorDistance)
+        if(!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
+                || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
             return;
 
         Player p = getDirector((PlayerCraft) c);
@@ -164,7 +177,7 @@ public class CannonDirectors extends Directors implements Listener {
 
     @Nullable
     private Craft getDirectingCraft(@NotNull TNTPrimed tnt) {
-        if(!Config.EnableTNTTracking)
+        if(!DamageTracking.EnableTNTTracking)
             return null;
 
         List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");

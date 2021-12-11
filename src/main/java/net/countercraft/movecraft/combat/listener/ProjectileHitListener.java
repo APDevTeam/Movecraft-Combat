@@ -1,6 +1,6 @@
 package net.countercraft.movecraft.combat.listener;
 
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -15,7 +15,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 public class ProjectileHitListener implements Listener {
     @EventHandler
     public void projectileHitEvent(ProjectileHitEvent e) {
-        if(!Config.EnableFireballTracking)
+        if(!DamageTracking.EnableFireballTracking)
             return;
         if(e.getEntity() == null)
             return;

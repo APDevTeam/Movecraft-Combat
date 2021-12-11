@@ -31,7 +31,7 @@ public class FireballTracking {
     }
 
     public void dispensedFireball(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
-        if(!Config.EnableFireballTracking)
+        if(!DamageTracking.EnableFireballTracking)
             return;
         Player sender;
         if(AADirectors.getInstance() != null && AADirectors.getInstance().hasDirector(craft))
@@ -46,7 +46,7 @@ public class FireballTracking {
     }
 
     public void damagedCraft(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
-        if(!Config.EnableFireballTracking)
+        if(!DamageTracking.EnableFireballTracking)
             return;
 
         List<MetadataValue> meta = fireball.getMetadata("MCC-Sender");
@@ -58,7 +58,7 @@ public class FireballTracking {
         if(cause == null || !cause.isOnline())
             return;
 
-        DamageManager.getInstance().addDamageRecord(craft, cause, new FireballDamage());
+        DamageTracking.getInstance().addDamageRecord(craft, cause, new FireballDamage());
         StatusManager.getInstance().registerEvent(craft.getPilot());
     }
 }

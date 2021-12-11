@@ -14,7 +14,7 @@ import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.features.TNTTracers;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageManager;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -59,8 +59,6 @@ public final class MovecraftCombat extends JavaPlugin {
         I18nSupport.init();
 
         Config.EnableContactExplosives = getConfig().getBoolean("EnableContactExplosives", true);
-        Config.CannonDirectorDistance = getConfig().getInt("CannonDirectorsDistance", 100);
-        Config.CannonDirectorRange = getConfig().getInt("CannonDirectorRange", 120);
         Config.ContactExplosivesMaxImpulseFactor = getConfig().getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
 
         AddFiresToHitbox.load(getConfig());
@@ -73,11 +71,6 @@ public final class MovecraftCombat extends JavaPlugin {
         ReImplementTNTTranslocation.load(getConfig());
         TNTTracers.load(getConfig());
 
-
-        Config.EnableFireballTracking = getConfig().getBoolean("EnableFireballTracking", false);
-        Config.EnableTNTTracking = getConfig().getBoolean("EnableTNTTracking", true);
-        Config.EnableTorpedoTracking = getConfig().getBoolean("EnableTorpedoTracking", false);
-        Config.DamageTimeout = getConfig().getInt("DamageTimeout", 300);
         Config.EnableCombatReleaseTracking = getConfig().getBoolean("EnableCombatReleaseTracking", false);
         Config.EnableCombatReleaseKick = getConfig().getBoolean("EnableCombatReleaseKick", true);
         Config.CombatReleaseBanLength = getConfig().getLong("CombatReleaseBanLength", 60);
@@ -96,7 +89,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
 
-        getServer().getPluginManager().registerEvents(new DamageManager(), this);
+        getServer().getPluginManager().registerEvents(new DamageTracking(), this);
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1);

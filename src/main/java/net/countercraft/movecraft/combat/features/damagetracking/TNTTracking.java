@@ -27,9 +27,9 @@ public class TNTTracking {
 
 
     @NotNull
-    private final DamageManager manager;
+    private final DamageTracking manager;
 
-    public TNTTracking(@NotNull DamageManager manager) {
+    public TNTTracking(@NotNull DamageTracking manager) {
         this.manager = manager;
         instance = this;
     }

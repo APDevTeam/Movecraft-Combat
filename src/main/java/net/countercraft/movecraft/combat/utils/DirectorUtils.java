@@ -1,6 +1,6 @@
 package net.countercraft.movecraft.combat.utils;
 
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.CannonDirectors;
 import net.countercraft.movecraft.combat.features.Directors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class DirectorUtils {
     @Nullable
     public static Block getDirectorBlock(@NotNull Player player) {
-        Iterator<Block> itr = new BlockIterator(player, Math.min(Config.CannonDirectorRange, distanceToRender(player.getLocation())));
+        Iterator<Block> itr = new BlockIterator(player, Math.min(CannonDirectors.CannonDirectorRange, distanceToRender(player.getLocation())));
         while (itr.hasNext()) {
             Block block = itr.next();
             Material material = block.getType();

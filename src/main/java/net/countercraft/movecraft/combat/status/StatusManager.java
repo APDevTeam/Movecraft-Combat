@@ -5,6 +5,7 @@ import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.event.CombatStopEvent;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.config.Settings;
@@ -44,7 +45,7 @@ public class StatusManager extends BukkitRunnable {
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
         for(var entry : records.entrySet()) {
-            if((currentTime - entry.getValue()) > Config.DamageTimeout * 1000L)
+            if((currentTime - entry.getValue()) > DamageTracking.DamageTimeout * 1000L)
                 removeSet.add(entry.getKey());
         }
         for(Player player : removeSet) {
@@ -60,7 +61,7 @@ public class StatusManager extends BukkitRunnable {
         if(!records.containsKey(player))
             return false;
 
-        return System.currentTimeMillis() - records.get(player) < Config.DamageTimeout * 1000L;
+        return System.currentTimeMillis() - records.get(player) < DamageTracking.DamageTimeout * 1000L;
     }
 
     public void registerEvent(@Nullable Player player) {
@@ -68,7 +69,7 @@ public class StatusManager extends BukkitRunnable {
             return;
         if(player == null)
             return;
-        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > Config.DamageTimeout * 1000L)
+        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
             startCombat(player);
         records.put(player, System.currentTimeMillis());
     }

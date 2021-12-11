@@ -1,6 +1,6 @@
 package net.countercraft.movecraft.combat.listener;
 
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
 import net.countercraft.movecraft.craft.Craft;
@@ -43,7 +43,7 @@ public class ExplosionListener implements Listener {
     }
 
     private void processFireballTracking(@NotNull EntityExplodeEvent e) {
-        if(!Config.EnableFireballTracking)
+        if(!DamageTracking.EnableFireballTracking)
             return;
         if(!(e.getEntity() instanceof Fireball))
             return;

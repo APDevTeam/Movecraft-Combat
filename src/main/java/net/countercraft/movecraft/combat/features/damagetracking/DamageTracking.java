@@ -18,6 +18,7 @@ import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftSinkEvent;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,18 +31,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DamageManager implements Listener {
+public class DamageTracking implements Listener {
+    public static boolean EnableFireballTracking = false;
+    public static boolean EnableTNTTracking = true;
+    public static boolean EnableTorpedoTracking = false;
+    public static int DamageTimeout = 300;
+
+    public static void load(@NotNull FileConfiguration config) {
+        EnableFireballTracking = config.getBoolean("EnableFireballTracking", false);
+        EnableTNTTracking = config.getBoolean("EnableTNTTracking", true);
+        EnableTorpedoTracking = config.getBoolean("EnableTorpedoTracking", false);
+        DamageTimeout = config.getInt("DamageTimeout", 300);
+    }
+
     @Deprecated(forRemoval = true)
-    private static DamageManager instance;
+    private static DamageTracking instance;
 
     @Nullable @Deprecated(forRemoval = true)
-    public static DamageManager getInstance() {
+    public static DamageTracking getInstance() {
         return instance;
     }
 
+
     private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
 
-    public DamageManager() {
+    public DamageTracking() {
         instance = this;
     }
 
@@ -110,7 +124,7 @@ public class DamageManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onCollisionExplosion(@NotNull CraftCollisionExplosionEvent e) {
-        if(!Config.EnableTorpedoTracking)
+        if(!EnableTorpedoTracking)
             return;
         if(!(e.getCraft() instanceof PilotedCraft))
             return;

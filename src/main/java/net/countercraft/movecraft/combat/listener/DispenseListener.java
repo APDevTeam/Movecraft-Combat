@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -31,7 +31,7 @@ public class DispenseListener implements Listener {
     public void dispenseEvent(BlockDispenseEvent e) {
         if(e.isCancelled())
             return;
-        if(!Config.EnableTNTTracking)
+        if(!DamageTracking.EnableTNTTracking)
             return;
         if(e.getBlock().getType() != Material.DISPENSER)
             return;

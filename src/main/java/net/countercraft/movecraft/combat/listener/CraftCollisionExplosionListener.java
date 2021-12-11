@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.listener;
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.CraftStatus;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class CraftCollisionExplosionListener implements Listener {
     @EventHandler
     public void collisionExplosionListener(CraftCollisionExplosionEvent e) {
-        if(!Config.EnableTorpedoTracking)
+        if(!DamageTracking.EnableTorpedoTracking)
             return;
         if(!(e.getCraft() instanceof PilotedCraft))
             return;
