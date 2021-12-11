@@ -14,11 +14,11 @@ import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.features.TNTTracers;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageManager;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
 import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.tracking.DamageManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -98,6 +98,7 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
         getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
 
+        getServer().getPluginManager().registerEvents(new DamageManager(), this);
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1);
@@ -117,8 +118,6 @@ public final class MovecraftCombat extends JavaPlugin {
 
         playerManager = new PlayerManager();
 
-        DamageManager damageTracking = new DamageManager();
-        damageTracking.runTaskTimer(this, 0, 12000);    // Every 10 minutes
         StatusManager statusTracking = new StatusManager();
         statusTracking.runTaskTimer(this, 0, 200);      // Every 10 seconds
         FireballLifespan fireballLifespan = new FireballLifespan();

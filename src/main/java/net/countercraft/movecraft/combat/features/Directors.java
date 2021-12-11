@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Directors extends BukkitRunnable {
-    private static Set<Directors> instances = new HashSet<>();
+    private static final Set<Directors> instances = new HashSet<>();
 
     public static Material DirectorTool = null;
     public static Set<Material> Transparent = null;

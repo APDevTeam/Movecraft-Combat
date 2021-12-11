@@ -1,12 +1,9 @@
 package net.countercraft.movecraft.combat.features;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.tracking.DamageManager;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
-import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.events.CraftDetectEvent;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftScuttleEvent;

@@ -1,6 +1,6 @@
-package net.countercraft.movecraft.combat.tracking;
+package net.countercraft.movecraft.combat.features.damagetracking;
 
-import net.countercraft.movecraft.combat.tracking.damagetype.DamageType;
+import net.countercraft.movecraft.combat.features.damagetracking.types.DamageType;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 

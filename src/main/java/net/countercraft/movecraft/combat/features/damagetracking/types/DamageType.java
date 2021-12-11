@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.tracking.damagetype;
+package net.countercraft.movecraft.combat.features.damagetracking.types;
 
 
 // Interface for all types of damage

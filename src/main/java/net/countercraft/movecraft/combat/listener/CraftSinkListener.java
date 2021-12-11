@@ -1,7 +1,6 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.status.StatusManager;
-import net.countercraft.movecraft.combat.tracking.DamageManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftSinkEvent;
 import org.bukkit.event.EventHandler;
@@ -15,7 +14,6 @@ public class CraftSinkListener implements Listener {
             return;
 
         PlayerCraft playerCraft = (PlayerCraft) e.getCraft();
-        DamageManager.getInstance().craftSunk(playerCraft);
         StatusManager.getInstance().craftSunk(playerCraft);
     }
 }

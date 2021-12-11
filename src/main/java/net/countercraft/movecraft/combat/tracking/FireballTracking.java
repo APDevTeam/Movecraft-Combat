@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.features.AADirectors;
-import net.countercraft.movecraft.combat.tracking.damagetype.FireballDamage;
+import net.countercraft.movecraft.combat.features.damagetracking.DamageManager;
+import net.countercraft.movecraft.combat.features.damagetracking.types.FireballDamage;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
