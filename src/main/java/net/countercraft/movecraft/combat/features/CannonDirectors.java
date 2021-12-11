@@ -47,6 +47,12 @@ public class CannonDirectors extends Directors implements Listener {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
     }
 
+    @Nullable
+    @Deprecated(forRemoval = true)
+    public static CannonDirectors getInstance() {
+        return instance;
+    }
+
 
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastCheck = 0;

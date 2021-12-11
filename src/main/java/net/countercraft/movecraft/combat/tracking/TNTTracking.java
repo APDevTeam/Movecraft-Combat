@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.CannonDirectors;
 import net.countercraft.movecraft.combat.tracking.damagetype.TNTCannonDamage;
 import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -29,8 +30,8 @@ public class TNTTracking {
 
     public void dispensedTNT(@NotNull PlayerCraft craft, @NotNull TNTPrimed tnt) {
         Player sender;
-        if(MovecraftCombat.getInstance().getCannonDirectors().hasDirector(craft))
-            sender = MovecraftCombat.getInstance().getCannonDirectors().getDirector(craft);
+        if(CannonDirectors.getInstance().hasDirector(craft))
+            sender = CannonDirectors.getInstance().getDirector(craft);
         else
             sender = craft.getPilot();
         if(sender == null)
