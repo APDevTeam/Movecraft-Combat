@@ -85,7 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
 
-        // Register feature events and runnables
+        // Register features
         var combatRelease = new CombatRelease();
         getServer().getPluginManager().registerEvents(combatRelease, this);
         combatRelease.runTaskTimer(this, 0, 200); // Every 10 seconds
@@ -104,7 +104,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
         var damageTracking = new DamageTracking();
         getServer().getPluginManager().registerEvents(damageTracking, this);
-        getServer().getPluginManager().registerEvents(new FireballTracking(), this);
+        getServer().getPluginManager().registerEvents(new FireballTracking(damageTracking), this);
         getServer().getPluginManager().registerEvents(new TNTTracking(damageTracking), this);
 
 

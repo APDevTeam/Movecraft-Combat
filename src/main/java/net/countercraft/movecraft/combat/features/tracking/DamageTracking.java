@@ -36,20 +36,10 @@ public class DamageTracking implements Listener {
         DamageTimeout = config.getInt("DamageTimeout", 300);
     }
 
-    @Deprecated(forRemoval = true)
-    private static DamageTracking instance;
-
-    @Nullable @Deprecated(forRemoval = true)
-    public static DamageTracking getInstance() {
-        return instance;
-    }
 
 
     private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
 
-    public DamageTracking() {
-        instance = this;
-    }
 
     public void addDamageRecord(@NotNull PlayerCraft craft, @NotNull Player cause, @NotNull DamageType type) {
         DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, type);

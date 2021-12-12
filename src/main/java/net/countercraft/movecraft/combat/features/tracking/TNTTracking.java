@@ -40,20 +40,6 @@ public class TNTTracking implements Listener {
         this.manager = manager;
     }
 
-    public void damagedCraft(@NotNull PlayerCraft craft, @NotNull TNTPrimed tnt) {
-        List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
-        if(meta.isEmpty())
-            return;
-
-        UUID sender = UUID.fromString(meta.get(0).asString());
-        Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
-        if(cause == null || !cause.isOnline())
-            return;
-
-        manager.addDamageRecord(craft, cause, new TNTCannonDamage());
-        CombatRelease.getInstance().registerEvent(craft.getPilot());
-    }
-
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onExplosionDamagePlayerCraft(@NotNull ExplosionDamagePlayerCraftEvent e) {
@@ -62,7 +48,19 @@ public class TNTTracking implements Listener {
         if(!(e.getDamaging() instanceof TNTPrimed))
             return;
 
-        damagedCraft((PlayerCraft) e.getCraft(), (TNTPrimed) e.getDamaging());
+        TNTPrimed tnt = (TNTPrimed) e.getDamaging();
+        List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
+        if(meta.isEmpty())
+            return;
+
+        UUID sender = UUID.fromString(meta.get(0).asString());
+        Player cause = Bukkit.getServer().getPlayer(sender);
+        if(cause == null || !cause.isOnline())
+            return;
+
+        var craft = e.getDamaged();
+        manager.addDamageRecord(craft, cause, new TNTCannonDamage());
+        CombatRelease.getInstance().registerEvent(craft.getPilot());
     }
 
 
