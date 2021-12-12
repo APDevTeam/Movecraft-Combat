@@ -1,9 +1,8 @@
 package net.countercraft.movecraft.combat.listener;
 
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
-import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -32,6 +31,6 @@ public class ProjectileLaunchListener implements Listener {
 
         PlayerCraft playerCraft = (PlayerCraft) craft;
         FireballTracking.getInstance().dispensedFireball(playerCraft, fireball);
-        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
+        CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

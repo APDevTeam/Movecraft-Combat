@@ -1,29 +1,29 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
-import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
-import org.bukkit.event.EventPriority;
-import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.util.Vector;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Sound;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
-import net.countercraft.movecraft.craft.Craft;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 
 public class DispenseListener implements Listener {
@@ -70,7 +70,7 @@ public class DispenseListener implements Listener {
         // Report to tracking
         PlayerCraft playerCraft = (PlayerCraft) craft;
         TNTTracking.getInstance().dispensedTNT(playerCraft, tnt);
-        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
+        CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
     }
 
     @NotNull

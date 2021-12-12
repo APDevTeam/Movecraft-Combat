@@ -2,18 +2,17 @@ package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
-import net.countercraft.movecraft.combat.status.StatusManager;
+import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.CraftStatus;
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
+import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.util.MathUtils;
-import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +41,7 @@ public class CraftCollisionExplosionListener implements Listener {
         if(!MathUtils.locIsNearCraftFast(damaged, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
 
-        StatusManager.getInstance().registerEvent(damaged.getPilot());
+        CombatRelease.getInstance().registerEvent(damaged.getPilot());
     }
 
     @Nullable

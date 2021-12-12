@@ -2,8 +2,8 @@ package net.countercraft.movecraft.combat.features.damagetracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.features.CannonDirectors;
+import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.types.TNTCannonDamage;
-import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.entity.Player;
@@ -58,6 +58,6 @@ public class TNTTracking {
             return;
         PlayerCraft playerCraft = (PlayerCraft) craft;
         manager.addDamageRecord(playerCraft, cause, new TNTCannonDamage());
-        StatusManager.getInstance().registerEvent(playerCraft.getPilot());
+        CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

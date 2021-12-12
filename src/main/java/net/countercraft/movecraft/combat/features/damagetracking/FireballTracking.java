@@ -1,10 +1,9 @@
 package net.countercraft.movecraft.combat.features.damagetracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.features.AADirectors;
+import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.types.FireballDamage;
-import net.countercraft.movecraft.combat.status.StatusManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -59,6 +58,6 @@ public class FireballTracking {
             return;
 
         DamageTracking.getInstance().addDamageRecord(craft, cause, new FireballDamage());
-        StatusManager.getInstance().registerEvent(craft.getPilot());
+        CombatRelease.getInstance().registerEvent(craft.getPilot());
     }
 }
