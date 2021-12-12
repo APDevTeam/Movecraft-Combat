@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.CombatRelease;
 import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
 import net.countercraft.movecraft.craft.Craft;
@@ -11,6 +12,7 @@ import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import net.countercraft.movecraft.util.MathUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +43,8 @@ public class CraftCollisionExplosionListener implements Listener {
         if(!MathUtils.locIsNearCraftFast(damaged, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
 
-        CombatRelease.getInstance().registerEvent(damaged.getPilot());
+        var event = new CollisionDamagePlayerCraftEvent(damaging, damaged);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     @Nullable

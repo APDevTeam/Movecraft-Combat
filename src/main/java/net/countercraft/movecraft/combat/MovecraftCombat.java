@@ -57,8 +57,14 @@ public final class MovecraftCombat extends JavaPlugin {
         }
         I18nSupport.load(getConfig());
 
+        DamageTracking.load(getConfig());
+
+        AADirectors.load(getConfig());
         AddFiresToHitbox.load(getConfig());
         AntiRadar.load(getConfig());
+        CannonDirectors.load(getConfig());
+        CombatRelease.load(getConfig());
+        ContactExplosives.load(getConfig());
         Directors.load(getConfig());
         DurabilityOverride.load(getConfig());
         FireballLifespan.load(getConfig());
@@ -71,6 +77,8 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
+
+
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);

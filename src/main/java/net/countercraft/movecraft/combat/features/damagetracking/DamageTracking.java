@@ -1,22 +1,14 @@
 package net.countercraft.movecraft.combat.features.damagetracking;
 
-import net.countercraft.movecraft.Movecraft;
-import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.damagetracking.events.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.features.damagetracking.events.CraftReleasedByEvent;
 import net.countercraft.movecraft.combat.features.damagetracking.events.CraftSunkByEvent;
 import net.countercraft.movecraft.combat.features.damagetracking.types.DamageType;
 import net.countercraft.movecraft.combat.features.damagetracking.types.TorpedoDamage;
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.craft.CraftStatus;
-import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.PlayerCraft;
-import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftSinkEvent;
-import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -123,50 +115,7 @@ public class DamageTracking implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onCollisionExplosion(@NotNull CraftCollisionExplosionEvent e) {
-        if(!EnableTorpedoTracking)
-            return;
-        if(!(e.getCraft() instanceof PilotedCraft))
-            return;
-
-        PilotedCraft damaging = (PilotedCraft) e.getCraft();
-
-        //check if the craft should sink
-        CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
-        if(status.isSinking()) {
-            e.setCancelled(true);
-            e.getCraft().setCruising(false);
-            e.getCraft().sink();
-        }
-
-        PlayerCraft damaged = fastNearestPlayerCraftToCraft(damaging);
-        if(damaged == null)
-            return;
-        if(!MathUtils.locIsNearCraftFast(damaged, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
-            return;
-
-        addDamageRecord(damaged, damaging.getPilot(), new TorpedoDamage());
-    }
-
-    @Nullable
-    private PlayerCraft fastNearestPlayerCraftToCraft(@NotNull Craft source) {
-        MovecraftLocation loc = source.getHitBox().getMidPoint();
-        PlayerCraft closest = null;
-        long closestDistSquared = Long.MAX_VALUE;
-        for(Craft other : CraftManager.getInstance()) {
-            if(other == source)
-                continue;
-            if(other.getWorld() != source.getWorld())
-                continue;
-            if(!(other instanceof PlayerCraft))
-                continue;
-
-            long distSquared = other.getHitBox().getMidPoint().distanceSquared(loc);
-            if(distSquared < closestDistSquared) {
-                closestDistSquared = distSquared;
-                closest = (PlayerCraft) other;
-            }
-        }
-        return closest;
+    public void onCollisionDamagePlayerCraft(@NotNull CollisionDamagePlayerCraftEvent e) {
+        addDamageRecord(e.getDamaged(), e.getDamaging().getPilot(), new TorpedoDamage());
     }
 }

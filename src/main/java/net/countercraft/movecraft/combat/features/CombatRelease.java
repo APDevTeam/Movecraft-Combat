@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.features;
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.config.Config;
+import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.event.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.event.CombatStartEvent;
 import net.countercraft.movecraft.combat.event.CombatStopEvent;
@@ -57,6 +58,10 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     }
 
     private final HashMap<Player, Long> records = new HashMap<>();
+
+    public CombatRelease() {
+        instance = this;
+    }
 
     public void run() {
         long currentTime = System.currentTimeMillis();
@@ -125,6 +130,11 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         return telPoint.distanceSquared(player.getLocation()) < Settings.ManOverboardDistSquared;
     }
 
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCollisionDamagePlayerCraft(@NotNull CollisionDamagePlayerCraftEvent e) {
+        registerEvent(e.getDamaged().getPilot());
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
