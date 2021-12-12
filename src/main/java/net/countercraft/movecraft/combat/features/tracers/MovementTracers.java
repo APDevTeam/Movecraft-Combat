@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.tracers;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import static net.countercraft.movecraft.combat.features.TNTTracers.TracerParticle;
+import static net.countercraft.movecraft.combat.features.tracers.TNTTracers.TracerParticle;
 
 public class MovementTracers implements Listener {
     public static boolean MovementTracers = false;

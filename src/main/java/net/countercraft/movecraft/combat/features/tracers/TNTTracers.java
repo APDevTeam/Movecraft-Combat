@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.tracers;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.Bukkit;
@@ -36,62 +36,6 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
 
     private long lastUpdate = 0;
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
-        Entity tnt = e.getEntity();
-        if(e.getEntityType() != EntityType.PRIMED_TNT)
-            return;
-        if(TracerRateTicks == 0)
-            return;
-
-        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
-        maxDistSquared = maxDistSquared - 16;
-        maxDistSquared = maxDistSquared * maxDistSquared;
-
-        for(Player p : e.getEntity().getWorld().getPlayers()) {
-            String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
-            if(setting == null || setting.equals("OFF"))
-                continue;
-
-            // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
-            double distance = p.getLocation().distanceSquared(tnt.getLocation());
-            if(distance >= maxDistSquared || distance < TracerMinDistanceSqrd)
-                return;
-
-            final Location loc = tnt.getLocation();
-            final Player fp = p;
-
-            String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
-            if(mode == null)
-                continue;
-
-            if(mode.equals("BLOCKS")) {
-                // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.sendBlockChange(loc, Material.GLOWSTONE.createBlockData());
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                // then remove it
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.sendBlockChange(loc, Material.AIR.createBlockData());
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 160);
-            }
-            else if(mode.equals("PARTICLES")) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.spawnParticle(ExplosionParticle, loc, 9);
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 20);
-            }
-        }
-    }
 
     @Override
     public void run() {
@@ -168,5 +112,61 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             }
         }
         lastUpdate = System.currentTimeMillis();
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
+        Entity tnt = e.getEntity();
+        if(e.getEntityType() != EntityType.PRIMED_TNT)
+            return;
+        if(TracerRateTicks == 0)
+            return;
+
+        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
+        maxDistSquared = maxDistSquared - 16;
+        maxDistSquared = maxDistSquared * maxDistSquared;
+
+        for(Player p : e.getEntity().getWorld().getPlayers()) {
+            String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+            if(setting == null || setting.equals("OFF"))
+                continue;
+
+            // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
+            double distance = p.getLocation().distanceSquared(tnt.getLocation());
+            if(distance >= maxDistSquared || distance < TracerMinDistanceSqrd)
+                return;
+
+            final Location loc = tnt.getLocation();
+            final Player fp = p;
+
+            String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+            if(mode == null)
+                continue;
+
+            if(mode.equals("BLOCKS")) {
+                // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        fp.sendBlockChange(loc, Material.GLOWSTONE.createBlockData());
+                    }
+                }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                // then remove it
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        fp.sendBlockChange(loc, Material.AIR.createBlockData());
+                    }
+                }.runTaskLater(MovecraftCombat.getInstance(), 160);
+            }
+            else if(mode.equals("PARTICLES")) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        fp.spawnParticle(ExplosionParticle, loc, 9);
+                    }
+                }.runTaskLater(MovecraftCombat.getInstance(), 20);
+            }
+        }
     }
 }

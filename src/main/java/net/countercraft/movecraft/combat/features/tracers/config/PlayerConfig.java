@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.player;
+package net.countercraft.movecraft.combat.features.tracers.config;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,17 +16,19 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class PlayerConfig extends YamlConfiguration {
-    private File configFile = null;
-    private UUID owner = null;
+    private final File configFile;
+    private final UUID owner;
     private String setting = "HIGH";
     private String mode = "BLOCKS";
-
-    private final byte[] bytebuffer = new byte[1024];
 
     public PlayerConfig(UUID owner) {
         super();
         configFile = new File(MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/userdata/" + owner + ".yml");
         this.owner = owner;
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 
     public void setSetting(String setting) {
@@ -47,12 +49,13 @@ public class PlayerConfig extends YamlConfiguration {
 
 
     public void load() {
+        byte[] bytebuffer = new byte[1024];
         try {
             try(FileInputStream inputStream = new FileInputStream(configFile)) {
                 long startSize = configFile.length();
-                if (startSize > Integer.MAX_VALUE) {
+                if (startSize > Integer.MAX_VALUE)
                     throw new InvalidConfigurationException("File too big");
-                }
+
                 ByteBuffer buffer = ByteBuffer.allocate((int) startSize);
                 int length;
                 while ((length = inputStream.read(bytebuffer)) != -1) {
@@ -71,34 +74,35 @@ public class PlayerConfig extends YamlConfiguration {
                 final CharBuffer data = CharBuffer.allocate(buffer.capacity());
                 CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
                 CoderResult result = decoder.decode(buffer, data, true);
-                if (result.isError()) {
+                if(result.isError()) {
                     ((Buffer) buffer).rewind();
                     ((Buffer) data).clear();
                     MovecraftCombat.getInstance().getLogger().log(Level.INFO, "File " + configFile.getAbsolutePath() + " is not utf-8 encoded, trying " + Charset.defaultCharset().displayName());
                     decoder = Charset.defaultCharset().newDecoder();
                     result = decoder.decode(buffer, data, true);
-                    if (result.isError()) {
+                    if(result.isError())
                         throw new InvalidConfigurationException("Invalid Characters in file " + configFile.getAbsolutePath());
-                    } else {
+                    else
                         decoder.flush(data);
-                    }
-                } else {
-                    decoder.flush(data);
+
                 }
+                else
+                    decoder.flush(data);
+
                 final int end = data.position();
                 ((Buffer) data).rewind();
                 super.loadFromString(data.subSequence(0, end).toString());
             }
         }
-        catch (FileNotFoundException ex) {
+        catch(FileNotFoundException ex) {
             save();
         }
-        catch (IOException ex) {
+        catch(IOException ex) {
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
-        catch (InvalidConfigurationException ex) {
+        catch(InvalidConfigurationException ex) {
             File broken = new File(configFile.getAbsolutePath() + ".broken." + System.currentTimeMillis());
-            configFile.renameTo(broken);
+            boolean ignored = configFile.renameTo(broken);
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, "The file " + configFile.toString() + " is broken, it has been renamed to " + broken.toString(), ex.getCause());
         }
         setting = getString("setting");
@@ -109,23 +113,21 @@ public class PlayerConfig extends YamlConfiguration {
         set("setting", setting);
         set("mode", mode);
         String data = saveToString();
-        try (FileOutputStream fos = new FileOutputStream(configFile)) {
-            try (OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
+        try(FileOutputStream fos = new FileOutputStream(configFile)) {
+            try(OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
                 writer.write(data);
             }
         }
-        catch (FileNotFoundException ex) {
+        catch(FileNotFoundException ex) {
             try {
                 save(configFile);
             }
-            catch (IOException e) {
+            catch(IOException e) {
                 MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-                return;
             }
         }
-        catch (IOException e) {
+        catch(IOException e) {
             MovecraftCombat.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
-            return;
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat;
 
-import net.countercraft.movecraft.combat.commands.TracerModeCommand;
-import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
+import net.countercraft.movecraft.combat.features.tracers.commands.TracerModeCommand;
+import net.countercraft.movecraft.combat.features.tracers.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.features.AADirectors;
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
@@ -12,14 +12,14 @@ import net.countercraft.movecraft.combat.features.Directors;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
-import net.countercraft.movecraft.combat.features.MovementTracers;
+import net.countercraft.movecraft.combat.features.tracers.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
-import net.countercraft.movecraft.combat.features.TNTTracers;
+import net.countercraft.movecraft.combat.features.tracers.TNTTracers;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
-import net.countercraft.movecraft.combat.player.PlayerManager;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -79,8 +79,6 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
 
         var damageTracking = new DamageTracking();
