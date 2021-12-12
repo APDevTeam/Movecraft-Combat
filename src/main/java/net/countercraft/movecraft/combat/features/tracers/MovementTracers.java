@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracers;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
 import net.countercraft.movecraft.util.hitboxes.HitBox;
 import org.bukkit.Bukkit;
@@ -41,7 +42,7 @@ public class MovementTracers implements Listener {
         for(final Player p : e.getWorld().getPlayers()) {
             if(p.getLocation().distanceSquared(center) > maxDistSquared)
                 continue;
-            String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+            String setting = PlayerManager.getInstance().getSetting(p);
             if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
                 continue;
 

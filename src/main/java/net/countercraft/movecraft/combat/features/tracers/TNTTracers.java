@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracers;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,7 +61,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
                 final Location tntLoc = tnt.getLocation();
                 for(Player p : w.getPlayers()) {
-                    String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+                    String setting = PlayerManager.getInstance().getSetting(p);
                     if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
                         continue;
                     else if(setting.equals("MEDIUM")) {
@@ -75,7 +76,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         continue;
 
                     final Player fp = p;
-                    String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+                    String mode = PlayerManager.getInstance().getMode(p);
                     if(mode == null)
                         return;
 
@@ -127,7 +128,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         maxDistSquared = maxDistSquared * maxDistSquared;
 
         for(Player p : e.getEntity().getWorld().getPlayers()) {
-            String setting = MovecraftCombat.getInstance().getPlayerManager().getSetting(p);
+            String setting = PlayerManager.getInstance().getSetting(p);
             if(setting == null || setting.equals("OFF"))
                 continue;
 
@@ -139,7 +140,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             final Location loc = tnt.getLocation();
             final Player fp = p;
 
-            String mode = MovecraftCombat.getInstance().getPlayerManager().getMode(p);
+            String mode = PlayerManager.getInstance().getMode(p);
             if(mode == null)
                 continue;
 

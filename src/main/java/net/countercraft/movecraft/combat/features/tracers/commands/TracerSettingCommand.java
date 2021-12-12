@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracers.commands;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ public class TracerSettingCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + MovecraftCombat.getInstance().getPlayerManager().getSetting(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + PlayerManager.getInstance().getSetting(player));
             return true;
         }
         if(args.length != 1) {
@@ -39,7 +40,7 @@ public class TracerSettingCommand implements TabExecutor {
             return true;
         }
 
-        MovecraftCombat.getInstance().getPlayerManager().setSetting(player, setting);
+        PlayerManager.getInstance().setSetting(player, setting);
         commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + setting);
         return true;
     }

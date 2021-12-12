@@ -1,11 +1,13 @@
 package net.countercraft.movecraft.combat.features.tracers.config;
 
+import net.countercraft.movecraft.combat.MovecraftCombat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,12 +15,17 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class PlayerManager implements Listener {
+    private static PlayerManager instance;
+
+    public static PlayerManager getInstance() {
+        return instance;
+    }
+
+
     private final Map<Player, PlayerConfig> cache = new WeakHashMap<>();
 
-    public void shutDown() {
-        for(Player p : cache.keySet()) {
-            savePlayer(p);
-        }
+    public PlayerManager() {
+        instance = this;
     }
 
     @Nullable
@@ -90,5 +97,16 @@ public class PlayerManager implements Listener {
         Player player = e.getPlayer();
         savePlayer(player);
         cache.remove(player);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPluginDisable(@NotNull PluginDisableEvent e) {
+        if(e.getPlugin() != MovecraftCombat.getInstance())
+            return;
+
+        for(Player p : cache.keySet()) {
+            savePlayer(p);
+        }
+        cache.clear();
     }
 }
