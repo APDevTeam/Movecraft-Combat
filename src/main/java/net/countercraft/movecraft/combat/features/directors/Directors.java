@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.directors;
 
 import com.google.common.collect.HashBiMap;
 import net.countercraft.movecraft.combat.MovecraftCombat;

@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.features.AADirectors;
+import net.countercraft.movecraft.combat.features.directors.AADirectors;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.tracking.types.FireballDamage;
 import net.countercraft.movecraft.craft.Craft;

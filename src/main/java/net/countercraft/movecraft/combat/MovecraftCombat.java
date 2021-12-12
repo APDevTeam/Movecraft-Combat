@@ -2,13 +2,13 @@ package net.countercraft.movecraft.combat;
 
 import net.countercraft.movecraft.combat.features.tracers.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.features.tracers.commands.TracerSettingCommand;
-import net.countercraft.movecraft.combat.features.AADirectors;
+import net.countercraft.movecraft.combat.features.directors.AADirectors;
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
-import net.countercraft.movecraft.combat.features.CannonDirectors;
+import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.ContactExplosives;
-import net.countercraft.movecraft.combat.features.Directors;
+import net.countercraft.movecraft.combat.features.directors.Directors;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
 import net.countercraft.movecraft.combat.features.FireballPenetration;
@@ -57,21 +57,25 @@ public final class MovecraftCombat extends JavaPlugin {
         }
         I18nSupport.load(getConfig());
 
-        DamageTracking.load(getConfig());
+        CombatRelease.load(getConfig());
 
         AADirectors.load(getConfig());
+        CannonDirectors.load(getConfig());
+        Directors.load(getConfig());
+
+        DamageTracking.load(getConfig());
+
+        MovementTracers.load(getConfig());
+        TNTTracers.load(getConfig());
+
         AddFiresToHitbox.load(getConfig());
         AntiRadar.load(getConfig());
-        CannonDirectors.load(getConfig());
         CombatRelease.load(getConfig());
         ContactExplosives.load(getConfig());
-        Directors.load(getConfig());
         DurabilityOverride.load(getConfig());
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());
-        MovementTracers.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
-        TNTTracers.load(getConfig());
 
         getCommand("tracersetting").setExecutor(new TracerSettingCommand());
         getCommand("tracermode").setExecutor(new TracerModeCommand());

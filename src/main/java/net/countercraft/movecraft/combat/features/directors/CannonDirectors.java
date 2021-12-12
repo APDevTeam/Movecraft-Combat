@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.directors;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.MovecraftLocation;

@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.utils;
 
-import net.countercraft.movecraft.combat.features.CannonDirectors;
-import net.countercraft.movecraft.combat.features.Directors;
+import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
+import net.countercraft.movecraft.combat.features.directors.Directors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

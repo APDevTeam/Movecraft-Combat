@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.directors;
 
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
