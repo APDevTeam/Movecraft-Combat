@@ -16,6 +16,7 @@ import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.features.TNTTracers;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -76,18 +77,15 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tracermode").setExecutor(new TracerModeCommand());
 
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
-
-
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        getServer().getPluginManager().registerEvents(new ProjectileHitListener(), this);
-        getServer().getPluginManager().registerEvents(new ProjectileLaunchListener(), this);
 
 
         var damageTracking = new DamageTracking();
         getServer().getPluginManager().registerEvents(damageTracking, this);
+        getServer().getPluginManager().registerEvents(new FireballTracking(), this);
 
         var combatRelease = new CombatRelease();
         getServer().getPluginManager().registerEvents(combatRelease, this);

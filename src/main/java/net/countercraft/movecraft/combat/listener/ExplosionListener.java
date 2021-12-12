@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 
 
+@Deprecated(forRemoval = true)
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(EntityExplodeEvent e) {
@@ -26,9 +27,8 @@ public class ExplosionListener implements Listener {
 
 
     private void processTNTTracking(@NotNull EntityExplodeEvent e) {
-        if(!DamageTracking.EnableFireballTracking)
+        if(!DamageTracking.EnableTNTTracking)
             return;
-
         if((!(e.getEntity() instanceof TNTPrimed)))
             return;
 
