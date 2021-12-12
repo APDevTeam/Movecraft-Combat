@@ -1,11 +1,14 @@
 package net.countercraft.movecraft.combat.localisation;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 

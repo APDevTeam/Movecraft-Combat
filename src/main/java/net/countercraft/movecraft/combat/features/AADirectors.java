@@ -1,8 +1,6 @@
 package net.countercraft.movecraft.combat.features;
 
 import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;

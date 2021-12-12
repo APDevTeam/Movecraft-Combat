@@ -1,6 +1,6 @@
-package net.countercraft.movecraft.combat.features.damagetracking.events;
+package net.countercraft.movecraft.combat.features.tracking.events;
 
-import net.countercraft.movecraft.combat.features.damagetracking.DamageRecord;
+import net.countercraft.movecraft.combat.features.tracking.DamageRecord;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.events.CraftEvent;
 import org.bukkit.event.HandlerList;

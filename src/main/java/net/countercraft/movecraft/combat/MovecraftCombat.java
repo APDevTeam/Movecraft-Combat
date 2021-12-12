@@ -2,12 +2,11 @@ package net.countercraft.movecraft.combat;
 
 import net.countercraft.movecraft.combat.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.commands.TracerSettingCommand;
-import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.features.AADirectors;
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
 import net.countercraft.movecraft.combat.features.CannonDirectors;
-import net.countercraft.movecraft.combat.features.CombatRelease;
+import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.ContactExplosives;
 import net.countercraft.movecraft.combat.features.Directors;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
@@ -16,7 +15,7 @@ import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.MovementTracers;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.features.TNTTracers;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.listener.*;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.player.PlayerManager;
@@ -90,16 +89,16 @@ public final class MovecraftCombat extends JavaPlugin {
         var damageTracking = new DamageTracking();
         getServer().getPluginManager().registerEvents(damageTracking, this);
 
+        var combatRelease = new CombatRelease();
+        getServer().getPluginManager().registerEvents(combatRelease, this);
+        combatRelease.runTaskTimer(this, 0, 200); // Every 10 seconds
+
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1); // Every tick
 
         getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
         getServer().getPluginManager().registerEvents(new AntiRadar(), this);
-
-        var combatRelease = new CombatRelease();
-        getServer().getPluginManager().registerEvents(combatRelease, this);
-        combatRelease.runTaskTimer(this, 0, 200); // Every 10 seconds
 
         var cannonDirectors = new CannonDirectors();
         getServer().getPluginManager().registerEvents(cannonDirectors, this);

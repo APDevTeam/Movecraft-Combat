@@ -2,8 +2,7 @@ package net.countercraft.movecraft.combat.features;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.combat.config.Config;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;

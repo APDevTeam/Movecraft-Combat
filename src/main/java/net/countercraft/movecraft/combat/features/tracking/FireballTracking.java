@@ -1,9 +1,9 @@
-package net.countercraft.movecraft.combat.features.damagetracking;
+package net.countercraft.movecraft.combat.features.tracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.features.AADirectors;
-import net.countercraft.movecraft.combat.features.CombatRelease;
-import net.countercraft.movecraft.combat.features.damagetracking.types.FireballDamage;
+import net.countercraft.movecraft.combat.features.combat.CombatRelease;
+import net.countercraft.movecraft.combat.features.tracking.types.FireballDamage;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;

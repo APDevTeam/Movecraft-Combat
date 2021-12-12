@@ -1,11 +1,11 @@
-package net.countercraft.movecraft.combat.features.damagetracking;
+package net.countercraft.movecraft.combat.features.tracking;
 
 import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
-import net.countercraft.movecraft.combat.features.damagetracking.events.CraftDamagedByEvent;
-import net.countercraft.movecraft.combat.features.damagetracking.events.CraftReleasedByEvent;
-import net.countercraft.movecraft.combat.features.damagetracking.events.CraftSunkByEvent;
-import net.countercraft.movecraft.combat.features.damagetracking.types.DamageType;
-import net.countercraft.movecraft.combat.features.damagetracking.types.TorpedoDamage;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftReleasedByEvent;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftSunkByEvent;
+import net.countercraft.movecraft.combat.features.tracking.types.DamageType;
+import net.countercraft.movecraft.combat.features.tracking.types.TorpedoDamage;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftSinkEvent;

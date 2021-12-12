@@ -1,9 +1,9 @@
 package net.countercraft.movecraft.combat.listener;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.features.CombatRelease;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
-import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
+import net.countercraft.movecraft.combat.features.combat.CombatRelease;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;

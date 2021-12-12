@@ -1,14 +1,13 @@
 package net.countercraft.movecraft.combat.listener;
 
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
-import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
-import net.countercraft.movecraft.combat.features.damagetracking.TNTTracking;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
+import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -27,7 +26,10 @@ public class ExplosionListener implements Listener {
 
 
     private void processTNTTracking(@NotNull EntityExplodeEvent e) {
-        if (e.getEntityType() != EntityType.PRIMED_TNT)
+        if(!DamageTracking.EnableFireballTracking)
+            return;
+
+        if((!(e.getEntity() instanceof TNTPrimed)))
             return;
 
         TNTPrimed tnt = (TNTPrimed) e.getEntity();

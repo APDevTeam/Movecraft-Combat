@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.listener;
 
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
-import net.countercraft.movecraft.combat.features.damagetracking.FireballTracking;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;

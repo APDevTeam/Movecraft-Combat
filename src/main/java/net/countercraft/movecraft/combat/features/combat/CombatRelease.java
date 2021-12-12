@@ -1,13 +1,12 @@
-package net.countercraft.movecraft.combat.features;
+package net.countercraft.movecraft.combat.features.combat;
 
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.config.Config;
 import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
-import net.countercraft.movecraft.combat.event.CombatReleaseEvent;
-import net.countercraft.movecraft.combat.event.CombatStartEvent;
-import net.countercraft.movecraft.combat.event.CombatStopEvent;
-import net.countercraft.movecraft.combat.features.damagetracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.combat.events.CombatReleaseEvent;
+import net.countercraft.movecraft.combat.features.combat.events.CombatStartEvent;
+import net.countercraft.movecraft.combat.features.combat.events.CombatStopEvent;
+import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;

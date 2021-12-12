@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.event;
+package net.countercraft.movecraft.combat.features.combat.events;
 
 import org.jetbrains.annotations.NotNull;
 import org.bukkit.entity.Player;
