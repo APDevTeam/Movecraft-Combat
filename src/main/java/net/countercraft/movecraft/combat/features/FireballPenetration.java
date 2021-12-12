@@ -40,7 +40,7 @@ public class FireballPenetration implements Listener {
 
         // To prevent infinite recursion we call the event with SPREAD as the cause
         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(testBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getIgnitingEntity());
-        Bukkit.getServer().getPluginManager().callEvent(igniteEvent);
+        Bukkit.getPluginManager().callEvent(igniteEvent);
         if(igniteEvent.isCancelled())
             return;
 

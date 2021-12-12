@@ -53,7 +53,7 @@ public class DamageTracking implements Listener {
 
     public void addDamageRecord(@NotNull PlayerCraft craft, @NotNull Player cause, @NotNull DamageType type) {
         DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, type);
-        Bukkit.getServer().getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
+        Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
 
         if(damageRecords.containsKey(craft)) {
             List<DamageRecord> records = damageRecords.get(craft);
@@ -83,7 +83,7 @@ public class DamageTracking implements Listener {
 
         // Call event
         CraftReleasedByEvent event = new CraftReleasedByEvent(craft, records);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
 
         damageRecords.remove(craft);
     }
@@ -108,7 +108,7 @@ public class DamageTracking implements Listener {
 
         // Call event
         CraftSunkByEvent event = new CraftSunkByEvent(craft, records);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
 
         Bukkit.broadcastMessage(event.causesToString());
         damageRecords.remove(craft);

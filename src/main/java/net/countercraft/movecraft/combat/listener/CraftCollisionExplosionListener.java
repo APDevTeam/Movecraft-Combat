@@ -13,14 +13,15 @@ import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
 public class CraftCollisionExplosionListener implements Listener {
-    @EventHandler
-    public void collisionExplosionListener(CraftCollisionExplosionEvent e) {
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void collisionExplosionListener(@NotNull CraftCollisionExplosionEvent e) {
         if(!DamageTracking.EnableTorpedoTracking)
             return;
         if(!(e.getCraft() instanceof PilotedCraft))

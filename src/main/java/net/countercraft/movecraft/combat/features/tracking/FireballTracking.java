@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.directors.AADirectors;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.tracking.types.FireballDamage;
@@ -11,6 +12,7 @@ import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -99,5 +101,15 @@ public class FireballTracking implements Listener {
 
 
         CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onExplosionDamagePlayerCraft(@NotNull ExplosionDamagePlayerCraftEvent e) {
+        if(!DamageTracking.EnableFireballTracking)
+            return;
+        if(!(e.getDamaging() instanceof Fireball))
+            return;
+
+        damagedCraft((PlayerCraft) e.getCraft(), (Fireball) e.getDamaging());
     }
 }

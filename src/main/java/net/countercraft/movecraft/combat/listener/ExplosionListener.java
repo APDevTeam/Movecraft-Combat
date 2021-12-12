@@ -1,68 +1,65 @@
 package net.countercraft.movecraft.combat.listener;
 
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
-import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
-import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
-@Deprecated(forRemoval = true)
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void entityExplodeEvent(EntityExplodeEvent e) {
-        processTNTTracking(e);
-        processFireballTracking(e);
-   }
-
-
-    private void processTNTTracking(@NotNull EntityExplodeEvent e) {
-        if(!DamageTracking.EnableTNTTracking)
-            return;
-        if((!(e.getEntity() instanceof TNTPrimed)))
+    public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
+        if(!DamageTracking.EnableTNTTracking && !DamageTracking.EnableFireballTracking)
             return;
 
-        TNTPrimed tnt = (TNTPrimed) e.getEntity();
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
+        Location loc = e.getLocation();
+        PlayerCraft craft = fastNearestPlayerCraftToLoc(loc);
         if(craft == null)
             return;
-        for(Block b : e.blockList()) {
-            if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
-                TNTTracking.getInstance().damagedCraft(craft, tnt);
-                return;
-            }
-        }
-    }
 
-    private void processFireballTracking(@NotNull EntityExplodeEvent e) {
-        if(!DamageTracking.EnableFireballTracking)
-            return;
-        if(!(e.getEntity() instanceof Fireball))
-            return;
-        Fireball fireball = (Fireball) e.getEntity();
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getLocation());
-        if(!(craft instanceof PlayerCraft))
-            return;
-        PlayerCraft playerCraft = (PlayerCraft) craft;
-        if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getLocation()))) {
-            FireballTracking.getInstance().damagedCraft(playerCraft, fireball);
+        if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(loc))) {
+            ExplosionDamagePlayerCraftEvent event = new ExplosionDamagePlayerCraftEvent(e.getEntity(), craft);
+            Bukkit.getPluginManager().callEvent(event);
             return;
         }
         for(Block b : e.blockList()) {
             if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
-                FireballTracking.getInstance().damagedCraft(playerCraft, fireball);
+                ExplosionDamagePlayerCraftEvent event = new ExplosionDamagePlayerCraftEvent(e.getEntity(), craft);
+                Bukkit.getPluginManager().callEvent(event);
                 return;
             }
         }
+   }
+
+    @Nullable
+    private PlayerCraft fastNearestPlayerCraftToLoc(@NotNull Location source) {
+        MovecraftLocation loc = MathUtils.bukkit2MovecraftLoc(source);
+        PlayerCraft closest = null;
+        long closestDistSquared = Long.MAX_VALUE;
+        for(Craft other : CraftManager.getInstance()) {
+            if(other.getWorld() != source.getWorld())
+                continue;
+            if(!(other instanceof PlayerCraft))
+                continue;
+
+            long distSquared = other.getHitBox().getMidPoint().distanceSquared(loc);
+            if(distSquared < closestDistSquared) {
+                closestDistSquared = distSquared;
+                closest = (PlayerCraft) other;
+            }
+        }
+        return closest;
     }
 }

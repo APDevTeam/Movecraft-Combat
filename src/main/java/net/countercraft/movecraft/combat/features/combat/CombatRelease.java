@@ -108,13 +108,13 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         if(isInCombat(player))
             return;
 
-        Bukkit.getServer().getPluginManager().callEvent(new CombatStartEvent(player));
+        Bukkit.getPluginManager().callEvent(new CombatStartEvent(player));
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Enter Combat"));
         MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Enter Combat"));
     }
 
     private void stopCombat(@NotNull Player player) {
-        Bukkit.getServer().getPluginManager().callEvent(new CombatStopEvent(player));
+        Bukkit.getPluginManager().callEvent(new CombatStopEvent(player));
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Status - Leave Combat"));
         MovecraftCombat.getInstance().getLogger().info(player.getName() + " " + I18nSupport.getInternationalisedString("Log - Leave Combat"));
     }
@@ -163,7 +163,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
         MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
         if(event.isCancelled())
             return;
 

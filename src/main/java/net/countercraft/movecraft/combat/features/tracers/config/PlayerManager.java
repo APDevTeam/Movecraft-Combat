@@ -3,6 +3,7 @@ package net.countercraft.movecraft.combat.features.tracers.config;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class PlayerManager {
+public class PlayerManager implements Listener {
     private final Map<Player, PlayerConfig> cache = new WeakHashMap<>();
 
     public void shutDown() {
