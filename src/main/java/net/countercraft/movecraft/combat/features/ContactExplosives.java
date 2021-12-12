@@ -23,8 +23,10 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
     }
 
 
+
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastCheck = 0;
+
 
     @Override
     public void run() {
@@ -66,6 +68,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
 
         lastCheck = System.currentTimeMillis();
     }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {

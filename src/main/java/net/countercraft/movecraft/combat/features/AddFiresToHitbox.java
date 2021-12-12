@@ -20,17 +20,7 @@ public class AddFiresToHitbox implements Listener {
         AddFiresToHitbox = config.getBoolean("AddFiresToHitbox", true);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onBlockIgnite(@NotNull BlockIgniteEvent e) {
-        Craft craft = adjacentCraft(e.getBlock().getLocation());
-        if(craft == null || craft.getHitBox().isEmpty())
-            return;
-        if(!(craft.getHitBox() instanceof MutableHitBox))
-            return;
 
-        MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
-        hitbox.add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
-    }
 
     @Nullable
     private Craft adjacentCraft(@NotNull Location location) {
@@ -47,5 +37,18 @@ public class AddFiresToHitbox implements Listener {
             return craft;
 
         return null;
+    }
+
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onBlockIgnite(@NotNull BlockIgniteEvent e) {
+        Craft craft = adjacentCraft(e.getBlock().getLocation());
+        if(craft == null || craft.getHitBox().isEmpty())
+            return;
+        if(!(craft.getHitBox() instanceof MutableHitBox))
+            return;
+
+        MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
+        hitbox.add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
     }
 }

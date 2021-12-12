@@ -18,6 +18,8 @@ public class FireballPenetration implements Listener {
         EnableFireballPenetration = config.getBoolean("EnableFireballPenetration", false);
     }
 
+
+
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockIgnite(@NotNull BlockIgniteEvent e) {
         if(!EnableFireballPenetration)

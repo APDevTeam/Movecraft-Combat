@@ -24,11 +24,9 @@ public class FireballLifespan extends BukkitRunnable implements Listener {
     }
 
 
-    private final Deque<SmallFireball> queue;
 
-    public FireballLifespan() {
-        queue = new LinkedList<>();
-    }
+    private final Deque<SmallFireball> queue = new LinkedList<>();
+
 
     @Override
     public void run() {
@@ -41,6 +39,7 @@ public class FireballLifespan extends BukkitRunnable implements Listener {
             f.remove();
         }
     }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onProjectileLaunch(@NotNull ProjectileLaunchEvent e) {

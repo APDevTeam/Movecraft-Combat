@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -25,25 +26,6 @@ public class ReImplementTNTTranslocation implements Listener {
         ReImplementTNTTranslocation = config.getBoolean("ReImplementTNTTranslocation", false);
     }
 
-    @EventHandler
-    public void onPistonExtend(BlockPistonExtendEvent e) {
-        if(!ReImplementTNTTranslocation)
-            return;
-
-        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
-    }
-
-    @EventHandler
-    public void onPistonRetract(@NotNull BlockPistonRetractEvent e) {
-        if(!ReImplementTNTTranslocation)
-            return;
-
-        BlockFace dir = e.getDirection();
-        if(e.isSticky())
-            dir = dir.getOppositeFace();
-
-        doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
-    }
 
 
     private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, @Nullable Block pistonHead) {
@@ -149,5 +131,26 @@ public class ReImplementTNTTranslocation implements Listener {
             Location moveLoc = new Location(loc.getWorld(), loc.getX() + xOffset, loc.getY(), loc.getZ() + zOffset);
             tnt.teleport(moveLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent e) {
+        if(!ReImplementTNTTranslocation)
+            return;
+
+        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonRetract(@NotNull BlockPistonRetractEvent e) {
+        if(!ReImplementTNTTranslocation)
+            return;
+
+        BlockFace dir = e.getDirection();
+        if(e.isSticky())
+            dir = dir.getOppositeFace();
+
+        doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
     }
 }

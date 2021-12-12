@@ -29,8 +29,10 @@ public class AntiRadar implements Listener {
     }
 
 
+
     private final Set<Player> invisibles = new HashSet<>();
     private final Set<Player> pilots = new HashSet<>();
+
 
     private void startInvisible(Player p) {
         if(invisibles.contains(p))
@@ -131,7 +133,6 @@ public class AntiRadar implements Listener {
         endInvisible(p);
     }
 
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerQuit(@NotNull PlayerQuitEvent e) {
         if(!EnableAntiRadar)
@@ -143,7 +144,7 @@ public class AntiRadar implements Listener {
         endInvisible(p);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(@NotNull PlayerMoveEvent e) {
         if(!EnableAntiRadar)
             return;

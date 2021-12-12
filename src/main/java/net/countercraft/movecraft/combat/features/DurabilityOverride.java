@@ -37,6 +37,15 @@ public class DurabilityOverride implements Listener {
         }
     }
 
+
+
+    private boolean nextToAir(@NotNull Block b) {
+        return b.getRelative(BlockFace.UP).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty()
+                || b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty()
+                || b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty();
+    }
+
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {
         if(DurabilityOverride == null)
@@ -64,11 +73,5 @@ public class DurabilityOverride implements Listener {
             removeList.add(b);
         }
         e.blockList().removeAll(removeList);
-    }
-
-    private boolean nextToAir(@NotNull Block b) {
-        return b.getRelative(BlockFace.UP).isEmpty() || b.getRelative(BlockFace.DOWN).isEmpty()
-                || b.getRelative(BlockFace.EAST).isEmpty() || b.getRelative(BlockFace.WEST).isEmpty()
-                || b.getRelative(BlockFace.NORTH).isEmpty() || b.getRelative(BlockFace.SOUTH).isEmpty();
     }
 }

@@ -17,6 +17,7 @@ import net.countercraft.movecraft.combat.features.tracers.commands.TracerModeCom
 import net.countercraft.movecraft.combat.features.tracers.commands.TracerSettingCommand;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
+import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.listener.CraftCollisionExplosionListener;
 import net.countercraft.movecraft.combat.listener.DispenseListener;
 import net.countercraft.movecraft.combat.listener.ExplosionListener;
@@ -38,6 +39,7 @@ public final class MovecraftCombat extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+
         // Save default config, create default userdata and language if needed
         saveDefaultConfig();
 
@@ -55,13 +57,12 @@ public final class MovecraftCombat extends JavaPlugin {
         }
 
 
+
         // Load localisation and features from config
         I18nSupport.load(getConfig());
 
         CombatRelease.load(getConfig());
 
-        AADirectors.load(getConfig());
-        CannonDirectors.load(getConfig());
         Directors.load(getConfig());
 
         MovementTracers.load(getConfig());
@@ -78,22 +79,15 @@ public final class MovecraftCombat extends JavaPlugin {
         ReImplementTNTTranslocation.load(getConfig());
 
 
-        // Register commands
-        getCommand("tracersetting").setExecutor(new TracerSettingCommand());
-        getCommand("tracermode").setExecutor(new TracerModeCommand());
 
-
-        // Register translation listeners
+        // Register event translation listeners
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new DispenseListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
 
 
-        // Register feature events and runnables
-        var damageTracking = new DamageTracking();
-        getServer().getPluginManager().registerEvents(damageTracking, this);
-        getServer().getPluginManager().registerEvents(new FireballTracking(), this);
 
+        // Register feature events and runnables
         var combatRelease = new CombatRelease();
         getServer().getPluginManager().registerEvents(combatRelease, this);
         combatRelease.runTaskTimer(this, 0, 200); // Every 10 seconds
@@ -101,29 +95,37 @@ public final class MovecraftCombat extends JavaPlugin {
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1); // Every tick
-
-        getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
-        getServer().getPluginManager().registerEvents(new AntiRadar(), this);
-
         var cannonDirectors = new CannonDirectors();
         getServer().getPluginManager().registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
 
-        var contactExplosives = new ContactExplosives();
-        getServer().getPluginManager().registerEvents(contactExplosives, this);
-        contactExplosives.runTaskTimer(this, 0, 1); // Every tick
-
-        getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
-
-        new FireballLifespan().runTaskTimer(this, 0, 20); // Every 1 second
-
-        getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
-        getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
         getServer().getPluginManager().registerEvents(new MovementTracers(), this);
-        getServer().getPluginManager().registerEvents(new ReImplementTNTTranslocation(), this);
-
         var tntTracers = new TNTTracers();
         getServer().getPluginManager().registerEvents(tntTracers, this);
         tntTracers.runTaskTimer(this, 0, 1); // Every tick
+
+        var damageTracking = new DamageTracking();
+        getServer().getPluginManager().registerEvents(damageTracking, this);
+        getServer().getPluginManager().registerEvents(new FireballTracking(), this);
+        getServer().getPluginManager().registerEvents(new TNTTracking(damageTracking), this);
+
+
+        getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
+        getServer().getPluginManager().registerEvents(new AntiRadar(), this);
+        var contactExplosives = new ContactExplosives();
+        getServer().getPluginManager().registerEvents(contactExplosives, this);
+        contactExplosives.runTaskTimer(this, 0, 1); // Every tick
+        getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
+        var fireballLifespan = new FireballLifespan();
+        getServer().getPluginManager().registerEvents(fireballLifespan, this);
+        fireballLifespan.runTaskTimer(this, 0, 20); // Every 1 second
+        getServer().getPluginManager().registerEvents(new FireballLifespan(), this);
+        getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
+        getServer().getPluginManager().registerEvents(new ReImplementTNTTranslocation(), this);
+
+
+        // Register commands
+        getCommand("tracersetting").setExecutor(new TracerSettingCommand());
+        getCommand("tracermode").setExecutor(new TracerModeCommand());
     }
 }
