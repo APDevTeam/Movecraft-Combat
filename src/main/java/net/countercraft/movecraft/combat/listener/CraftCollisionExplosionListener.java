@@ -18,7 +18,9 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
+/**
+ * Converts a {@link CraftCollisionExplosionEvent} into a {@link CollisionDamagePlayerCraftEvent}.
+ */
 public class CraftCollisionExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void collisionExplosionListener(@NotNull CraftCollisionExplosionEvent e) {

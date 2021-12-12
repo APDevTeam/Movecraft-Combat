@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-
+@Deprecated(forRemoval = true)
 public class DispenseListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void dispenseEvent(BlockDispenseEvent e) {

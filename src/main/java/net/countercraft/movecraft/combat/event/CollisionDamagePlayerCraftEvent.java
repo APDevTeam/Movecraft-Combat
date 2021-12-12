@@ -2,10 +2,14 @@ package net.countercraft.movecraft.combat.event;
 
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.events.CraftCollisionExplosionEvent;
 import net.countercraft.movecraft.events.CraftEvent;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a {@link CraftCollisionExplosionEvent} which damages a {@link PlayerCraft}.
+ */
 public class CollisionDamagePlayerCraftEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
     @NotNull

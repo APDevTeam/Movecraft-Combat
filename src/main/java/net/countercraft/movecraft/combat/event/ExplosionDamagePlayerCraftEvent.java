@@ -4,8 +4,12 @@ import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents an {@link EntityExplodeEvent} which damages a {@link PlayerCraft}.
+ */
 public class ExplosionDamagePlayerCraftEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
     @NotNull

@@ -17,7 +17,9 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
+/**
+ * Converts an {@link EntityExplodeEvent} into an {@link ExplosionDamagePlayerCraftEvent}.
+ */
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
