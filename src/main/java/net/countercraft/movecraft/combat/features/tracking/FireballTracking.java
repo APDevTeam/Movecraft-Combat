@@ -27,9 +27,13 @@ import java.util.UUID;
 public class FireballTracking implements Listener {
     @NotNull
     private final DamageTracking manager;
+    @NotNull
+    private final AADirectors directors;
 
-    public FireballTracking(@NotNull DamageTracking manager) {
+
+    public FireballTracking(@NotNull DamageTracking manager, @NotNull AADirectors directors) {
         this.manager = manager;
+        this.directors = directors;
     }
 
     public void damagedCraft(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
@@ -65,17 +69,14 @@ public class FireballTracking implements Listener {
         PlayerCraft playerCraft = (PlayerCraft) craft;
 
         Player sender;
-        if(AADirectors.getInstance() != null && AADirectors.getInstance().hasDirector(playerCraft))
-            sender = AADirectors.getInstance().getDirector(playerCraft);
+        if(directors.hasDirector(playerCraft))
+            sender = directors.getDirector(playerCraft);
         else
             sender = playerCraft.getPilot();
-
         if(sender == null)
             return;
 
         fireball.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
-
-
         CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
     }
 

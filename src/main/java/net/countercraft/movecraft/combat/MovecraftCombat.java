@@ -104,8 +104,8 @@ public final class MovecraftCombat extends JavaPlugin {
 
         var damageTracking = new DamageTracking();
         getServer().getPluginManager().registerEvents(damageTracking, this);
-        getServer().getPluginManager().registerEvents(new FireballTracking(damageTracking), this);
-        getServer().getPluginManager().registerEvents(new TNTTracking(damageTracking), this);
+        getServer().getPluginManager().registerEvents(new FireballTracking(damageTracking, aaDirectors), this);
+        getServer().getPluginManager().registerEvents(new TNTTracking(damageTracking, cannonDirectors), this);
 
 
         getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);

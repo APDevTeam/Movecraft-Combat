@@ -41,27 +41,18 @@ public class CannonDirectors extends Directors implements Listener {
     private static final String HEADER = "Cannon Director";
 
     public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
+    public static int CannonDirectorDistance = 100;
+    public static int CannonDirectorRange = 120;
 
     static {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
     }
-
-    public static int CannonDirectorDistance = 100;
-    public static int CannonDirectorRange = 120;
 
     public static void load(@NotNull FileConfiguration config) {
         CannonDirectorDistance = config.getInt("CannonDirectorsDistance", 100);
         CannonDirectorRange = config.getInt("CannonDirectorRange", 120);
     }
 
-
-    @Nullable @Deprecated(forRemoval = true)
-    private static CannonDirectors instance;
-
-    @Nullable @Deprecated(forRemoval = true)
-    public static CannonDirectors getInstance() {
-        return instance;
-    }
 
 
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
@@ -70,7 +61,6 @@ public class CannonDirectors extends Directors implements Listener {
 
     public CannonDirectors() {
         super();
-        instance = this;
     }
 
     @Override

@@ -35,9 +35,13 @@ import java.util.UUID;
 public class TNTTracking implements Listener {
     @NotNull
     private final DamageTracking manager;
+    @NotNull
+    private final CannonDirectors directors;
 
-    public TNTTracking(@NotNull DamageTracking manager) {
+
+    public TNTTracking(@NotNull DamageTracking manager, @NotNull CannonDirectors directors) {
         this.manager = manager;
+        this.directors = directors;
     }
 
 
@@ -130,15 +134,14 @@ public class TNTTracking implements Listener {
         // Report to tracking
         PlayerCraft playerCraft = (PlayerCraft) craft;
         Player sender;
-        if(CannonDirectors.getInstance().hasDirector(playerCraft))
-            sender = CannonDirectors.getInstance().getDirector(playerCraft);
+        if(directors.hasDirector(playerCraft))
+            sender = directors.getDirector(playerCraft);
         else
             sender = playerCraft.getPilot();
         if(sender == null)
             return;
 
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
-
         CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
     }
 }

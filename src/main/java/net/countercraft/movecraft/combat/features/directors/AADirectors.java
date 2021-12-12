@@ -29,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class AADirectors extends Directors implements Listener {
-    @Deprecated(forRemoval = true)
-    private static AADirectors instance;
     private static final String HEADER = "AA Director";
 
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
@@ -41,22 +39,17 @@ public class AADirectors extends Directors implements Listener {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
     }
 
-    @Nullable @Deprecated(forRemoval = true)
-    public static AADirectors getInstance() {
-        return instance;
-    }
-
     public static void load(@NotNull FileConfiguration config) {
         AADirectorDistance = config.getInt("AADirectorDistance", 50);
         AADirectorRange = config.getInt("AADirectorRange", 120);
     }
 
 
+
     private long lastCheck = 0;
 
     public AADirectors() {
         super();
-        instance = this;
     }
 
     @Override
