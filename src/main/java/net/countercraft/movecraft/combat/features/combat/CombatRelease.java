@@ -49,9 +49,11 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     }
 
     @Nullable
+    @Deprecated(forRemoval = true)
     private static CombatRelease instance;
 
     @Nullable
+    @Deprecated(forRemoval = true)
     public static CombatRelease getInstance() {
         return instance;
     }

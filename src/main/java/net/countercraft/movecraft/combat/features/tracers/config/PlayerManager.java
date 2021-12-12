@@ -71,7 +71,7 @@ public class PlayerManager implements Listener {
 
     private void savePlayer(Player player) {
         var config = cache.get(player);
-        if(config == null) // TODO: Not sure the side effects of this
+        if(config == null)
             return;
 
         config.save();
