@@ -4,7 +4,10 @@ import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
-import net.countercraft.movecraft.combat.features.tracking.types.TNTCannonDamage;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeaponEvent;
+import net.countercraft.movecraft.combat.features.tracking.types.Fireball;
+import net.countercraft.movecraft.combat.features.tracking.types.TNTCannon;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -27,7 +30,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -63,8 +65,8 @@ public class TNTTracking implements Listener {
             return;
 
         var craft = e.getDamaged();
-        manager.addDamageRecord(craft, cause, new TNTCannonDamage());
-        CombatRelease.getInstance().registerEvent(craft.getPilot());
+        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, new TNTCannon());
+        Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
     }
 
 
@@ -142,6 +144,8 @@ public class TNTTracking implements Listener {
             return;
 
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
-        CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
+
+        CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new TNTCannon());
+        Bukkit.getPluginManager().callEvent(event);
     }
 }

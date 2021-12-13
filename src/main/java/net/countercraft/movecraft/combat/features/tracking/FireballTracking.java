@@ -4,12 +4,14 @@ import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.directors.AADirectors;
-import net.countercraft.movecraft.combat.features.tracking.types.FireballDamage;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeaponEvent;
+import net.countercraft.movecraft.combat.features.tracking.types.Fireball;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.MathUtils;
-import org.bukkit.entity.Fireball;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
@@ -36,7 +38,7 @@ public class FireballTracking implements Listener {
         this.directors = directors;
     }
 
-    public void damagedCraft(@NotNull PlayerCraft craft, @NotNull Fireball fireball) {
+    public void damagedCraft(@NotNull PlayerCraft craft, @NotNull org.bukkit.entity.Fireball fireball) {
         List<MetadataValue> meta = fireball.getMetadata("MCC-Sender");
         if(meta.isEmpty())
             return;
@@ -46,8 +48,8 @@ public class FireballTracking implements Listener {
         if(cause == null || !cause.isOnline())
             return;
 
-        manager.addDamageRecord(craft, cause, new FireballDamage());
-        CombatRelease.getInstance().registerEvent(craft.getPilot());
+        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, new Fireball());
+        Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
     }
 
 
@@ -77,17 +79,19 @@ public class FireballTracking implements Listener {
             return;
 
         fireball.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
-        CombatRelease.getInstance().registerEvent(playerCraft.getPilot());
+
+        CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new Fireball());
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onProjectileHit(@NotNull ProjectileHitEvent e) {
         if(!DamageTracking.EnableFireballTracking)
             return;
-        if(!(e.getEntity() instanceof Fireball))
+        if(!(e.getEntity() instanceof org.bukkit.entity.Fireball))
             return;
 
-        Fireball fireball = (Fireball) e.getEntity();
+        org.bukkit.entity.Fireball fireball = (org.bukkit.entity.Fireball) e.getEntity();
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
         if(!(craft instanceof PlayerCraft))
             return;
@@ -101,9 +105,9 @@ public class FireballTracking implements Listener {
     public void onExplosionDamagePlayerCraft(@NotNull ExplosionDamagePlayerCraftEvent e) {
         if(!DamageTracking.EnableFireballTracking)
             return;
-        if(!(e.getDamaging() instanceof Fireball))
+        if(!(e.getDamaging() instanceof org.bukkit.entity.Fireball))
             return;
 
-        damagedCraft((PlayerCraft) e.getCraft(), (Fireball) e.getDamaging());
+        damagedCraft((PlayerCraft) e.getCraft(), (org.bukkit.entity.Fireball) e.getDamaging());
     }
 }

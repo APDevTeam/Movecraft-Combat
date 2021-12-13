@@ -2,11 +2,12 @@ package net.countercraft.movecraft.combat.features.combat;
 
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.combat.events.CombatReleaseEvent;
 import net.countercraft.movecraft.combat.features.combat.events.CombatStartEvent;
 import net.countercraft.movecraft.combat.features.combat.events.CombatStopEvent;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
+import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeaponEvent;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
@@ -27,7 +28,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -48,21 +48,9 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         CombatReleaseScuttle = config.getBoolean("CombatReleaseScuttle", true);
     }
 
-    @Nullable
-    @Deprecated(forRemoval = true)
-    private static CombatRelease instance;
-
-    @Nullable
-    @Deprecated(forRemoval = true)
-    public static CombatRelease getInstance() {
-        return instance;
-    }
 
     private final HashMap<Player, Long> records = new HashMap<>();
 
-    public CombatRelease() {
-        instance = this;
-    }
 
     public void run() {
         long currentTime = System.currentTimeMillis();
@@ -85,25 +73,6 @@ public class CombatRelease extends BukkitRunnable implements Listener {
             return false;
 
         return System.currentTimeMillis() - records.get(player) < DamageTracking.DamageTimeout * 1000L;
-    }
-
-    public void registerEvent(@Nullable Player player) {
-        if(!EnableCombatReleaseTracking)
-            return;
-        if(player == null)
-            return;
-        if(!records.containsKey(player) || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
-            startCombat(player);
-        records.put(player, System.currentTimeMillis());
-    }
-
-    public void craftSunk(@NotNull PlayerCraft craft) {
-        if(!EnableCombatReleaseTracking)
-            return;
-
-        Player player = craft.getPilot();
-        records.remove(player);
-        stopCombat(player);
     }
 
     private void startCombat(@NotNull Player player) {
@@ -131,11 +100,6 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         return telPoint.distanceSquared(player.getLocation()) < Settings.ManOverboardDistSquared;
     }
 
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onCollisionDamagePlayerCraft(@NotNull CollisionDamagePlayerCraftEvent e) {
-        registerEvent(e.getDamaged().getPilot());
-    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
@@ -225,9 +189,40 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftSink(@NotNull CraftSinkEvent e) {
+        if(!EnableCombatReleaseTracking)
+            return;
         if(!(e.getCraft() instanceof PlayerCraft))
             return;
 
-        craftSunk((PlayerCraft) e.getCraft());
+
+        Player player = ((PlayerCraft) e.getCraft()).getPilot();
+        records.remove(player);
+        stopCombat(player);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCraftDamagedBy(@NotNull CraftDamagedByEvent e) {
+        if(!EnableCombatReleaseTracking)
+            return;
+
+        Player player = ((PlayerCraft) e.getCraft()).getPilot();
+        if(!records.containsKey(player)
+                || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
+            startCombat(player);
+
+        records.put(player, System.currentTimeMillis());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCraftFireWeapon(@NotNull CraftFireWeaponEvent e) {
+        if(!EnableCombatReleaseTracking)
+            return;
+
+        Player player = ((PlayerCraft) e.getCraft()).getPilot();
+        if(!records.containsKey(player)
+                || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
+            startCombat(player);
+
+        records.put(player, System.currentTimeMillis());
     }
 }

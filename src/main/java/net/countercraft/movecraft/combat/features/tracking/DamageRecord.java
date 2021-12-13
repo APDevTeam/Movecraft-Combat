@@ -1,6 +1,6 @@
 package net.countercraft.movecraft.combat.features.tracking;
 
-import net.countercraft.movecraft.combat.features.tracking.types.DamageType;
+import net.countercraft.movecraft.combat.features.tracking.types.Type;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 public class DamageRecord {
     private final OfflinePlayer cause;
     private final OfflinePlayer damaged;
-    private final DamageType type;
+    private final Type type;
     private final long time;
     private boolean killShot;
 
-    public DamageRecord(@NotNull OfflinePlayer cause, @NotNull OfflinePlayer damaged, @NotNull DamageType type) {
+    public DamageRecord(@NotNull OfflinePlayer cause, @NotNull OfflinePlayer damaged, @NotNull Type type) {
         this.cause = cause;
         this.damaged = damaged;
         this.type = type;
@@ -28,7 +28,7 @@ public class DamageRecord {
         return damaged;
     }
 
-    public DamageType getType() {
+    public Type getType() {
         return type;
     }
 

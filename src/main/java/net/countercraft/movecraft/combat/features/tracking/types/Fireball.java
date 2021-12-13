@@ -1,7 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracking.types;
 
-public class TorpedoDamage implements DamageType {
+public class Fireball implements Type {
     public String toString() {
-        return "Torpedo";
+        return "Fireball";
     }
 }

@@ -4,19 +4,16 @@ import net.countercraft.movecraft.combat.event.CollisionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftReleasedByEvent;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftSunkByEvent;
-import net.countercraft.movecraft.combat.features.tracking.types.DamageType;
-import net.countercraft.movecraft.combat.features.tracking.types.TorpedoDamage;
+import net.countercraft.movecraft.combat.features.tracking.types.Torpedo;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftSinkEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,21 +37,6 @@ public class DamageTracking implements Listener {
 
     private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
 
-
-    public void addDamageRecord(@NotNull PlayerCraft craft, @NotNull Player cause, @NotNull DamageType type) {
-        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, type);
-        Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
-
-        if(damageRecords.containsKey(craft)) {
-            List<DamageRecord> records = damageRecords.get(craft);
-            records.add(damageRecord);
-        }
-        else {
-            List<DamageRecord> records = new ArrayList<>();
-            records.add(damageRecord);
-            damageRecords.put(craft, records);
-        }
-    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
@@ -106,6 +88,27 @@ public class DamageTracking implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onCollisionDamagePlayerCraft(@NotNull CollisionDamagePlayerCraftEvent e) {
-        addDamageRecord(e.getDamaged(), e.getDamaging().getPilot(), new TorpedoDamage());
+        var craft = e.getDamaged();
+        var cause = e.getDamaging().getPilot();
+        var type = new Torpedo();
+
+        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, type);
+        Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onCraftDamagedBy(@NotNull CraftDamagedByEvent e) {
+        DamageRecord damageRecord = e.getDamageRecord();
+        PlayerCraft craft = (PlayerCraft) e.getCraft();
+
+        if(damageRecords.containsKey(craft)) {
+            List<DamageRecord> records = damageRecords.get(craft);
+            records.add(damageRecord);
+        }
+        else {
+            List<DamageRecord> records = new ArrayList<>();
+            records.add(damageRecord);
+            damageRecords.put(craft, records);
+        }
     }
 }
