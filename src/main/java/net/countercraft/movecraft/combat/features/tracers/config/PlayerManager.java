@@ -15,18 +15,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class PlayerManager implements Listener {
-    private static PlayerManager instance;
-
-    public static PlayerManager getInstance() {
-        return instance;
-    }
-
-
     private final Map<Player, PlayerConfig> cache = new WeakHashMap<>();
 
-    public PlayerManager() {
-        instance = this;
-    }
 
     @Nullable
     public String getSetting(Player player) {

@@ -36,7 +36,13 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     }
 
 
+    @NotNull
+    private final PlayerManager manager;
     private long lastUpdate = 0;
+
+    public TNTTracers(@NotNull PlayerManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public void run() {
@@ -61,7 +67,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
                 final Location tntLoc = tnt.getLocation();
                 for(Player p : w.getPlayers()) {
-                    String setting = PlayerManager.getInstance().getSetting(p);
+                    String setting = manager.getSetting(p);
                     if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
                         continue;
                     else if(setting.equals("MEDIUM")) {
@@ -76,7 +82,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         continue;
 
                     final Player fp = p;
-                    String mode = PlayerManager.getInstance().getMode(p);
+                    String mode = manager.getMode(p);
                     if(mode == null)
                         return;
 
@@ -128,7 +134,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         maxDistSquared = maxDistSquared * maxDistSquared;
 
         for(Player p : e.getEntity().getWorld().getPlayers()) {
-            String setting = PlayerManager.getInstance().getSetting(p);
+            String setting = manager.getSetting(p);
             if(setting == null || setting.equals("OFF"))
                 continue;
 
@@ -140,7 +146,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             final Location loc = tnt.getLocation();
             final Player fp = p;
 
-            String mode = PlayerManager.getInstance().getMode(p);
+            String mode = manager.getMode(p);
             if(mode == null)
                 continue;
 

@@ -24,6 +24,14 @@ public class MovementTracers implements Listener {
         MovementTracers = config.getBoolean("MovementTracers", false);
     }
 
+
+    @NotNull
+    private final PlayerManager manager;
+
+    public MovementTracers(@NotNull PlayerManager manager) {
+        this.manager = manager;
+    }
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCraftTranslate(CraftTranslateEvent e) {
         if(!MovementTracers)
@@ -42,7 +50,7 @@ public class MovementTracers implements Listener {
         for(final Player p : e.getWorld().getPlayers()) {
             if(p.getLocation().distanceSquared(center) > maxDistSquared)
                 continue;
-            String setting = PlayerManager.getInstance().getSetting(p);
+            String setting = manager.getSetting(p);
             if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
                 continue;
 

@@ -15,6 +15,7 @@ import net.countercraft.movecraft.combat.features.tracers.MovementTracers;
 import net.countercraft.movecraft.combat.features.tracers.TNTTracers;
 import net.countercraft.movecraft.combat.features.tracers.commands.TracerModeCommand;
 import net.countercraft.movecraft.combat.features.tracers.commands.TracerSettingCommand;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
@@ -97,8 +98,9 @@ public final class MovecraftCombat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
 
-        getServer().getPluginManager().registerEvents(new MovementTracers(), this);
-        var tntTracers = new TNTTracers();
+        var playerManager = new PlayerManager();
+        getServer().getPluginManager().registerEvents(new MovementTracers(playerManager), this);
+        var tntTracers = new TNTTracers(playerManager);
         getServer().getPluginManager().registerEvents(tntTracers, this);
         tntTracers.runTaskTimer(this, 0, 1); // Every tick
 
@@ -123,7 +125,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
         // Register commands
-        getCommand("tracersetting").setExecutor(new TracerSettingCommand());
-        getCommand("tracermode").setExecutor(new TracerModeCommand());
+        getCommand("tracersetting").setExecutor(new TracerSettingCommand(playerManager));
+        getCommand("tracermode").setExecutor(new TracerModeCommand(playerManager));
     }
 }
