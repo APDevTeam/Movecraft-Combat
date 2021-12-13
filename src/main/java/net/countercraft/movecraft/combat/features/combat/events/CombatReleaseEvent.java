@@ -16,6 +16,7 @@ public class CombatReleaseEvent extends CombatEvent implements Cancellable {
         this.craft = craft;
     }
 
+
     @Override
     public boolean isCancelled() {
         return this.cancelled;
@@ -25,6 +26,7 @@ public class CombatReleaseEvent extends CombatEvent implements Cancellable {
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
     }
+
 
     public Craft getCraft() {
         return craft;

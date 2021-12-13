@@ -8,10 +8,10 @@ import org.bukkit.event.HandlerList;
 
 public class CombatEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Player player;
 
-    public CombatEvent(@Nullable Player player) {
-        this.player = player;
+    @SuppressWarnings("unused")
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     @Override
@@ -19,10 +19,15 @@ public class CombatEvent extends Event {
         return HANDLERS;
     }
 
-    @SuppressWarnings("unused")
-    public static HandlerList getHandlerList() {
-        return HANDLERS;
+
+
+    private final Player player;
+
+
+    public CombatEvent(@Nullable Player player) {
+        this.player = player;
     }
+
 
     @Nullable
     public Player getPlayer() {

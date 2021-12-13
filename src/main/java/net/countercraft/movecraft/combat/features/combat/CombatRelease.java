@@ -49,6 +49,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     }
 
 
+
     private final HashMap<Player, Long> records = new HashMap<>();
 
 
@@ -93,7 +94,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     private boolean canManOverboard(Player player, @NotNull Craft craft) {
         if(craft.getDisabled())
             return false;
-        if (craft.getWorld() != player.getWorld())
+        if(craft.getWorld() != player.getWorld())
             return false;
 
         Location telPoint = MovecraftLocation.toBukkit(craft.getWorld(), craft.getHitBox().getMidPoint());
