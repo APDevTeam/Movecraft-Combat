@@ -57,20 +57,20 @@ public class TracerSettingCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String @NotNull [] strings) {
         final List<String> tabCompletions = new ArrayList<>();
-        if (strings.length <= 1) {
+        if(strings.length <= 1) {
             tabCompletions.add("OFF");
             tabCompletions.add("MEDIUM");
             tabCompletions.add("HIGH");
             tabCompletions.add("LOW");
         }
-        if (strings.length == 0) {
+        if(strings.length == 0) {
             return tabCompletions;
         }
         final List<String> completions = new ArrayList<>();
-        for (String completion : tabCompletions) {
-            if (!completion.startsWith(strings[strings.length - 1].toUpperCase())) {
+        for(String completion : tabCompletions) {
+            if(!completion.startsWith(strings[strings.length - 1].toUpperCase()))
                 continue;
-            }
+
             completions.add(completion);
         }
         return completions;

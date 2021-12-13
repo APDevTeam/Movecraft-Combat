@@ -53,13 +53,13 @@ public class PlayerConfig extends YamlConfiguration {
         try {
             try(FileInputStream inputStream = new FileInputStream(configFile)) {
                 long startSize = configFile.length();
-                if (startSize > Integer.MAX_VALUE)
+                if(startSize > Integer.MAX_VALUE)
                     throw new InvalidConfigurationException("File too big");
 
                 ByteBuffer buffer = ByteBuffer.allocate((int) startSize);
                 int length;
-                while ((length = inputStream.read(bytebuffer)) != -1) {
-                    if (length > buffer.remaining()) {
+                while((length = inputStream.read(bytebuffer)) != -1) {
+                    if(length > buffer.remaining()) {
                         ByteBuffer resize = ByteBuffer.allocate(buffer.capacity() + length - buffer.remaining());
                         int resizePosition = buffer.position();
                         // Fix builds compiled against Java 9+ breaking on Java 8
