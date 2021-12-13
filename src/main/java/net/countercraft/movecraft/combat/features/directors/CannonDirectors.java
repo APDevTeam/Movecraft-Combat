@@ -160,6 +160,7 @@ public class CannonDirectors extends Directors implements Listener {
         return c;
     }
 
+
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public final void onSignClick(@NotNull PlayerInteractEvent e) {
         var action = e.getAction();

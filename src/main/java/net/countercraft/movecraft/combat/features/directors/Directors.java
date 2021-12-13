@@ -16,10 +16,8 @@ import java.util.Set;
 
 public class Directors extends BukkitRunnable {
     private static final Set<Directors> instances = new HashSet<>();
-
     public static Material DirectorTool = null;
     public static Set<Material> Transparent = null;
-
 
     public static void load(@NotNull FileConfiguration config) {
         Object tool = config.get("DirectorTool");
@@ -58,6 +56,12 @@ public class Directors extends BukkitRunnable {
         instances.add(this);
     }
 
+    @Override
+    public void run() {
+
+    }
+
+
     public void addDirector(@NotNull PlayerCraft craft, @NotNull Player player) {
         if(directors.containsValue(player))
             directors.inverse().remove(player);
@@ -93,10 +97,5 @@ public class Directors extends BukkitRunnable {
             return null;
 
         return director;
-    }
-
-    @Override
-    public void run() {
-
     }
 }

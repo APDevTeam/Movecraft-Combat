@@ -48,6 +48,7 @@ public class AADirectors extends Directors implements Listener {
 
     private long lastCheck = 0;
 
+
     public AADirectors() {
         super();
     }
@@ -130,6 +131,7 @@ public class AADirectors extends Directors implements Listener {
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
     }
+
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSignClick(@NotNull PlayerInteractEvent e) {
