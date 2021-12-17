@@ -40,6 +40,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     private final PlayerManager manager;
     private long lastUpdate = 0;
 
+
     public TNTTracers(@NotNull PlayerManager manager) {
         this.manager = manager;
     }
@@ -120,6 +121,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         }
         lastUpdate = System.currentTimeMillis();
     }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {

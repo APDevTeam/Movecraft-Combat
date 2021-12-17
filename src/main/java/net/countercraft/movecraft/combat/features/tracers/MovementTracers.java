@@ -28,9 +28,11 @@ public class MovementTracers implements Listener {
     @NotNull
     private final PlayerManager manager;
 
+
     public MovementTracers(@NotNull PlayerManager manager) {
         this.manager = manager;
     }
+
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCraftTranslate(CraftTranslateEvent e) {

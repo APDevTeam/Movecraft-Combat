@@ -21,11 +21,13 @@ public class PlayerConfig extends YamlConfiguration {
     private String setting = "HIGH";
     private String mode = "BLOCKS";
 
+
     public PlayerConfig(UUID owner) {
         super();
         configFile = new File(MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/userdata/" + owner + ".yml");
         this.owner = owner;
     }
+
 
     public UUID getOwner() {
         return owner;
