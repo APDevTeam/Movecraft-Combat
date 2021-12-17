@@ -58,18 +58,18 @@ public class CraftReleasedByEvent extends CraftEvent {
         assert latestDamage != null;
         players.remove(latestDamage.getCause());
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(((PlayerCraft) this.craft).getPilot().getDisplayName());
-        sb.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
-        sb.append(NameUtils.offlineToName(latestDamage.getCause()));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(((PlayerCraft) this.craft).getPilot().getDisplayName());
+        stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
+        stringBuilder.append(NameUtils.offlineToName(latestDamage.getCause()));
         if(players.size() < 1)
-            return sb.toString();
+            return stringBuilder.toString();
 
-        sb.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - With Assists")).append(" ");
+        stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - With Assists")).append(" ");
         for(OfflinePlayer p : players) {
-            sb.append(NameUtils.offlineToName(p));
-            sb.append(", ");
+            stringBuilder.append(NameUtils.offlineToName(p));
+            stringBuilder.append(", ");
         }
-        return sb.substring(0, sb.length() - 2);
+        return stringBuilder.substring(0, stringBuilder.length() - 2);
     }
 }
