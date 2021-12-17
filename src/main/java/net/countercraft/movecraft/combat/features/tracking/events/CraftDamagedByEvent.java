@@ -8,15 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class CraftDamagedByEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final DamageRecord damageRecord;
 
-    public CraftDamagedByEvent(@NotNull Craft craft, @NotNull DamageRecord damageRecord) {
-        super(craft);
-        this.damageRecord = damageRecord;
-    }
-
-    public DamageRecord getDamageRecord() {
-        return this.damageRecord;
+    @SuppressWarnings("unused")
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
     @Override
@@ -24,8 +19,18 @@ public class CraftDamagedByEvent extends CraftEvent {
         return HANDLERS;
     }
 
-    @SuppressWarnings("unused")
-    public static HandlerList getHandlerList() {
-        return HANDLERS;
+
+
+    private final DamageRecord damageRecord;
+
+
+    public CraftDamagedByEvent(@NotNull Craft craft, @NotNull DamageRecord damageRecord) {
+        super(craft);
+        this.damageRecord = damageRecord;
+    }
+
+
+    public DamageRecord getDamageRecord() {
+        return this.damageRecord;
     }
 }

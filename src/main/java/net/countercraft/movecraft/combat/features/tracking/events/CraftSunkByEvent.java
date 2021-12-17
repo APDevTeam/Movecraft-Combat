@@ -16,12 +16,6 @@ import java.util.List;
 
 public class CraftSunkByEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final List<DamageRecord> causes;
-
-    public CraftSunkByEvent(@NotNull PlayerCraft craft, @NotNull List<DamageRecord> causes) {
-        super(craft);
-        this.causes = causes;
-    }
 
     @Override
     public HandlerList getHandlers() {
@@ -32,6 +26,17 @@ public class CraftSunkByEvent extends CraftEvent {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
+
+
+
+    private final List<DamageRecord> causes;
+
+
+    public CraftSunkByEvent(@NotNull PlayerCraft craft, @NotNull List<DamageRecord> causes) {
+        super(craft);
+        this.causes = causes;
+    }
+
 
     @Nullable
     public List<DamageRecord> getCauses() {
