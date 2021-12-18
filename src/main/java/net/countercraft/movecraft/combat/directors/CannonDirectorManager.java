@@ -25,7 +25,7 @@ import net.countercraft.movecraft.combat.config.Config;
 
 public class CannonDirectorManager extends DirectorManager {
     public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
-    static {
+    public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
     }
 

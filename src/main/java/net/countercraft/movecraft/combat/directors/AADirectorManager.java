@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class AADirectorManager extends DirectorManager {
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
-    static {
+    public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
     }
 
