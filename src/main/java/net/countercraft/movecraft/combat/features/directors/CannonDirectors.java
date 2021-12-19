@@ -44,7 +44,8 @@ public class CannonDirectors extends Directors implements Listener {
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;
 
-    static {
+
+    public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
     }
 

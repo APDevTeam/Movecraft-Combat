@@ -36,6 +36,12 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
     @Override
+    public void onLoad() {
+        AADirectors.register();
+        CannonDirectors.register();
+    }
+
+    @Override
     public void onEnable() {
         instance = this;
 

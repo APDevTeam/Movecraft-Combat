@@ -35,7 +35,8 @@ public class AADirectors extends Directors implements Listener {
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
 
-    static {
+
+    public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
     }
 
