@@ -46,8 +46,12 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
 
             var allTNT = w.getEntitiesByClass(TNTPrimed.class);
             for(TNTPrimed tnt : allTNT) {
-                if(tnt.getFuseTicks() < ContactExplosivesDelay && !tracking.containsKey(tnt))
+                if(tnt.getFuseTicks() < ContactExplosivesDelay && !tracking.containsKey(tnt)) {
+                    Bukkit.getLogger().info("Putting " + tnt.getLocation() + " : " + tnt.getVelocity().lengthSquared() + " w/ fuse " + tnt.getFuseTicks());
                     tracking.put(tnt, tnt.getVelocity().lengthSquared());
+                }
+                else if(!tracking.containsKey(tnt))
+                    Bukkit.getLogger().info("Skipping " + tnt.getLocation() + " : " + tnt.getVelocity().lengthSquared() + " w/ fuse " + tnt.getFuseTicks());
             }
         }
 
@@ -55,6 +59,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
         for(TNTPrimed tnt : tracking.keySet()) {
             double vel = tnt.getVelocity().lengthSquared();
             if(vel < tracking.getDouble(tnt) / ContactExplosivesMaxImpulseFactor) {
+                Bukkit.getLogger().info("Esploding: " + tnt.getLocation() + ": " + vel + " / " + tracking.getDouble(tnt));
                 tnt.setVelocity(new Vector(0,0,0)); //freeze it in place to prevent sliding
                 tnt.setFuseTicks(0);
             }
