@@ -105,6 +105,7 @@ public final class MovecraftCombat extends JavaPlugin {
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
 
         var playerManager = new PlayerManager();
+        getServer().getPluginManager().registerEvents(playerManager, this);
         getServer().getPluginManager().registerEvents(new MovementTracers(playerManager), this);
         var tntTracers = new TNTTracers(playerManager);
         getServer().getPluginManager().registerEvents(tntTracers, this);
