@@ -42,6 +42,7 @@ EnableContactExplosives: true # Enable TNT contact explosives
 ContactExplosivesMaxImpulseFactor: 10.0 # The maximum fraction of its velocity tnt can be reduced to in a single tick and not detonate.
                                         # For example, with the default value of 10.0, TNT can be reduced to 1/10th of its velocity without detonating.
                                         # Lower values are more sensitive.
+ContactExplosivesDelay: 0.5 # Number of seconds after spawning before contact explosives activate
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent

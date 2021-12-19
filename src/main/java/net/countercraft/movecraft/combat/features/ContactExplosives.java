@@ -16,10 +16,12 @@ import org.jetbrains.annotations.NotNull;
 public class ContactExplosives extends BukkitRunnable implements Listener {
     public static boolean EnableContactExplosives = true;
     public static double ContactExplosivesMaxImpulseFactor = 10;
+    public static int ContactExplosivesDelay = 10;
 
     public static void load(@NotNull FileConfiguration config) {
         EnableContactExplosives = config.getBoolean("EnableContactExplosives", true);
         ContactExplosivesMaxImpulseFactor = config.getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
+        ContactExplosivesDelay = 80 - (int) (20 * config.getDouble("ContactExplosivesDelay", 0.5D));
     }
 
 
@@ -44,7 +46,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
 
             var allTNT = w.getEntitiesByClass(TNTPrimed.class);
             for(TNTPrimed tnt : allTNT) {
-                if(!tracking.containsKey(tnt))
+                if(tnt.getFuseTicks() < ContactExplosivesDelay && !tracking.containsKey(tnt))
                     tracking.put(tnt, tnt.getVelocity().lengthSquared());
             }
         }
