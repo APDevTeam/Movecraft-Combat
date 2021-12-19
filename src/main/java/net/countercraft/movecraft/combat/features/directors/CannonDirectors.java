@@ -207,6 +207,7 @@ public class CannonDirectors extends Directors implements Listener {
 
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - No Longer Directing"));
+            e.setCancelled(true);
             return;
         }
 

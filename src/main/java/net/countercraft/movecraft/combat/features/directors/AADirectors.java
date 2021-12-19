@@ -178,6 +178,7 @@ public class AADirectors extends Directors implements Listener {
 
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Longer Directing"));
+            e.setCancelled(true);
             return;
         }
 
