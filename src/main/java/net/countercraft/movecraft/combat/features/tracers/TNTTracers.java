@@ -63,63 +63,67 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                 continue;
 
             for(TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
-                if (tnt.getVelocity().lengthSquared() < 0.25)
-                    continue;
-
-                final Location tntLoc = tnt.getLocation();
-                for(Player p : w.getPlayers()) {
-                    String setting = manager.getSetting(p);
-                    if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
-                        continue;
-                    else if(setting.equals("MEDIUM")) {
-                        long seed = (long) (tntLoc.getX() * tntLoc.getY() * tntLoc.getZ() + (System.currentTimeMillis() >> 12));
-                        int random = new Random(seed).nextInt(100);
-                        if(random < 50)
-                            continue;   // Medium merely spawns half the particles/cobwebs
-                    }
-
-                    // is the TNT within the view distance (rendered world) of the player?
-                    if(p.getLocation().distanceSquared(tntLoc) > maxDistSquared)
-                        continue;
-
-                    final Player fp = p;
-                    String mode = manager.getMode(p);
-                    if(mode == null)
-                        return;
-
-                    switch(mode) {
-                        case "PARTICLES":
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    fp.spawnParticle(TracerParticle, tntLoc, 0, 0.0, 0.0, 0.0);
-                                }
-                            }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                            break;
-                        case "BLOCKS":
-                        default:
-                            // then make a cobweb to look like smoke,
-                            // place it a little later so it isn't right
-                            // in the middle of the volley
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    fp.sendBlockChange(tntLoc, Material.COBWEB.createBlockData());
-                                }
-                            }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                            // then restore it
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    fp.sendBlockChange(tntLoc, tntLoc.getBlock().getBlockData());
-                                }
-                            }.runTaskLater(MovecraftCombat.getInstance(), 160);
-                            break;
-                    }
-                }
+                processTNT(tnt, maxDistSquared, w);
             }
         }
         lastUpdate = System.currentTimeMillis();
+    }
+
+    private void processTNT(@NotNull TNTPrimed tnt, long maxDistSquared, @NotNull World w) {
+        if (tnt.getVelocity().lengthSquared() < 0.25)
+            return;
+
+        final Location tntLoc = tnt.getLocation();
+        for(Player p : w.getPlayers()) {
+            String setting = manager.getSetting(p);
+            if (setting == null || setting.equals("OFF") || setting.equals("LOW"))
+                continue;
+            else if (setting.equals("MEDIUM")) {
+                long seed = (long) (tntLoc.getX() * tntLoc.getY() * tntLoc.getZ() + (System.currentTimeMillis() >> 12));
+                int random = new Random(seed).nextInt(100);
+                if (random < 50)
+                    continue;   // Medium merely spawns half the particles/cobwebs
+            }
+
+            // is the TNT within the view distance (rendered world) of the player?
+            if (p.getLocation().distanceSquared(tntLoc) > maxDistSquared)
+                continue;
+
+            final Player fp = p;
+            String mode = manager.getMode(p);
+            if (mode == null)
+                return;
+
+            switch (mode) {
+                case "PARTICLES":
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.spawnParticle(TracerParticle, tntLoc, 0, 0.0, 0.0, 0.0);
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    break;
+                case "BLOCKS":
+                default:
+                    // then make a cobweb to look like smoke,
+                    // place it a little later so it isn't right
+                    // in the middle of the volley
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.sendBlockChange(tntLoc, Material.COBWEB.createBlockData());
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    // then restore it
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.sendBlockChange(tntLoc, tntLoc.getBlock().getBlockData());
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                    break;
+            }
+        }
     }
 
 
