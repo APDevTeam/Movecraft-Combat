@@ -24,17 +24,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class AADirectors extends Directors implements Listener {
-    private static final String HEADER = "AA Director";
-
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
+    private static final String HEADER = "AA Director";
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
+    private long lastCheck = 0;
 
+    public AADirectors() {
+        super();
+    }
 
     public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowAADirectorSign", ALLOW_AA_DIRECTOR_SIGN, type -> true));
@@ -45,27 +47,18 @@ public class AADirectors extends Directors implements Listener {
         AADirectorRange = config.getInt("AADirectorRange", 120);
     }
 
-
-
-    private long lastCheck = 0;
-
-
-    public AADirectors() {
-        super();
-    }
-
     @Override
     public void run() {
         long ticksElapsed = (System.currentTimeMillis() - lastCheck) / 50;
-        if(ticksElapsed <= 3)
+        if (ticksElapsed <= 3)
             return;
 
-        for(World w : Bukkit.getWorlds()) {
-            if(w == null || w.getPlayers().size() == 0)
+        for (World w : Bukkit.getWorlds()) {
+            if (w == null || w.getPlayers().size() == 0)
                 continue;
 
             var allFireballs = w.getEntitiesByClass(SmallFireball.class);
-            for(SmallFireball fireball : allFireballs)
+            for (SmallFireball fireball : allFireballs)
                 processFireball(fireball);
         }
 
@@ -73,11 +66,11 @@ public class AADirectors extends Directors implements Listener {
     }
 
     private void processFireball(@NotNull SmallFireball fireball) {
-        if(fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
+        if (fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
             return;
 
         Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-        if(!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
+        if (!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
             return;
 
         Player p = getDirector((PlayerCraft) c);
@@ -86,12 +79,12 @@ public class AADirectors extends Directors implements Listener {
         int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
         int distY = Math.abs(midPoint.getY() - fireball.getLocation().getBlockY());
         int distZ = Math.abs(midPoint.getZ() - fireball.getLocation().getBlockZ());
-        if(distX > AADirectorDistance || distY > AADirectorDistance || distZ > AADirectorDistance)
+        if (distX > AADirectorDistance || distY > AADirectorDistance || distZ > AADirectorDistance)
             return;
 
         fireball.setShooter(p);
 
-        if(p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
 
         Vector fireballVector = fireball.getVelocity();
@@ -100,7 +93,7 @@ public class AADirectors extends Directors implements Listener {
 
         Block targetBlock = p.getTargetBlock(Transparent, AADirectorRange);
         Vector targetVector;
-        if(targetBlock == null) // the player is looking at nothing, shoot in that general direction
+        if (targetBlock == null) // the player is looking at nothing, shoot in that general direction
             targetVector = p.getLocation().getDirection();
         else { // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
@@ -137,43 +130,43 @@ public class AADirectors extends Directors implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSignClick(@NotNull PlayerInteractEvent e) {
         var action = e.getAction();
-        if(action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
+        if (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
             return;
 
         Block b = e.getClickedBlock();
-        if(b == null)
+        if (b == null)
             throw new IllegalStateException();
         var state = b.getState();
-        if(!(state instanceof Sign))
+        if (!(state instanceof Sign))
             return;
 
         Sign sign = (Sign) state;
-        if(!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
+        if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
             return;
 
         PlayerCraft foundCraft = null;
-        for(Craft c : CraftManager.getInstance()) {
-            if(!(c instanceof PlayerCraft))
+        for (Craft c : CraftManager.getInstance()) {
+            if (!(c instanceof PlayerCraft))
                 continue;
-            if(!c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation())))
+            if (!c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation())))
                 continue;
             foundCraft = (PlayerCraft) c;
             break;
         }
 
         Player p = e.getPlayer();
-        if(foundCraft == null) {
+        if (foundCraft == null) {
             p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
             return;
         }
 
-        if(!foundCraft.getType().getBoolProperty(ALLOW_AA_DIRECTOR_SIGN)) {
+        if (!foundCraft.getType().getBoolProperty(ALLOW_AA_DIRECTOR_SIGN)) {
             p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
             return;
         }
 
-        if(action == Action.LEFT_CLICK_BLOCK) {
-            if(!isDirector(p))
+        if (action == Action.LEFT_CLICK_BLOCK) {
+            if (!isDirector(p))
                 return;
 
             removeDirector(p);
