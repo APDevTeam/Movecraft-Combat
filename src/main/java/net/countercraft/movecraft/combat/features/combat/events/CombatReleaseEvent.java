@@ -1,15 +1,15 @@
 package net.countercraft.movecraft.combat.features.combat.events;
 
+import net.countercraft.movecraft.craft.Craft;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.countercraft.movecraft.craft.Craft;
 
 
 public class CombatReleaseEvent extends CombatEvent implements Cancellable {
-    private boolean cancelled = false;
     private final Craft craft;
+    private boolean cancelled = false;
 
     public CombatReleaseEvent(@NotNull Craft craft, @Nullable Player player) {
         super(player);
