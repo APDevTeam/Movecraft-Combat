@@ -40,6 +40,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     public static boolean EnableCombatReleaseKick = true;
     public static long CombatReleaseBanLength = 60;
     public static boolean CombatReleaseScuttle = true;
+    private final HashMap<Player, Long> records = new HashMap<>();
 
     public static void load(@NotNull FileConfiguration config) {
         EnableCombatReleaseTracking = config.getBoolean("EnableCombatReleaseTracking", false);
@@ -48,19 +49,14 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         CombatReleaseScuttle = config.getBoolean("CombatReleaseScuttle", true);
     }
 
-
-
-    private final HashMap<Player, Long> records = new HashMap<>();
-
-
     public void run() {
         long currentTime = System.currentTimeMillis();
         HashSet<Player> removeSet = new HashSet<>();
-        for(var entry : records.entrySet()) {
-            if((currentTime - entry.getValue()) > DamageTracking.DamageTimeout * 1000L)
+        for (var entry : records.entrySet()) {
+            if ((currentTime - entry.getValue()) > DamageTracking.DamageTimeout * 1000L)
                 removeSet.add(entry.getKey());
         }
-        for(Player player : removeSet) {
+        for (Player player : removeSet) {
             stopCombat(player);
             records.remove(player);
         }
@@ -68,16 +64,16 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
 
     public boolean isInCombat(Player player) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return false;
-        if(!records.containsKey(player))
+        if (!records.containsKey(player))
             return false;
 
         return System.currentTimeMillis() - records.get(player) < DamageTracking.DamageTimeout * 1000L;
     }
 
     private void startCombat(@NotNull Player player) {
-        if(isInCombat(player))
+        if (isInCombat(player))
             return;
 
         Bukkit.getPluginManager().callEvent(new CombatStartEvent(player));
@@ -92,9 +88,9 @@ public class CombatRelease extends BukkitRunnable implements Listener {
     }
 
     private boolean canManOverboard(Player player, @NotNull Craft craft) {
-        if(craft.getDisabled())
+        if (craft.getDisabled())
             return false;
-        if(craft.getWorld() != player.getWorld())
+        if (craft.getWorld() != player.getWorld())
             return false;
 
         Location telPoint = MovecraftLocation.toBukkit(craft.getWorld(), craft.getHitBox().getMidPoint());
@@ -104,51 +100,51 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return;
 
         Craft craft = e.getCraft();
-        if(craft.getSinking())
+        if (craft.getSinking())
             return;
-        if(!(craft instanceof PlayerCraft))
+        if (!(craft instanceof PlayerCraft))
             return;
         CraftReleaseEvent.Reason reason = e.getReason();
-        if(reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
+        if (reason != CraftReleaseEvent.Reason.PLAYER && reason != CraftReleaseEvent.Reason.DISCONNECT)
             return;
-        if(craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
+        if (craft.getType().getBoolProperty(CraftType.CRUISE_ON_PILOT))
             return;
 
         Player player = ((PlayerCraft) craft).getPilot();
-        if(!isInCombat(player))
+        if (!isInCombat(player))
             return;
         records.remove(player);
 
         stopCombat(player);
 
-        if(player.hasPermission("movecraft.combat.bypass"))
+        if (player.hasPermission("movecraft.combat.bypass"))
             return;
 
         MovecraftCombat.getInstance().getLogger().info(I18nSupport.getInternationalisedString("Combat Release") + " " + player.getName());
         CombatReleaseEvent event = new CombatReleaseEvent(craft, player);
         Bukkit.getPluginManager().callEvent(event);
-        if(event.isCancelled())
+        if (event.isCancelled())
             return;
 
         player.sendMessage(ChatColor.RED + I18nSupport.getInternationalisedString("Combat Release Message"));
 
-        if(CombatReleaseScuttle) {
+        if (CombatReleaseScuttle) {
             e.setCancelled(true);
             craft.setNotificationPlayer(null);
             craft.setCruising(false);
             craft.sink();
         }
 
-        if(!EnableCombatReleaseKick)
+        if (!EnableCombatReleaseKick)
             return;
-        if(!canManOverboard(player, craft))
+        if (!canManOverboard(player, craft))
             return;
 
-        if(CombatReleaseBanLength > 0) {
+        if (CombatReleaseBanLength > 0) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -161,7 +157,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(!player.isOnline())
+                if (!player.isOnline())
                     return;
 
                 player.kickPlayer(I18nSupport.getInternationalisedString("Combat Release"));
@@ -171,17 +167,17 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onCraftScuttle(@NotNull CraftScuttleEvent e) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return;
 
         Player cause = e.getCause();
-        if(e.getCraft() instanceof PilotedCraft) {
+        if (e.getCraft() instanceof PilotedCraft) {
             Player pilot = ((PilotedCraft) e.getCraft()).getPilot();
-            if(pilot != cause)
+            if (pilot != cause)
                 return; // Always let /scuttle [player] run.
         }
 
-        if(!isInCombat(cause))
+        if (!isInCombat(cause))
             return;
 
         e.setCancelled(true);
@@ -190,9 +186,9 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftSink(@NotNull CraftSinkEvent e) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return;
-        if(!(e.getCraft() instanceof PlayerCraft))
+        if (!(e.getCraft() instanceof PlayerCraft))
             return;
 
 
@@ -203,11 +199,11 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftDamagedBy(@NotNull CraftDamagedByEvent e) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return;
 
         Player player = ((PlayerCraft) e.getCraft()).getPilot();
-        if(!records.containsKey(player)
+        if (!records.containsKey(player)
                 || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
             startCombat(player);
 
@@ -216,11 +212,11 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftFireWeapon(@NotNull CraftFireWeaponEvent e) {
-        if(!EnableCombatReleaseTracking)
+        if (!EnableCombatReleaseTracking)
             return;
 
         Player player = ((PlayerCraft) e.getCraft()).getPilot();
-        if(!records.containsKey(player)
+        if (!records.containsKey(player)
                 || System.currentTimeMillis() - records.get(player) > DamageTracking.DamageTimeout * 1000L)
             startCombat(player);
 
