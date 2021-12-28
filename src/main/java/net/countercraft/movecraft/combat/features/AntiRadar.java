@@ -23,56 +23,52 @@ import java.util.Set;
 
 public class AntiRadar implements Listener {
     public static boolean EnableAntiRadar = false;
+    private final Set<Player> invisibles = new HashSet<>();
+    private final Set<Player> pilots = new HashSet<>();
 
     public static void load(@NotNull FileConfiguration config) {
         EnableAntiRadar = config.getBoolean("EnableAntiRadar", false);
     }
 
-
-
-    private final Set<Player> invisibles = new HashSet<>();
-    private final Set<Player> pilots = new HashSet<>();
-
-
     private void startInvisible(Player p) {
-        if(invisibles.contains(p))
+        if (invisibles.contains(p))
             return;
 
         // Hide player from all pilots
-        for(Player pilot : pilots)
+        for (Player pilot : pilots)
             pilot.hidePlayer(MovecraftCombat.getInstance(), p);
 
         invisibles.add(p);
     }
 
     private void endInvisible(Player p) {
-        if(!invisibles.contains(p))
+        if (!invisibles.contains(p))
             return;
 
         // Show player to all pilots
-        for(Player pilot : pilots)
+        for (Player pilot : pilots)
             pilot.showPlayer(MovecraftCombat.getInstance(), p);
 
         invisibles.remove(p);
     }
 
     private void startPilot(Player p) {
-        if(pilots.contains(p))
+        if (pilots.contains(p))
             return;
 
         // Hide all invisible players from player
-        for(Player other : invisibles)
+        for (Player other : invisibles)
             p.hidePlayer(MovecraftCombat.getInstance(), other);
 
         pilots.add(p);
     }
 
     private void endPilot(Player p) {
-        if(!pilots.contains(p))
+        if (!pilots.contains(p))
             return;
 
         // Show all invisible players to player
-        for(Player other : invisibles)
+        for (Player other : invisibles)
             p.showPlayer(MovecraftCombat.getInstance(), other);
 
         pilots.remove(p);
@@ -81,25 +77,25 @@ public class AntiRadar implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftDetect(@NotNull CraftDetectEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
         Craft c = e.getCraft();
-        if(!(c instanceof PlayerCraft))
+        if (!(c instanceof PlayerCraft))
             return;
 
         Player p = ((PlayerCraft) c).getPilot();
         startPilot(p);
-        if(MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(p.getLocation())))
+        if (MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(p.getLocation())))
             startInvisible(p);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
-        if(!(e.getCraft() instanceof PlayerCraft))
+        if (!(e.getCraft() instanceof PlayerCraft))
             return;
 
         Player p = ((PlayerCraft) e.getCraft()).getPilot();
@@ -109,10 +105,10 @@ public class AntiRadar implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftSink(@NotNull CraftSinkEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
-        if(!(e.getCraft() instanceof PlayerCraft))
+        if (!(e.getCraft() instanceof PlayerCraft))
             return;
 
         Player p = ((PlayerCraft) e.getCraft()).getPilot();
@@ -122,11 +118,11 @@ public class AntiRadar implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftScuttle(@NotNull CraftScuttleEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
         Player p = e.getCause();
-        if(p == null)
+        if (p == null)
             return;
 
         endPilot(p);
@@ -135,7 +131,7 @@ public class AntiRadar implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerQuit(@NotNull PlayerQuitEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
         Player p = e.getPlayer();
@@ -146,27 +142,27 @@ public class AntiRadar implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(@NotNull PlayerMoveEvent e) {
-        if(!EnableAntiRadar)
+        if (!EnableAntiRadar)
             return;
 
         Player p = e.getPlayer();
-        if(!pilots.contains(p))
+        if (!pilots.contains(p))
             return;
 
         Craft c = CraftManager.getInstance().getCraftByPlayer(p);
-        if(c == null)
+        if (c == null)
             return;
 
         boolean from = MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(e.getFrom()));
         boolean to;
-        if(e.getTo() == null)
+        if (e.getTo() == null)
             to = from;
         else
             to = MathUtils.locIsNearCraftFast(c, MathUtils.bukkit2MovecraftLoc(e.getTo()));
 
-        if(from && !to) // Player left their craft
+        if (from && !to) // Player left their craft
             endInvisible(p);
-        else if(!from && to) // Player entered their craft
+        else if (!from && to) // Player entered their craft
             startInvisible(p);
     }
 }
