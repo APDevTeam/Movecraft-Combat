@@ -20,13 +20,14 @@ public class ExplosionDamagePlayerCraftEvent extends CraftEvent {
         this.damaging = damaging;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    @SuppressWarnings("unused")
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    @SuppressWarnings("unused")
-    public static HandlerList getHandlerList() {
+    @Override
+    @NotNull
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 
