@@ -21,19 +21,18 @@ public class AddFiresToHitbox implements Listener {
     }
 
 
-
     @Nullable
     private Craft adjacentCraft(@NotNull Location location) {
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(location);
-        if(craft == null)
+        if (craft == null)
             return null; //return null if no craft found
 
-        if(MathUtils.locationInHitBox(craft.getHitBox(), location.add(1,0,0))
-                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(-1,0,0))
-                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,1,0))
-                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,-1,0))
-                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,0,1))
-                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0,0,-1)))
+        if (MathUtils.locationInHitBox(craft.getHitBox(), location.add(1, 0, 0))
+                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(-1, 0, 0))
+                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0, 1, 0))
+                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0, -1, 0))
+                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0, 0, 1))
+                || MathUtils.locationInHitBox(craft.getHitBox(), location.add(0, 0, -1)))
             return craft;
 
         return null;
@@ -43,9 +42,9 @@ public class AddFiresToHitbox implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockIgnite(@NotNull BlockIgniteEvent e) {
         Craft craft = adjacentCraft(e.getBlock().getLocation());
-        if(craft == null || craft.getHitBox().isEmpty())
+        if (craft == null || craft.getHitBox().isEmpty())
             return;
-        if(!(craft.getHitBox() instanceof MutableHitBox))
+        if (!(craft.getHitBox() instanceof MutableHitBox))
             return;
 
         MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
