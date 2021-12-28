@@ -1,4 +1,3 @@
-Debug: false # Used only for internal testing, recommend leaving this OFF
 Locale: "en" # Language file to load, currently the plugin comes with en and no, but you can add your own custom language as well.
 
 
@@ -21,28 +20,24 @@ CannonDirectorsAllowed: # List of string names to craft types that are allowed t
 # Directors
 DirectorTool: STICK # Material name for director control.
 TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
-  - AIR
   - "#glass"
-  - IRON_FENCE
+  - IRON_BARS
   - REDSTONE_WIRE
-  - IRON_TRAPDOOR
-  - TRAP_DOOR
-  - NETHER_BRICK_STAIRS
   - LEVER
   - STONE_BUTTON
-  - WOOD_BUTTON
-  - STEP
-  - SMOOTH_STAIRS
-  - SIGN
-  - SIGN_POST
-  - WALL_SIGN
-  - CARPET
+  - "#wooden_buttons"
+  - "#slabs"
+  - "#stairs"
+  - "#signs"
+  - "#carpets"
+  - "#trapdoors"
 
 # Contact Explosives
 EnableContactExplosives: true # Enable TNT contact explosives
 ContactExplosivesMaxImpulseFactor: 10.0 # The maximum fraction of its velocity tnt can be reduced to in a single tick and not detonate.
                                         # For example, with the default value of 10.0, TNT can be reduced to 1/10th of its velocity without detonating.
                                         # Lower values are more sensitive.
+ContactExplosivesMinImpulse: 0.35 # Minimum velocity for contact explosives to track a TNT entity
 
 # Durability Override
 DurabilityOverride: # List of block IDs: ignore percent
