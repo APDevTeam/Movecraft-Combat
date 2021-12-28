@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class ContactExplosives extends BukkitRunnable implements Listener {
     public static boolean EnableContactExplosives = true;
-    public static double ContactExplosivesMaxImpulseFactor = 10;
-    public static double ContactExplosivesMinImpuse = 0.35;
+    public static double ContactExplosivesMaxImpulseFactor = 10.0D;
+    public static double ContactExplosivesMinImpuse = 0.35D;
 
     public static void load(@NotNull FileConfiguration config) {
         EnableContactExplosives = config.getBoolean("EnableContactExplosives", true);
-        ContactExplosivesMaxImpulseFactor = config.getDouble("ContactExplosivesMaxImpulseFactor", 10.0);
-        ContactExplosivesMinImpuse = config.getDouble("ContactExplosivesMinImpuse", 0.35);
+        ContactExplosivesMaxImpulseFactor = config.getDouble("ContactExplosivesMaxImpulseFactor", 10.0D);
+        ContactExplosivesMinImpuse = config.getDouble("ContactExplosivesMinImpuse", 0.35D);
     }
 
 
@@ -46,8 +46,16 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
 
             var allTNT = w.getEntitiesByClass(TNTPrimed.class);
             for (TNTPrimed tnt : allTNT) {
-                if (tnt.getVelocity().lengthSquared() <= ContactExplosivesMinImpuse && !tracking.containsKey(tnt))
+                if(tracking.containsKey(tnt))
+                    continue;
+
+                if (tnt.getVelocity().lengthSquared() <= ContactExplosivesMinImpuse) {
+                    Bukkit.getLogger().info("Putting:\n\t- " + tnt.getLocation() + "\n\t- " + tnt.getVelocity().lengthSquared());
                     tracking.put(tnt, tnt.getVelocity().lengthSquared());
+                }
+                else {
+                    Bukkit.getLogger().info("Skipping:\n\t- " + tnt.getLocation() + "\n\t- " + tnt.getVelocity().lengthSquared());
+                }
             }
         }
 
@@ -55,6 +63,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
         for (TNTPrimed tnt : tracking.keySet()) {
             double vel = tnt.getVelocity().lengthSquared();
             if (vel < tracking.getDouble(tnt) / ContactExplosivesMaxImpulseFactor) {
+                Bukkit.getLogger().info("Exploding:\n\t- " + tnt.getLocation() + "\n\t- " + vel + "\n\t- " + tracking.getDouble(tnt));
                 tnt.setVelocity(new Vector(0, 0, 0)); //freeze it in place to prevent sliding
                 tnt.setFuseTicks(0);
             }
