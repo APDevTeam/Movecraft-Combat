@@ -17,18 +17,14 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
     public static boolean EnableContactExplosives = true;
     public static double ContactExplosivesMaxImpulseFactor = 10.0D;
     public static double ContactExplosivesMinImpuse = 0.35D;
+    private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
+    private long lastCheck = 0;
 
     public static void load(@NotNull FileConfiguration config) {
         EnableContactExplosives = config.getBoolean("EnableContactExplosives", true);
         ContactExplosivesMaxImpulseFactor = config.getDouble("ContactExplosivesMaxImpulseFactor", 10.0D);
         ContactExplosivesMinImpuse = config.getDouble("ContactExplosivesMinImpuse", 0.35D);
     }
-
-
-
-    private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
-    private long lastCheck = 0;
-
 
     @Override
     public void run() {
@@ -46,7 +42,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
 
             var allTNT = w.getEntitiesByClass(TNTPrimed.class);
             for (TNTPrimed tnt : allTNT) {
-                if(tracking.containsKey(tnt))
+                if (tracking.containsKey(tnt))
                     continue;
 
                 if (tnt.getVelocity().lengthSquared() > ContactExplosivesMinImpuse)
@@ -60,8 +56,7 @@ public class ContactExplosives extends BukkitRunnable implements Listener {
             if (vel < tracking.getDouble(tnt) / ContactExplosivesMaxImpulseFactor) {
                 tnt.setVelocity(new Vector(0, 0, 0)); //freeze it in place to prevent sliding
                 tnt.setFuseTicks(0);
-            }
-            else {
+            } else {
                 // update the tracking with the new velocity so gradual changes do not make TNT explode
                 tracking.put(tnt, vel);
             }
