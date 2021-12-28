@@ -29,8 +29,7 @@ public class I18nSupport {
         InputStream stream = null;
         try {
             stream = new FileInputStream(langDirectory.getAbsolutePath() + "/mcclang_" + Locale + ".properties");
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -41,8 +40,7 @@ public class I18nSupport {
 
         try {
             langFile.load(stream);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

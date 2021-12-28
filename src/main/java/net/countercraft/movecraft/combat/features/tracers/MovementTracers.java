@@ -19,12 +19,6 @@ import static net.countercraft.movecraft.combat.features.tracers.TNTTracers.Trac
 
 public class MovementTracers implements Listener {
     public static boolean MovementTracers = false;
-
-    public static void load(@NotNull FileConfiguration config) {
-        MovementTracers = config.getBoolean("MovementTracers", false);
-    }
-
-
     @NotNull
     private final PlayerManager manager;
 
@@ -33,12 +27,15 @@ public class MovementTracers implements Listener {
         this.manager = manager;
     }
 
+    public static void load(@NotNull FileConfiguration config) {
+        MovementTracers = config.getBoolean("MovementTracers", false);
+    }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onCraftTranslate(CraftTranslateEvent e) {
-        if(!MovementTracers)
+        if (!MovementTracers)
             return;
-        if(e.getNewHitBox().isEmpty() || e.getOldHitBox().isEmpty())
+        if (e.getNewHitBox().isEmpty() || e.getOldHitBox().isEmpty())
             return;
 
         final World w = e.getCraft().getWorld();
@@ -49,17 +46,17 @@ public class MovementTracers implements Listener {
         maxDistSquared = maxDistSquared - 16;
         maxDistSquared = maxDistSquared * maxDistSquared;
 
-        for(final Player p : e.getWorld().getPlayers()) {
-            if(p.getLocation().distanceSquared(center) > maxDistSquared)
+        for (final Player p : e.getWorld().getPlayers()) {
+            if (p.getLocation().distanceSquared(center) > maxDistSquared)
                 continue;
             String setting = manager.getSetting(p);
-            if(setting == null || setting.equals("OFF") || setting.equals("LOW"))
+            if (setting == null || setting.equals("OFF") || setting.equals("LOW"))
                 continue;
 
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for(var loc : difference)
+                    for (var loc : difference)
                         p.spawnParticle(TracerParticle, loc.toBukkit(w).add(0.5, 0.5, 0.5), 0, 0.0, 0.0, 0.0);
                 }
             }.runTaskLater(MovecraftCombat.getInstance(), 1);

@@ -26,6 +26,13 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     public static long TracerMinDistanceSqrd = 360;
     public static Particle TracerParticle = null;
     public static Particle ExplosionParticle = null;
+    @NotNull
+    private final PlayerManager manager;
+    private long lastUpdate = 0;
+
+    public TNTTracers(@NotNull PlayerManager manager) {
+        this.manager = manager;
+    }
 
     public static void load(@NotNull FileConfiguration config) {
         TracerRateTicks = config.getDouble("TracerRateTicks", 5.0);
@@ -35,34 +42,24 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
     }
 
-
-    @NotNull
-    private final PlayerManager manager;
-    private long lastUpdate = 0;
-
-
-    public TNTTracers(@NotNull PlayerManager manager) {
-        this.manager = manager;
-    }
-
     @Override
     public void run() {
-        if(TracerRateTicks == 0)
+        if (TracerRateTicks == 0)
             return;
 
         long ticksElapsed = (System.currentTimeMillis() - lastUpdate) / 50;
-        if(ticksElapsed < TracerRateTicks)
+        if (ticksElapsed < TracerRateTicks)
             return;
 
         long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
         maxDistSquared = maxDistSquared - 16;
         maxDistSquared = maxDistSquared * maxDistSquared;
 
-        for(World w : Bukkit.getWorlds()) {
-            if(w == null)
+        for (World w : Bukkit.getWorlds()) {
+            if (w == null)
                 continue;
 
-            for(TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
+            for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                 processTNT(tnt, maxDistSquared, w);
             }
         }
@@ -74,7 +71,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             return;
 
         final Location tntLoc = tnt.getLocation();
-        for(Player p : w.getPlayers()) {
+        for (Player p : w.getPlayers()) {
             String setting = manager.getSetting(p);
             if (setting == null || setting.equals("OFF") || setting.equals("LOW"))
                 continue;
@@ -130,33 +127,33 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
         Entity tnt = e.getEntity();
-        if(e.getEntityType() != EntityType.PRIMED_TNT)
+        if (e.getEntityType() != EntityType.PRIMED_TNT)
             return;
-        if(TracerRateTicks == 0)
+        if (TracerRateTicks == 0)
             return;
 
         long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
         maxDistSquared = maxDistSquared - 16;
         maxDistSquared = maxDistSquared * maxDistSquared;
 
-        for(Player p : e.getEntity().getWorld().getPlayers()) {
+        for (Player p : e.getEntity().getWorld().getPlayers()) {
             String setting = manager.getSetting(p);
-            if(setting == null || setting.equals("OFF"))
+            if (setting == null || setting.equals("OFF"))
                 continue;
 
             // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
             double distance = p.getLocation().distanceSquared(tnt.getLocation());
-            if(distance >= maxDistSquared || distance < TracerMinDistanceSqrd)
+            if (distance >= maxDistSquared || distance < TracerMinDistanceSqrd)
                 return;
 
             final Location loc = tnt.getLocation();
             final Player fp = p;
 
             String mode = manager.getMode(p);
-            if(mode == null)
+            if (mode == null)
                 continue;
 
-            if(mode.equals("BLOCKS")) {
+            if (mode.equals("BLOCKS")) {
                 // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
                 new BukkitRunnable() {
                     @Override
@@ -171,8 +168,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         fp.sendBlockChange(loc, Material.AIR.createBlockData());
                     }
                 }.runTaskLater(MovecraftCombat.getInstance(), 160);
-            }
-            else if(mode.equals("PARTICLES")) {
+            } else if (mode.equals("PARTICLES")) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {

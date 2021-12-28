@@ -25,26 +25,26 @@ public class TracerModeCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
-        if(!command.getName().equalsIgnoreCase("tracermode"))
+        if (!command.getName().equalsIgnoreCase("tracermode"))
             return false;
 
-        if(!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Mode") + ": " + manager.getMode(player));
             return true;
         }
-        if(args.length != 1) {
+        if (args.length != 1) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Mode"));
             return true;
         }
 
         String mode = args[0].toUpperCase();
-        if(!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
+        if (!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Mode"));
             return true;
         }
@@ -57,16 +57,16 @@ public class TracerModeCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String @NotNull [] strings) {
         final List<String> tabCompletions = new ArrayList<>();
-        if(strings.length <= 1) {
+        if (strings.length <= 1) {
             tabCompletions.add("BLOCKS");
             tabCompletions.add("PARTICLES");
         }
-        if(strings.length == 0) {
+        if (strings.length == 0) {
             return tabCompletions;
         }
         final List<String> completions = new ArrayList<>();
-        for(String completion : tabCompletions) {
-            if(!completion.startsWith(strings[strings.length - 1].toUpperCase()))
+        for (String completion : tabCompletions) {
+            if (!completion.startsWith(strings[strings.length - 1].toUpperCase()))
                 continue;
 
             completions.add(completion);

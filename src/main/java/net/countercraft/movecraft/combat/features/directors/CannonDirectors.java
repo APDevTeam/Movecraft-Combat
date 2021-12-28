@@ -38,12 +38,17 @@ import java.util.UUID;
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class CannonDirectors extends Directors implements Listener {
-    private static final String HEADER = "Cannon Director";
-
     public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
+    private static final String HEADER = "Cannon Director";
     public static int CannonDirectorDistance = 100;
     public static int CannonDirectorRange = 120;
+    private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
+    private long lastCheck = 0;
 
+
+    public CannonDirectors() {
+        super();
+    }
 
     public static void register() {
         CraftType.registerProperty(new BooleanProperty("allowCannonDirectorSign", ALLOW_CANNON_DIRECTOR_SIGN, type -> true));
@@ -54,16 +59,6 @@ public class CannonDirectors extends Directors implements Listener {
         CannonDirectorRange = config.getInt("CannonDirectorRange", 120);
     }
 
-
-
-    private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
-    private long lastCheck = 0;
-
-
-    public CannonDirectors() {
-        super();
-    }
-
     @Override
     public void run() {
         long ticksElapsed = (System.currentTimeMillis() - lastCheck) / 50;
@@ -71,12 +66,12 @@ public class CannonDirectors extends Directors implements Listener {
             return;
 
         // see if there is any new rapid moving TNT in the worlds
-        for(World w : Bukkit.getWorlds()) {
-            if(w == null || w.getPlayers().size() == 0)
+        for (World w : Bukkit.getWorlds()) {
+            if (w == null || w.getPlayers().size() == 0)
                 continue;
 
             var allTNT = w.getEntitiesByClass(TNTPrimed.class);
-            for(TNTPrimed tnt : allTNT)
+            for (TNTPrimed tnt : allTNT)
                 processTNT(tnt);
         }
 
@@ -87,31 +82,31 @@ public class CannonDirectors extends Directors implements Listener {
     }
 
     private void processTNT(@NotNull TNTPrimed tnt) {
-        if(!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt))
+        if (!(tnt.getVelocity().lengthSquared() > 0.35) || tracking.containsKey(tnt))
             return;
 
         tracking.put(tnt, tnt.getVelocity().lengthSquared());
 
         Craft c = getDirectingCraft(tnt);
-        if(c == null) {
+        if (c == null) {
             c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
 
-            if(c == null || c.getSinking())
+            if (c == null || c.getSinking())
                 return;
         }
-        if(!(c instanceof PlayerCraft))
+        if (!(c instanceof PlayerCraft))
             return;
 
         MovecraftLocation midpoint = c.getHitBox().getMidPoint();
         int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
         int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
         int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-        if(!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
+        if (!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
                 || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
             return;
 
         Player p = getDirector((PlayerCraft) c);
-        if(p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
@@ -129,11 +124,11 @@ public class CannonDirectors extends Directors implements Listener {
             targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
 
         // Remove the y-component from the TargetVector and normalize
-        targetVector = (new Vector(targetVector.getX(), 0,targetVector.getZ())).normalize();
+        targetVector = (new Vector(targetVector.getX(), 0, targetVector.getZ())).normalize();
 
         // Now set the TNT vector, making sure it falls within the maximum and minimum deflection
-        tntVector.setX(Math.min(Math.max(targetVector.getX(), tntVector.getX()-0.7), tntVector.getX()+0.7));
-        tntVector.setZ(Math.min(Math.max(targetVector.getZ(), tntVector.getZ()-0.7), tntVector.getZ()+0.7));
+        tntVector.setX(Math.min(Math.max(targetVector.getX(), tntVector.getX() - 0.7), tntVector.getX() + 0.7));
+        tntVector.setZ(Math.min(Math.max(targetVector.getZ(), tntVector.getZ() - 0.7), tntVector.getZ() + 0.7));
 
         tntVector = tntVector.multiply(horizontalSpeed); // put the original speed back in, but now along a different trajectory
         tntVector.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
@@ -143,19 +138,19 @@ public class CannonDirectors extends Directors implements Listener {
 
     @Nullable
     private Craft getDirectingCraft(@NotNull TNTPrimed tnt) {
-        if(!DamageTracking.EnableTNTTracking)
+        if (!DamageTracking.EnableTNTTracking)
             return null;
 
         List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
-        if(meta.isEmpty())
+        if (meta.isEmpty())
             return null;
 
         Player sender = Bukkit.getPlayer(UUID.fromString(meta.get(0).asString()));
-        if(sender == null || !sender.isOnline())
+        if (sender == null || !sender.isOnline())
             return null;
 
         Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
-        if(c == null || c.getSinking())
+        if (c == null || c.getSinking())
             return null;
 
         return c;
@@ -165,26 +160,26 @@ public class CannonDirectors extends Directors implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public final void onSignClick(@NotNull PlayerInteractEvent e) {
         var action = e.getAction();
-        if(action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
+        if (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)
             return;
 
         Block b = e.getClickedBlock();
-        if(b == null)
+        if (b == null)
             throw new IllegalStateException();
         var state = b.getState();
-        if(!(state instanceof Sign))
+        if (!(state instanceof Sign))
             return;
 
         Sign sign = (Sign) state;
-        if(!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
+        if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
             return;
 
 
         PlayerCraft foundCraft = null;
-        for(Craft c : CraftManager.getInstance()) {
-            if(!(c instanceof PlayerCraft))
+        for (Craft c : CraftManager.getInstance()) {
+            if (!(c instanceof PlayerCraft))
                 continue;
-            if(!c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation())))
+            if (!c.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation())))
                 continue;
             foundCraft = (PlayerCraft) c;
             break;
@@ -196,13 +191,13 @@ public class CannonDirectors extends Directors implements Listener {
             return;
         }
 
-        if(!foundCraft.getType().getBoolProperty(ALLOW_CANNON_DIRECTOR_SIGN)) {
+        if (!foundCraft.getType().getBoolProperty(ALLOW_CANNON_DIRECTOR_SIGN)) {
             p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Not Allowed On Craft"));
             return;
         }
 
-        if(action == Action.LEFT_CLICK_BLOCK) {
-            if(!isDirector(p))
+        if (action == Action.LEFT_CLICK_BLOCK) {
+            if (!isDirector(p))
                 return;
 
             removeDirector(p);
@@ -218,7 +213,7 @@ public class CannonDirectors extends Directors implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {
-        if(!(e.getEntity() instanceof TNTPrimed))
+        if (!(e.getEntity() instanceof TNTPrimed))
             return;
 
         tracking.removeDouble(e.getEntity());

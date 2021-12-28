@@ -16,10 +16,11 @@ import java.util.List;
 
 public class CraftReleasedByEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
+    private final List<DamageRecord> causes;
 
-    @Override
-    public HandlerList getHandlers() {
-        return HANDLERS;
+    public CraftReleasedByEvent(@NotNull PlayerCraft craft, @NotNull List<DamageRecord> causes) {
+        super(craft);
+        this.causes = causes;
     }
 
     @SuppressWarnings("unused")
@@ -27,16 +28,10 @@ public class CraftReleasedByEvent extends CraftEvent {
         return HANDLERS;
     }
 
-
-
-    private final List<DamageRecord> causes;
-
-
-    public CraftReleasedByEvent(@NotNull PlayerCraft craft, @NotNull List<DamageRecord> causes) {
-        super(craft);
-        this.causes = causes;
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
     }
-
 
     @Nullable
     public List<DamageRecord> getCauses() {
@@ -52,7 +47,7 @@ public class CraftReleasedByEvent extends CraftEvent {
     public String causesToString() {
         DamageRecord latestDamage = getLastRecord();
         HashSet<OfflinePlayer> players = new HashSet<>();
-        for(DamageRecord r : this.causes) {
+        for (DamageRecord r : this.causes) {
             players.add(r.getCause());
         }
         assert latestDamage != null;
@@ -62,11 +57,11 @@ public class CraftReleasedByEvent extends CraftEvent {
         stringBuilder.append(((PlayerCraft) this.craft).getPilot().getDisplayName());
         stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - Sunk By")).append(" ");
         stringBuilder.append(NameUtils.offlineToName(latestDamage.getCause()));
-        if(players.size() < 1)
+        if (players.size() < 1)
             return stringBuilder.toString();
 
         stringBuilder.append(" ").append(I18nSupport.getInternationalisedString("Killfeed - With Assists")).append(" ");
-        for(OfflinePlayer p : players) {
+        for (OfflinePlayer p : players) {
             stringBuilder.append(NameUtils.offlineToName(p));
             stringBuilder.append(", ");
         }

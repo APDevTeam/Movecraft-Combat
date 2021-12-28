@@ -50,18 +50,17 @@ public final class MovecraftCombat extends JavaPlugin {
         saveDefaultConfig();
 
         File folder = new File(getDataFolder(), "userdata");
-        if(!folder.exists()) {
+        if (!folder.exists()) {
             getLogger().info("Created userdata directory");
             folder.mkdirs();
         }
 
         String[] languages = {"en", "no"};
-        for(String s : languages) {
-            if(!new File(getDataFolder() + "/localisation/mcclang_" + s + ".properties").exists()) {
+        for (String s : languages) {
+            if (!new File(getDataFolder() + "/localisation/mcclang_" + s + ".properties").exists()) {
                 saveResource("localisation/mcclang_" + s + ".properties", false);
             }
         }
-
 
 
         // Load localisation and features from config
@@ -85,11 +84,9 @@ public final class MovecraftCombat extends JavaPlugin {
         ReImplementTNTTranslocation.load(getConfig());
 
 
-
         // Register event translation listeners
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
         getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
-
 
 
         // Register features

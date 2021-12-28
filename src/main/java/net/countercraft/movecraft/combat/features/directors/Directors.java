@@ -18,42 +18,38 @@ public class Directors extends BukkitRunnable {
     private static final Set<Directors> instances = new HashSet<>();
     public static Material DirectorTool = null;
     public static Set<Material> Transparent = null;
-
-    public static void load(@NotNull FileConfiguration config) {
-        Object tool = config.get("DirectorTool");
-        Material directorTool = null;
-        if(tool instanceof String)
-            directorTool = Material.getMaterial((String) tool);
-        if(directorTool == null)
-            MovecraftCombat.getInstance().getLogger().severe("Failed to load director tool " + ((tool == null) ? "null" : tool.toString()));
-        else
-            DirectorTool = directorTool;
-
-        if(!config.contains("TransparentBlocks")) {
-            Transparent = new HashSet<>();
-            return;
-        }
-        var transparent = config.getList("TransparentBlocks");
-        if(transparent == null)
-            throw new IllegalStateException();
-
-        for(Object o : transparent) {
-            if(o instanceof String) {
-                var tagged = Tags.parseMaterials((String) o);
-                Transparent = new HashSet<>(tagged);
-            }
-            else
-                MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
-        }
-    }
-
-
-
     private final HashBiMap<PlayerCraft, Player> directors = HashBiMap.create();
 
 
     public Directors() {
         instances.add(this);
+    }
+
+    public static void load(@NotNull FileConfiguration config) {
+        Object tool = config.get("DirectorTool");
+        Material directorTool = null;
+        if (tool instanceof String)
+            directorTool = Material.getMaterial((String) tool);
+        if (directorTool == null)
+            MovecraftCombat.getInstance().getLogger().severe("Failed to load director tool " + ((tool == null) ? "null" : tool.toString()));
+        else
+            DirectorTool = directorTool;
+
+        if (!config.contains("TransparentBlocks")) {
+            Transparent = new HashSet<>();
+            return;
+        }
+        var transparent = config.getList("TransparentBlocks");
+        if (transparent == null)
+            throw new IllegalStateException();
+
+        for (Object o : transparent) {
+            if (o instanceof String) {
+                var tagged = Tags.parseMaterials((String) o);
+                Transparent = new HashSet<>(tagged);
+            } else
+                MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
+        }
     }
 
     @Override
@@ -63,7 +59,7 @@ public class Directors extends BukkitRunnable {
 
 
     public void addDirector(@NotNull PlayerCraft craft, @NotNull Player player) {
-        if(directors.containsValue(player))
+        if (directors.containsValue(player))
             directors.inverse().remove(player);
 
         directors.put(craft, player);
@@ -74,7 +70,7 @@ public class Directors extends BukkitRunnable {
     }
 
     public boolean hasDirector(@NotNull PlayerCraft craft) {
-        if(!directors.containsKey(craft))
+        if (!directors.containsKey(craft))
             return false;
 
         Player director = directors.get(craft);
@@ -86,14 +82,14 @@ public class Directors extends BukkitRunnable {
     }
 
     public void clearDirector(@NotNull Player player) {
-        for(var instance : instances)
+        for (var instance : instances)
             instance.removeDirector(player);
     }
 
     @Nullable
     public Player getDirector(@NotNull PlayerCraft craft) {
         Player director = directors.get(craft);
-        if(director == null || !director.isOnline())
+        if (director == null || !director.isOnline())
             return null;
 
         return director;

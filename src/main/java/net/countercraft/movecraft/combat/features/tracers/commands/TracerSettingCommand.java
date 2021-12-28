@@ -25,26 +25,26 @@ public class TracerSettingCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(!command.getName().equalsIgnoreCase("tracersetting"))
+        if (!command.getName().equalsIgnoreCase("tracersetting"))
             return false;
 
-        if(!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getSetting(player));
             return true;
         }
-        if(args.length != 1) {
+        if (args.length != 1) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Setting"));
             return true;
         }
 
         String setting = args[0].toUpperCase();
-        if(!setting.equals("OFF") && !setting.equals("LOW") && !setting.equals("MEDIUM") && !setting.equals("HIGH")) {
+        if (!setting.equals("OFF") && !setting.equals("LOW") && !setting.equals("MEDIUM") && !setting.equals("HIGH")) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
             return true;
         }
@@ -57,18 +57,18 @@ public class TracerSettingCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String @NotNull [] strings) {
         final List<String> tabCompletions = new ArrayList<>();
-        if(strings.length <= 1) {
+        if (strings.length <= 1) {
             tabCompletions.add("OFF");
             tabCompletions.add("MEDIUM");
             tabCompletions.add("HIGH");
             tabCompletions.add("LOW");
         }
-        if(strings.length == 0) {
+        if (strings.length == 0) {
             return tabCompletions;
         }
         final List<String> completions = new ArrayList<>();
-        for(String completion : tabCompletions) {
-            if(!completion.startsWith(strings[strings.length - 1].toUpperCase()))
+        for (String completion : tabCompletions) {
+            if (!completion.startsWith(strings[strings.length - 1].toUpperCase()))
                 continue;
 
             completions.add(completion);

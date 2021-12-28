@@ -2,7 +2,6 @@ package net.countercraft.movecraft.combat.features.tracking;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
-import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.directors.AADirectors;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeaponEvent;
@@ -40,12 +39,12 @@ public class FireballTracking implements Listener {
 
     public void damagedCraft(@NotNull PlayerCraft craft, @NotNull org.bukkit.entity.Fireball fireball) {
         List<MetadataValue> meta = fireball.getMetadata("MCC-Sender");
-        if(meta.isEmpty())
+        if (meta.isEmpty())
             return;
 
         UUID sender = UUID.fromString(meta.get(0).asString());
         Player cause = MovecraftCombat.getInstance().getServer().getPlayer(sender);
-        if(cause == null || !cause.isOnline())
+        if (cause == null || !cause.isOnline())
             return;
 
         DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, new Fireball());
@@ -53,29 +52,28 @@ public class FireballTracking implements Listener {
     }
 
 
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onProjectileLaunch(@NotNull ProjectileLaunchEvent e) {
-        if(!DamageTracking.EnableFireballTracking)
+        if (!DamageTracking.EnableFireballTracking)
             return;
-        if(!(e.getEntity() instanceof SmallFireball))
+        if (!(e.getEntity() instanceof SmallFireball))
             return;
 
         SmallFireball fireball = (SmallFireball) e.getEntity();
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-        if(!(craft instanceof PlayerCraft))
+        if (!(craft instanceof PlayerCraft))
             return;
-        if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
+        if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
             return;
 
         PlayerCraft playerCraft = (PlayerCraft) craft;
 
         Player sender;
-        if(directors.hasDirector(playerCraft))
+        if (directors.hasDirector(playerCraft))
             sender = directors.getDirector(playerCraft);
         else
             sender = playerCraft.getPilot();
-        if(sender == null)
+        if (sender == null)
             return;
 
         fireball.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
@@ -86,16 +84,16 @@ public class FireballTracking implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onProjectileHit(@NotNull ProjectileHitEvent e) {
-        if(!DamageTracking.EnableFireballTracking)
+        if (!DamageTracking.EnableFireballTracking)
             return;
-        if(!(e.getEntity() instanceof org.bukkit.entity.Fireball))
+        if (!(e.getEntity() instanceof org.bukkit.entity.Fireball))
             return;
 
         org.bukkit.entity.Fireball fireball = (org.bukkit.entity.Fireball) e.getEntity();
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
-        if(!(craft instanceof PlayerCraft))
+        if (!(craft instanceof PlayerCraft))
             return;
-        if(!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
+        if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
             return;
 
         damagedCraft((PlayerCraft) craft, fireball);
@@ -103,9 +101,9 @@ public class FireballTracking implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onExplosionDamagePlayerCraft(@NotNull ExplosionDamagePlayerCraftEvent e) {
-        if(!DamageTracking.EnableFireballTracking)
+        if (!DamageTracking.EnableFireballTracking)
             return;
-        if(!(e.getDamaging() instanceof org.bukkit.entity.Fireball))
+        if (!(e.getDamaging() instanceof org.bukkit.entity.Fireball))
             return;
 
         damagedCraft((PlayerCraft) e.getCraft(), (org.bukkit.entity.Fireball) e.getDamaging());

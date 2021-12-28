@@ -27,21 +27,20 @@ public class ReImplementTNTTranslocation implements Listener {
     }
 
 
-
     private void doTranslocation(@NotNull Block piston, @NotNull BlockFace direction, @Nullable Block pistonHead) {
         Block moveBlock = piston.getRelative(direction.getOppositeFace());
-        if(!isValidMoveBlock(moveBlock))
+        if (!isValidMoveBlock(moveBlock))
             return;
 
         Set<SearchEntry> searchResults = getTNT(piston, pistonHead, direction);
 
         Location moveLoc = getCenterLocation(moveBlock);
-        for(SearchEntry se : searchResults)
+        for (SearchEntry se : searchResults)
             se.translocateTo(moveLoc);
     }
 
     private boolean isValidMoveBlock(@NotNull Block moveBlock) {
-        if(moveBlock.isEmpty() || moveBlock.isLiquid())
+        if (moveBlock.isEmpty() || moveBlock.isLiquid())
             return true;
 
         String typeName = moveBlock.getType().name();
@@ -59,23 +58,23 @@ public class ReImplementTNTTranslocation implements Listener {
     @NotNull
     private Set<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead, @NotNull BlockFace direction) {
         Set<SearchEntry> searchResults = new HashSet<>();
-        for(Entity e : piston.getWorld().getEntities()) {
-            if(!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
+        for (Entity e : piston.getWorld().getEntities()) {
+            if (!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
                 continue;
 
             TNTPrimed tnt = (TNTPrimed) e;
-            if(tnt.getFuseTicks() <= 0)
+            if (tnt.getFuseTicks() <= 0)
                 continue;
 
             SearchEntry pistonEntry = getEntry(tnt, piston, null);
-            if(pistonEntry != null) {
+            if (pistonEntry != null) {
                 searchResults.add(pistonEntry);
                 continue;
             }
 
-            if(pistonHead != null) {
+            if (pistonHead != null) {
                 SearchEntry headEntry = getEntry(tnt, pistonHead, direction);
-                if(headEntry == null)
+                if (headEntry == null)
                     continue;
 
                 searchResults.add(headEntry);
@@ -92,28 +91,48 @@ public class ReImplementTNTTranslocation implements Listener {
         Location tntLoc = tnt.getLocation();
         Location blockLoc = getCenterLocation(block);
 
-        if(tntLoc.getBlockX() != blockLoc.getBlockX()
+        if (tntLoc.getBlockX() != blockLoc.getBlockX()
                 || tntLoc.getBlockY() != blockLoc.getBlockY()
                 || tntLoc.getBlockZ() != blockLoc.getBlockZ())
             return null;
 
 
         double xOffset = tntLoc.getX() - blockLoc.getX();
-        if(direction != null && Math.abs(xOffset) > 0.021) {
-            if( !(xOffset < 0.0 && direction == BlockFace.EAST)
-                    && !(xOffset > 0.0 && direction == BlockFace.WEST) )
+        if (direction != null && Math.abs(xOffset) > 0.021) {
+            if (!(xOffset < 0.0 && direction == BlockFace.EAST)
+                    && !(xOffset > 0.0 && direction == BlockFace.WEST))
                 return null;
         }
 
 
         double zOffset = tntLoc.getZ() - blockLoc.getZ();
-        if(direction != null && Math.abs(zOffset) > 0.021) {
-            if( !(zOffset > 0.0 && direction == BlockFace.NORTH)
-                    && !(zOffset < 0.0 && direction == BlockFace.SOUTH) )
+        if (direction != null && Math.abs(zOffset) > 0.021) {
+            if (!(zOffset > 0.0 && direction == BlockFace.NORTH)
+                    && !(zOffset < 0.0 && direction == BlockFace.SOUTH))
                 return null;
         }
 
         return new SearchEntry(tnt, xOffset, zOffset);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent e) {
+        if (!ReImplementTNTTranslocation)
+            return;
+
+        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonRetract(@NotNull BlockPistonRetractEvent e) {
+        if (!ReImplementTNTTranslocation)
+            return;
+
+        BlockFace dir = e.getDirection();
+        if (e.isSticky())
+            dir = dir.getOppositeFace();
+
+        doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
     }
 
     private static class SearchEntry {
@@ -131,26 +150,5 @@ public class ReImplementTNTTranslocation implements Listener {
             Location moveLoc = new Location(loc.getWorld(), loc.getX() + xOffset, loc.getY(), loc.getZ() + zOffset);
             tnt.teleport(moveLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
         }
-    }
-
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPistonExtend(BlockPistonExtendEvent e) {
-        if(!ReImplementTNTTranslocation)
-            return;
-
-        doTranslocation(e.getBlock(), e.getDirection().getOppositeFace(), null);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPistonRetract(@NotNull BlockPistonRetractEvent e) {
-        if(!ReImplementTNTTranslocation)
-            return;
-
-        BlockFace dir = e.getDirection();
-        if(e.isSticky())
-            dir = dir.getOppositeFace();
-
-        doTranslocation(e.getBlock(), dir, e.getBlock().getRelative(dir));
     }
 }

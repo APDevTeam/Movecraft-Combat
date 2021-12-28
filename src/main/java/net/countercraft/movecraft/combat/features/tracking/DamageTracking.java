@@ -25,6 +25,7 @@ public class DamageTracking implements Listener {
     public static boolean EnableTNTTracking = true;
     public static boolean EnableTorpedoTracking = false;
     public static int DamageTimeout = 300;
+    private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
 
     public static void load(@NotNull FileConfiguration config) {
         EnableFireballTracking = config.getBoolean("EnableFireballTracking", false);
@@ -33,22 +34,17 @@ public class DamageTracking implements Listener {
         DamageTimeout = config.getInt("DamageTimeout", 300);
     }
 
-
-
-    private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
-
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftRelease(@NotNull CraftReleaseEvent e) {
-        if(!(e.getCraft() instanceof PlayerCraft))
+        if (!(e.getCraft() instanceof PlayerCraft))
             return;
 
         PlayerCraft craft = (PlayerCraft) e.getCraft();
-        if(!damageRecords.containsKey(craft))
+        if (!damageRecords.containsKey(craft))
             return;
 
         List<DamageRecord> records = damageRecords.get(craft);
-        if(records.isEmpty()) {
+        if (records.isEmpty()) {
             damageRecords.remove(craft);
             return;
         }
@@ -62,15 +58,15 @@ public class DamageTracking implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraftSink(@NotNull CraftSinkEvent e) {
-        if(!(e.getCraft() instanceof PlayerCraft))
+        if (!(e.getCraft() instanceof PlayerCraft))
             return;
 
         PlayerCraft craft = (PlayerCraft) e.getCraft();
-        if(!damageRecords.containsKey(craft))
+        if (!damageRecords.containsKey(craft))
             return;
 
         List<DamageRecord> records = damageRecords.get(craft);
-        if(records.isEmpty()) {
+        if (records.isEmpty()) {
             damageRecords.remove(craft);
             return;
         }
@@ -101,11 +97,10 @@ public class DamageTracking implements Listener {
         DamageRecord damageRecord = e.getDamageRecord();
         PlayerCraft craft = (PlayerCraft) e.getCraft();
 
-        if(damageRecords.containsKey(craft)) {
+        if (damageRecords.containsKey(craft)) {
             List<DamageRecord> records = damageRecords.get(craft);
             records.add(damageRecord);
-        }
-        else {
+        } else {
             List<DamageRecord> records = new ArrayList<>();
             records.add(damageRecord);
             damageRecords.put(craft, records);

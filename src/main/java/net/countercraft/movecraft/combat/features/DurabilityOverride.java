@@ -23,20 +23,19 @@ public class DurabilityOverride implements Listener {
     public static Map<Material, Integer> DurabilityOverride = null;
 
     public static void load(@NotNull FileConfiguration config) {
-        if(!config.contains("DurabilityOverride"))
+        if (!config.contains("DurabilityOverride"))
             return;
         var section = config.getConfigurationSection("DurabilityOverride");
-        if(section == null)
+        if (section == null)
             return;
 
         DurabilityOverride = new HashMap<>();
-        for(var entry : section.getValues(false).entrySet()) {
+        for (var entry : section.getValues(false).entrySet()) {
             EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
-            for(Material m : materials)
+            for (Material m : materials)
                 DurabilityOverride.put(m, (Integer) entry.getValue());
         }
     }
-
 
 
     private boolean nextToAir(@NotNull Block b) {
@@ -48,26 +47,26 @@ public class DurabilityOverride implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {
-        if(DurabilityOverride == null)
+        if (DurabilityOverride == null)
             return;
-        if(e.getEntityType() != EntityType.PRIMED_TNT)
+        if (e.getEntityType() != EntityType.PRIMED_TNT)
             return;
 
         Set<Block> removeList = new HashSet<>();
-        for(Block b : e.blockList()) {
+        for (Block b : e.blockList()) {
             // remove the block if no adjacent blocks are air (IE: the explosion skipped a block)
-            if(!nextToAir(b)) {
+            if (!nextToAir(b)) {
                 removeList.add(b);
                 continue;
             }
 
-            if(!DurabilityOverride.containsKey(b.getType()))
+            if (!DurabilityOverride.containsKey(b.getType()))
                 continue;
 
             // Generate a random number based on the location and system time
             long seed = (long) b.getX() * b.getY() * b.getZ() + (System.currentTimeMillis() >> 12);
             int chance = new Random(seed).nextInt(100);
-            if(chance > DurabilityOverride.get(b.getType()))
+            if (chance > DurabilityOverride.get(b.getType()))
                 continue;
 
             removeList.add(b);

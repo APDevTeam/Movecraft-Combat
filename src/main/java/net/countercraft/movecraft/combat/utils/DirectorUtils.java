@@ -21,12 +21,12 @@ public class DirectorUtils {
         int chunkX = location.getChunk().getX() << 4; // minimum x and z positions in the chunk
         int chunkZ = location.getChunk().getZ() << 4;
 
-        if(location.getDirection().getX() > 0) // get the number that must be added to the coordinate to move it
+        if (location.getDirection().getX() > 0) // get the number that must be added to the coordinate to move it
             chunkDisplacementX = 15 - location.getBlockX() + chunkX; // to the edge of the chunk
         else
             chunkDisplacementX = chunkX - location.getBlockX();
 
-        if(location.getDirection().getZ() > 0)
+        if (location.getDirection().getZ() > 0)
             chunkDisplacementZ = 15 - location.getBlockZ() + chunkZ;
         else
             chunkDisplacementZ = chunkZ - location.getBlockZ();
@@ -55,12 +55,11 @@ public class DirectorUtils {
         while (itr.hasNext()) {
             Block block = itr.next();
             Material material = block.getType();
-            if(Directors.Transparent == null) {
+            if (Directors.Transparent == null) {
                 if (!material.equals(Material.AIR))
                     return block;
-            }
-            else {
-                if(!Directors.Transparent.contains(material))
+            } else {
+                if (!Directors.Transparent.contains(material))
                     return block;
             }
         }

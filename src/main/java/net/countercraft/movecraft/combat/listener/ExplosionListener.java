@@ -23,41 +23,41 @@ import org.jetbrains.annotations.Nullable;
 public class ExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
-        if(!DamageTracking.EnableTNTTracking && !DamageTracking.EnableFireballTracking)
+        if (!DamageTracking.EnableTNTTracking && !DamageTracking.EnableFireballTracking)
             return;
 
         Location loc = e.getLocation();
         PlayerCraft craft = fastNearestPlayerCraftToLoc(loc);
-        if(craft == null)
+        if (craft == null)
             return;
 
-        if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(loc))) {
+        if (craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(loc))) {
             ExplosionDamagePlayerCraftEvent event = new ExplosionDamagePlayerCraftEvent(e.getEntity(), craft);
             Bukkit.getPluginManager().callEvent(event);
             return;
         }
-        for(Block b : e.blockList()) {
-            if(craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
+        for (Block b : e.blockList()) {
+            if (craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(b.getLocation()))) {
                 ExplosionDamagePlayerCraftEvent event = new ExplosionDamagePlayerCraftEvent(e.getEntity(), craft);
                 Bukkit.getPluginManager().callEvent(event);
                 return;
             }
         }
-   }
+    }
 
     @Nullable
     private PlayerCraft fastNearestPlayerCraftToLoc(@NotNull Location source) {
         MovecraftLocation loc = MathUtils.bukkit2MovecraftLoc(source);
         PlayerCraft closest = null;
         long closestDistSquared = Long.MAX_VALUE;
-        for(Craft other : CraftManager.getInstance()) {
-            if(other.getWorld() != source.getWorld())
+        for (Craft other : CraftManager.getInstance()) {
+            if (other.getWorld() != source.getWorld())
                 continue;
-            if(!(other instanceof PlayerCraft))
+            if (!(other instanceof PlayerCraft))
                 continue;
 
             long distSquared = other.getHitBox().getMidPoint().distanceSquared(loc);
-            if(distSquared < closestDistSquared) {
+            if (distSquared < closestDistSquared) {
                 closestDistSquared = distSquared;
                 closest = (PlayerCraft) other;
             }

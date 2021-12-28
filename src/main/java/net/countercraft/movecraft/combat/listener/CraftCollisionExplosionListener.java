@@ -24,25 +24,25 @@ import org.jetbrains.annotations.Nullable;
 public class CraftCollisionExplosionListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void collisionExplosionListener(@NotNull CraftCollisionExplosionEvent e) {
-        if(!DamageTracking.EnableTorpedoTracking)
+        if (!DamageTracking.EnableTorpedoTracking)
             return;
-        if(!(e.getCraft() instanceof PilotedCraft))
+        if (!(e.getCraft() instanceof PilotedCraft))
             return;
 
         PilotedCraft damaging = (PilotedCraft) e.getCraft();
 
         //check if the craft should sink
         CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
-        if(status.isSinking()) {
+        if (status.isSinking()) {
             e.setCancelled(true);
             e.getCraft().setCruising(false);
             e.getCraft().sink();
         }
 
         PlayerCraft damaged = fastNearestPlayerCraftToCraft(damaging);
-        if(damaged == null)
+        if (damaged == null)
             return;
-        if(!MathUtils.locIsNearCraftFast(damaged, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
+        if (!MathUtils.locIsNearCraftFast(damaged, MathUtils.bukkit2MovecraftLoc(e.getLocation())))
             return;
 
         var event = new CollisionDamagePlayerCraftEvent(damaging, damaged);
@@ -55,11 +55,11 @@ public class CraftCollisionExplosionListener implements Listener {
         PlayerCraft closest = null;
         long closestDistSquared = Long.MAX_VALUE;
         for (Craft other : CraftManager.getInstance()) {
-            if(other == source)
+            if (other == source)
                 continue;
-            if(other.getWorld() != source.getWorld())
+            if (other.getWorld() != source.getWorld())
                 continue;
-            if(!(other instanceof PlayerCraft))
+            if (!(other instanceof PlayerCraft))
                 continue;
 
             long distSquared = other.getHitBox().getMidPoint().distanceSquared(loc);

@@ -21,7 +21,7 @@ public class PlayerManager implements Listener {
     @Nullable
     public String getSetting(Player player) {
         var config = cache.get(player);
-        if(config == null)
+        if (config == null)
             return null;
 
         return config.getSetting();
@@ -29,7 +29,7 @@ public class PlayerManager implements Listener {
 
     public void setSetting(Player player, String setting) {
         var config = cache.get(player);
-        if(config == null) {
+        if (config == null) {
             config = new PlayerConfig(player.getUniqueId());
             config.load();
         }
@@ -41,7 +41,7 @@ public class PlayerManager implements Listener {
     @Nullable
     public String getMode(Player player) {
         var config = cache.get(player);
-        if(config == null)
+        if (config == null)
             return null;
 
         return config.getMode();
@@ -49,7 +49,7 @@ public class PlayerManager implements Listener {
 
     public void setMode(Player player, String mode) {
         var config = cache.get(player);
-        if(config == null) {
+        if (config == null) {
             config = new PlayerConfig(player.getUniqueId());
             config.load();
         }
@@ -61,7 +61,7 @@ public class PlayerManager implements Listener {
 
     private void savePlayer(Player player) {
         var config = cache.get(player);
-        if(config == null)
+        if (config == null)
             return;
 
         config.save();
@@ -91,10 +91,10 @@ public class PlayerManager implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPluginDisable(@NotNull PluginDisableEvent e) {
-        if(e.getPlugin() != MovecraftCombat.getInstance())
+        if (e.getPlugin() != MovecraftCombat.getInstance())
             return;
 
-        for(Player p : cache.keySet()) {
+        for (Player p : cache.keySet()) {
             savePlayer(p);
         }
         cache.clear();

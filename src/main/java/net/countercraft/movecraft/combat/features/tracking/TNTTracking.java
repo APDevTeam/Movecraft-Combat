@@ -3,10 +3,8 @@ package net.countercraft.movecraft.combat.features.tracking;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.combat.event.ExplosionDamagePlayerCraftEvent;
 import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
-import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftDamagedByEvent;
 import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeaponEvent;
-import net.countercraft.movecraft.combat.features.tracking.types.Fireball;
 import net.countercraft.movecraft.combat.features.tracking.types.TNTCannon;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -49,19 +47,19 @@ public class TNTTracking implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onExplosionDamagePlayerCraft(@NotNull ExplosionDamagePlayerCraftEvent e) {
-        if(!DamageTracking.EnableTNTTracking)
+        if (!DamageTracking.EnableTNTTracking)
             return;
-        if(!(e.getDamaging() instanceof TNTPrimed))
+        if (!(e.getDamaging() instanceof TNTPrimed))
             return;
 
         TNTPrimed tnt = (TNTPrimed) e.getDamaging();
         List<MetadataValue> meta = tnt.getMetadata("MCC-Sender");
-        if(meta.isEmpty())
+        if (meta.isEmpty())
             return;
 
         UUID sender = UUID.fromString(meta.get(0).asString());
         Player cause = Bukkit.getServer().getPlayer(sender);
-        if(cause == null || !cause.isOnline())
+        if (cause == null || !cause.isOnline())
             return;
 
         var craft = e.getDamaged();
@@ -81,16 +79,15 @@ public class TNTTracking implements Listener {
 
     private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
         int count = item.getAmount();
-        for(int i = 0; i < inv.getSize(); i++) {
+        for (int i = 0; i < inv.getSize(); i++) {
             ItemStack temp = inv.getItem(i);
-            if(temp == null || !temp.isSimilar(item))
+            if (temp == null || !temp.isSimilar(item))
                 continue;
 
-            if(temp.getAmount() <= count) {
+            if (temp.getAmount() <= count) {
                 count -= temp.getAmount();
                 inv.remove(temp);
-            }
-            else {
+            } else {
                 temp.setAmount(temp.getAmount() - count);
                 return true;
             }
@@ -100,9 +97,9 @@ public class TNTTracking implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDispense(@NotNull BlockDispenseEvent e) {
-        if(!DamageTracking.EnableTNTTracking)
+        if (!DamageTracking.EnableTNTTracking)
             return;
-        if(e.getBlock().getType() != Material.DISPENSER || e.getItem().getType() != Material.TNT)
+        if (e.getBlock().getType() != Material.DISPENSER || e.getItem().getType() != Material.TNT)
             return;
 
         // Cancel dispense event
@@ -111,7 +108,7 @@ public class TNTTracking implements Listener {
         // Subtract item yourself
         Dispenser d = (Dispenser) e.getBlock().getState();
         Inventory inv = d.getInventory();
-        if(!subtractItem(inv, e.getItem())) {
+        if (!subtractItem(inv, e.getItem())) {
             Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
                 subtractItem(inv, e.getItem());
             });
@@ -122,25 +119,25 @@ public class TNTTracking implements Listener {
         TNTPrimed tnt = (TNTPrimed) e.getBlock().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
         Vector velocity = getTNTVector();
         tnt.setVelocity(velocity);
-        for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);
         }
 
         // Find nearest craft
         Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getBlock().getLocation());
-        if(!(craft instanceof PlayerCraft))
+        if (!(craft instanceof PlayerCraft))
             return;
-        if(!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))
+        if (!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))
             return;
 
         // Report to tracking
         PlayerCraft playerCraft = (PlayerCraft) craft;
         Player sender;
-        if(directors.hasDirector(playerCraft))
+        if (directors.hasDirector(playerCraft))
             sender = directors.getDirector(playerCraft);
         else
             sender = playerCraft.getPilot();
-        if(sender == null)
+        if (sender == null)
             return;
 
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));

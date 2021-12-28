@@ -8,10 +8,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class CraftFireWeaponEvent extends CraftEvent {
     private static final HandlerList HANDLERS = new HandlerList();
+    @NotNull
+    private final Type weaponType;
 
-    @Override
-    public HandlerList getHandlers() {
-        return HANDLERS;
+    public CraftFireWeaponEvent(@NotNull Craft craft, @NotNull Type weaponType) {
+        super(craft);
+        this.weaponType = weaponType;
     }
 
     @SuppressWarnings("unused")
@@ -19,17 +21,10 @@ public class CraftFireWeaponEvent extends CraftEvent {
         return HANDLERS;
     }
 
-
-
-    @NotNull
-    private final Type weaponType;
-
-
-    public CraftFireWeaponEvent(@NotNull Craft craft, @NotNull Type weaponType) {
-        super(craft);
-        this.weaponType = weaponType;
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
     }
-
 
     @NotNull
     public Type getWeaponType() {

@@ -19,14 +19,13 @@ public class FireballPenetration implements Listener {
     }
 
 
-
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBlockIgnite(@NotNull BlockIgniteEvent e) {
-        if(!EnableFireballPenetration)
+        if (!EnableFireballPenetration)
             return;
-        if(e.getCause() != BlockIgniteEvent.IgniteCause.FIREBALL)
+        if (e.getCause() != BlockIgniteEvent.IgniteCause.FIREBALL)
             return;
-        if(e.getIgnitingEntity() == null)
+        if (e.getIgnitingEntity() == null)
             return;
 
         Block sourceBlock = e.getBlock();
@@ -43,7 +42,7 @@ public class FireballPenetration implements Listener {
         // To prevent infinite recursion we call the event with SPREAD as the cause
         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(testBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getIgnitingEntity());
         Bukkit.getPluginManager().callEvent(igniteEvent);
-        if(igniteEvent.isCancelled())
+        if (igniteEvent.isCancelled())
             return;
 
         testBlock.setType(Material.AIR);
