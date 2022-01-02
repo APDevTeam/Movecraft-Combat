@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,5 +50,17 @@ public class AddFiresToHitbox implements Listener {
 
         MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
         hitbox.add(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBlockBreak(@NotNull BlockBreakEvent e) {
+        Craft craft = adjacentCraft(e.getBlock().getLocation());
+        if (craft == null || craft.getHitBox().isEmpty())
+            return;
+        if (!(craft.getHitBox() instanceof MutableHitBox))
+            return;
+
+        MutableHitBox hitbox = (MutableHitBox) craft.getHitBox();
+        hitbox.remove(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation()));
     }
 }
