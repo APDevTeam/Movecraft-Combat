@@ -8,12 +8,15 @@ authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
 website: https://github.com/TylerS1066/Movecraft-Combat
 commands:
-  tracersetting:
-    description: Configure tracer settings
-    usage: /tracersetting [HIGH | MEDIUM | LOW | OFF]
-  tracermode:
-    description: Configure tracer mode
-    usage: /tracermode [BLOCKS | PARTICLES]
+  tnttracersetting:
+    description: Configure tnt tracer settings
+    usage: /tnttracersetting [HIGH | MEDIUM | LOW | OFF]
+  tnttracermode:
+    description: Configure tnt tracer mode
+    usage: /tnttracermode [BLOCKS | PARTICLES]
+  movementtracersetting:
+    description: Configure movement tracer settings
+    usage: /movementtracersetting [HIGH | LOW | OFF]
 permissions:
   movecraft.combat.bypass:
     description: Allows you to bypass combat release punishments.

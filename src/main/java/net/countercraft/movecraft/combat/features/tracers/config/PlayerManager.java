@@ -19,43 +19,63 @@ public class PlayerManager implements Listener {
 
 
     @Nullable
-    public String getSetting(Player player) {
+    public PlayerConfig.TNTSetting getTNTSetting(Player player) {
         var config = cache.get(player);
         if (config == null)
             return null;
 
-        return config.getSetting();
+        return config.getTNTSetting();
     }
 
-    public void setSetting(Player player, String setting) {
+    public void setTNTSetting(Player player, String setting) {
         var config = cache.get(player);
         if (config == null) {
             config = new PlayerConfig(player.getUniqueId());
             config.load();
+            cache.put(player, config);
         }
 
-        config.setSetting(setting);
-        cache.put(player, config);
+        config.setTNTSetting(setting);
     }
 
     @Nullable
-    public String getMode(Player player) {
+    public PlayerConfig.TNTMode getTNTMode(Player player) {
         var config = cache.get(player);
         if (config == null)
             return null;
 
-        return config.getMode();
+        return config.getTNTMode();
     }
 
-    public void setMode(Player player, String mode) {
+    public void setTNTMode(Player player, String mode) {
         var config = cache.get(player);
         if (config == null) {
             config = new PlayerConfig(player.getUniqueId());
             config.load();
+            cache.put(player, config);
         }
 
-        config.setMode(mode);
-        cache.put(player, config);
+        config.setTNTMode(mode);
+    }
+
+    @Nullable
+    public PlayerConfig.MovementSetting getMovementSetting(Player player) {
+        var config = cache.get(player);
+        if (config == null)
+            return null;
+
+        return config.getMovementSetting();
+    }
+
+    public void setMovementSetting(Player player, String setting) {
+        var config = cache.get(player);
+        if (config == null) {
+            config = new PlayerConfig(player.getUniqueId());
+            config.load();
+            cache.put(player, config);
+        }
+
+        config.setMovementSetting(setting);
     }
 
 

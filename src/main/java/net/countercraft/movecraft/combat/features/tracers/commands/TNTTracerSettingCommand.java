@@ -13,19 +13,19 @@ import java.util.List;
 
 import static net.countercraft.movecraft.util.ChatUtils.MOVECRAFT_COMMAND_PREFIX;
 
-public class TracerModeCommand implements TabExecutor {
+public class TNTTracerSettingCommand implements TabExecutor {
     @NotNull
     private final PlayerManager manager;
 
 
-    public TracerModeCommand(@NotNull PlayerManager manager) {
+    public TNTTracerSettingCommand(@NotNull PlayerManager manager) {
         this.manager = manager;
     }
 
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
-        if (!command.getName().equalsIgnoreCase("tracermode"))
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (!command.getName().equalsIgnoreCase("tnttracersetting"))
             return false;
 
         if (!(commandSender instanceof Player)) {
@@ -35,31 +35,34 @@ public class TracerModeCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if (args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Mode") + ": " + manager.getMode(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getTNTSetting(player));
             return true;
         }
         if (args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Mode"));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Setting"));
             return true;
         }
 
-        String mode = args[0].toUpperCase();
-        if (!mode.equals("BLOCKS") && !mode.equals("PARTICLES")) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Mode"));
+        String setting = args[0].toUpperCase();
+        try {
+            manager.setTNTSetting(player, setting);
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + setting);
             return true;
         }
-
-        manager.setMode(player, mode);
-        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + mode);
-        return true;
+        catch (IllegalArgumentException e) {
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
+            return true;
+        }
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String @NotNull [] strings) {
         final List<String> tabCompletions = new ArrayList<>();
         if (strings.length <= 1) {
-            tabCompletions.add("BLOCKS");
-            tabCompletions.add("PARTICLES");
+            tabCompletions.add("OFF");
+            tabCompletions.add("MEDIUM");
+            tabCompletions.add("HIGH");
+            tabCompletions.add("LOW");
         }
         if (strings.length == 0) {
             return tabCompletions;
