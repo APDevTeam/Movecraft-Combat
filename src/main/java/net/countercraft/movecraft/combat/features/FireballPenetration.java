@@ -1,15 +1,21 @@
 package net.countercraft.movecraft.combat.features;
 
+import net.countercraft.movecraft.Movecraft;
+import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Level;
 
 public class FireballPenetration implements Listener {
     public static boolean EnableFireballPenetration = true;
@@ -46,5 +52,26 @@ public class FireballPenetration implements Listener {
             return;
 
         testBlock.setType(Material.AIR);
+    }
+
+    @EventHandler
+    public void onProjectileHit(@NotNull ProjectileHitEvent event) {
+        if(!(event.getEntity() instanceof Fireball && EnableFireballPenetration)) {
+            return;
+        }
+
+        Block sourceBlock = event.getHitBlock();
+        if (!sourceBlock.getType().isBurnable())
+            return;
+        if (!Tags.FLUID.contains(sourceBlock.getRelative(event.getHitBlockFace()).getType()))
+            return;
+
+        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(sourceBlock, BlockIgniteEvent.IgniteCause.SPREAD, event.getEntity());
+        Bukkit.getPluginManager().callEvent(igniteEvent);
+        if (igniteEvent.isCancelled()) {
+            return;
+        }
+
+        sourceBlock.setType(Material.AIR);
     }
 }
