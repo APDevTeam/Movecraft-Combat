@@ -15,8 +15,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
-
 public class FireballPenetration implements Listener {
     public static boolean EnableFireballPenetration = true;
 
