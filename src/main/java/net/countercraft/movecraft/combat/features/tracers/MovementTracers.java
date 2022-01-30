@@ -72,17 +72,14 @@ public class MovementTracers implements Listener {
         final HashSet<Location> specificLocations = new HashSet<>();
         final HashSet<Location> generalLocations = new HashSet<>();
         for (MovecraftLocation movecraftLocation : difference) {
-            // Location pre-translate
-            Location oldLocation = movecraftLocation.add(delta).toBukkit(w);
-            // Location post-translate, centered on the block
-            Location newLocation = movecraftLocation.toBukkit(w).add(0.5, 0.5, 0.5);
-            if (materials.contains(oldLocation.getBlock().getType())) {
+            Location spawnLoc = movecraftLocation.toBukkit(w).add(0.5, 0.5, 0.5);
+            if (materials.contains(movecraftLocation.toBukkit(w).getBlock().getType())) {
                 // Add to special locations if the block is a movement tracer block
-                specificLocations.add(newLocation);
+                specificLocations.add(spawnLoc);
             }
             else {
                 // Else add to normal locations
-                generalLocations.add(newLocation);
+                generalLocations.add(spawnLoc);
             }
         }
 
