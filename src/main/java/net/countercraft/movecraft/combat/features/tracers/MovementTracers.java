@@ -25,8 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 import java.util.HashSet;
 
-import static net.countercraft.movecraft.combat.features.tracers.TNTTracers.TracerParticle;
-
 public class MovementTracers implements Listener {
     public static final NamespacedKey MOVEMENT_TRACER_BLOCKS = new NamespacedKey("movecraft-combat", "movement_tracer_blocks");
     public static boolean MovementTracers = false;
@@ -53,8 +51,8 @@ public class MovementTracers implements Listener {
 
     public static void load(@NotNull FileConfiguration config) {
         MovementTracers = config.getBoolean("MovementTracers", false);
-        SpecificParticle = null;
-        GeneralParticle = null;
+        SpecificParticle = Particle.valueOf(config.getString("SpecificParticle", "COMPOSTER"));
+        GeneralParticle = Particle.valueOf(config.getString("GeneralParticle", "CRIT"));
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -119,6 +117,6 @@ public class MovementTracers implements Listener {
                     }
                 }.runTaskLater(MovecraftCombat.getInstance(), 2);
             }
-            }
+        }
     }
 }

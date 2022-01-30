@@ -40,6 +40,7 @@ public final class MovecraftCombat extends JavaPlugin {
     public void onLoad() {
         AADirectors.register();
         CannonDirectors.register();
+        MovementTracers.register();
     }
 
     @Override
