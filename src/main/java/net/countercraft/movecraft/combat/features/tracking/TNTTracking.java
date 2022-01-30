@@ -63,7 +63,7 @@ public class TNTTracking implements Listener {
             return;
 
         var craft = e.getDamaged();
-        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, new TNTCannon());
+        DamageRecord damageRecord = new DamageRecord(cause, craft.getPilot(), new TNTCannon());
         Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
     }
 
