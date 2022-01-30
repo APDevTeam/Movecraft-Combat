@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.tracers;
 
 import net.countercraft.movecraft.combat.MovecraftCombat;
+import net.countercraft.movecraft.combat.features.tracers.config.PlayerConfig;
 import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -72,10 +73,10 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
         final Location tntLoc = tnt.getLocation();
         for (Player p : w.getPlayers()) {
-            String setting = manager.getSetting(p);
-            if (setting == null || setting.equals("OFF") || setting.equals("LOW"))
+            PlayerConfig.TNTSetting setting = manager.getTNTSetting(p);
+            if (setting == null || setting == PlayerConfig.TNTSetting.OFF || setting == PlayerConfig.TNTSetting.LOW)
                 continue;
-            else if (setting.equals("MEDIUM")) {
+            else if (setting == PlayerConfig.TNTSetting.MEDIUM) {
                 long seed = (long) (tntLoc.getX() * tntLoc.getY() * tntLoc.getZ() + (System.currentTimeMillis() >> 12));
                 int random = new Random(seed).nextInt(100);
                 if (random < 50)
@@ -87,12 +88,12 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                 continue;
 
             final Player fp = p;
-            String mode = manager.getMode(p);
+            PlayerConfig.TNTMode mode = manager.getTNTMode(p);
             if (mode == null)
                 return;
 
             switch (mode) {
-                case "PARTICLES":
+                case PARTICLES:
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -100,7 +101,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         }
                     }.runTaskLater(MovecraftCombat.getInstance(), 5);
                     break;
-                case "BLOCKS":
+                case BLOCKS:
                 default:
                     // then make a cobweb to look like smoke,
                     // place it a little later so it isn't right
@@ -137,8 +138,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         maxDistSquared = maxDistSquared * maxDistSquared;
 
         for (Player p : e.getEntity().getWorld().getPlayers()) {
-            String setting = manager.getSetting(p);
-            if (setting == null || setting.equals("OFF"))
+            PlayerConfig.TNTSetting setting = manager.getTNTSetting(p);
+            if (setting == null || setting == PlayerConfig.TNTSetting.OFF)
                 continue;
 
             // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
@@ -149,32 +150,36 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             final Location loc = tnt.getLocation();
             final Player fp = p;
 
-            String mode = manager.getMode(p);
+            PlayerConfig.TNTMode mode = manager.getTNTMode(p);
             if (mode == null)
                 continue;
 
-            if (mode.equals("BLOCKS")) {
-                // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.sendBlockChange(loc, Material.GLOWSTONE.createBlockData());
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 5);
-                // then remove it
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.sendBlockChange(loc, Material.AIR.createBlockData());
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 160);
-            } else if (mode.equals("PARTICLES")) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        fp.spawnParticle(ExplosionParticle, loc, 9);
-                    }
-                }.runTaskLater(MovecraftCombat.getInstance(), 20);
+            switch (mode) {
+                case PARTICLES:
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.spawnParticle(ExplosionParticle, loc, 9);
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 20);
+                    break;
+                case BLOCKS:
+                default:
+                    // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.sendBlockChange(loc, Material.GLOWSTONE.createBlockData());
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    // then remove it
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            fp.sendBlockChange(loc, Material.AIR.createBlockData());
+                        }
+                    }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                    break;
             }
         }
     }

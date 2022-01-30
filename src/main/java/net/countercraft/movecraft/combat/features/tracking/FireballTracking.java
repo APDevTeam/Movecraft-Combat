@@ -47,7 +47,7 @@ public class FireballTracking implements Listener {
         if (cause == null || !cause.isOnline())
             return;
 
-        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, new Fireball());
+        DamageRecord damageRecord = new DamageRecord(cause, craft.getPilot(), new Fireball());
         Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
     }
 

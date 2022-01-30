@@ -13,29 +13,29 @@ import java.util.List;
 
 import static net.countercraft.movecraft.util.ChatUtils.MOVECRAFT_COMMAND_PREFIX;
 
-public class TracerSettingCommand implements TabExecutor {
+public class MovementTracerSettingCommand implements TabExecutor {
     @NotNull
     private final PlayerManager manager;
 
 
-    public TracerSettingCommand(@NotNull PlayerManager manager) {
+    public MovementTracerSettingCommand(@NotNull PlayerManager manager) {
         this.manager = manager;
     }
 
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (!command.getName().equalsIgnoreCase("tracersetting"))
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if(!command.getName().equalsIgnoreCase("movementtracersetting"))
             return false;
 
-        if (!(commandSender instanceof Player)) {
+        if(!(commandSender instanceof Player)) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
-        if (args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getSetting(player));
+        if(args.length == 0) {
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getTNTSetting(player));
             return true;
         }
         if (args.length != 1) {
@@ -44,14 +44,15 @@ public class TracerSettingCommand implements TabExecutor {
         }
 
         String setting = args[0].toUpperCase();
-        if (!setting.equals("OFF") && !setting.equals("LOW") && !setting.equals("MEDIUM") && !setting.equals("HIGH")) {
+        try {
+            manager.setMovementSetting(player, setting);
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Movement Tracer Set") + ": " + setting);
+            return true;
+        }
+        catch (IllegalArgumentException e) {
             commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
             return true;
         }
-
-        manager.setSetting(player, setting);
-        commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + setting);
-        return true;
     }
 
     @Override
@@ -59,7 +60,6 @@ public class TracerSettingCommand implements TabExecutor {
         final List<String> tabCompletions = new ArrayList<>();
         if (strings.length <= 1) {
             tabCompletions.add("OFF");
-            tabCompletions.add("MEDIUM");
             tabCompletions.add("HIGH");
             tabCompletions.add("LOW");
         }

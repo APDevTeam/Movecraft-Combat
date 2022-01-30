@@ -13,8 +13,9 @@ import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
 import net.countercraft.movecraft.combat.features.directors.Directors;
 import net.countercraft.movecraft.combat.features.tracers.MovementTracers;
 import net.countercraft.movecraft.combat.features.tracers.TNTTracers;
-import net.countercraft.movecraft.combat.features.tracers.commands.TracerModeCommand;
-import net.countercraft.movecraft.combat.features.tracers.commands.TracerSettingCommand;
+import net.countercraft.movecraft.combat.features.tracers.commands.MovementTracerSettingCommand;
+import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerModeCommand;
+import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerSettingCommand;
 import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
@@ -39,6 +40,7 @@ public final class MovecraftCombat extends JavaPlugin {
     public void onLoad() {
         AADirectors.register();
         CannonDirectors.register();
+        MovementTracers.register();
     }
 
     @Override
@@ -129,7 +131,8 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
         // Register commands
-        getCommand("tracersetting").setExecutor(new TracerSettingCommand(playerManager));
-        getCommand("tracermode").setExecutor(new TracerModeCommand(playerManager));
+        getCommand("tnttracersetting").setExecutor(new TNTTracerSettingCommand(playerManager));
+        getCommand("tnttracermode").setExecutor(new TNTTracerModeCommand(playerManager));
+        getCommand("movementtracersetting").setExecutor(new MovementTracerSettingCommand(playerManager));
     }
 }

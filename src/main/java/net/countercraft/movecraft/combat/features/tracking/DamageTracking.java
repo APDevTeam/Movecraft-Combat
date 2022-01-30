@@ -88,7 +88,7 @@ public class DamageTracking implements Listener {
         var cause = e.getDamaging().getPilot();
         var type = new Torpedo();
 
-        DamageRecord damageRecord = new DamageRecord(craft.getPilot(), cause, type);
+        DamageRecord damageRecord = new DamageRecord(cause, craft.getPilot(), type);
         Bukkit.getPluginManager().callEvent(new CraftDamagedByEvent(craft, damageRecord));
     }
 
