@@ -100,7 +100,8 @@ public class DamageTracking implements Listener {
         if (damageRecords.containsKey(craft)) {
             List<DamageRecord> records = damageRecords.get(craft);
             records.add(damageRecord);
-        } else {
+        }
+        else {
             List<DamageRecord> records = new ArrayList<>();
             records.add(damageRecord);
             damageRecords.put(craft, records);

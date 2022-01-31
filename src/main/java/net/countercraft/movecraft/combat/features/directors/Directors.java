@@ -43,12 +43,15 @@ public class Directors extends BukkitRunnable {
         if (transparent == null)
             throw new IllegalStateException();
 
+        Transparent = new HashSet<>();
         for (Object o : transparent) {
             if (o instanceof String) {
                 var tagged = Tags.parseMaterials((String) o);
-                Transparent = new HashSet<>(tagged);
-            } else
+                Transparent.addAll(tagged);
+            }
+            else {
                 MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
+            }
         }
     }
 

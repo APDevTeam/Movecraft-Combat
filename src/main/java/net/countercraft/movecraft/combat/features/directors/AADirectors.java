@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.features.directors;
 
 import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
+import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -10,6 +11,7 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -91,9 +93,9 @@ public class AADirectors extends Directors implements Listener {
         double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = p.getTargetBlock(Transparent, AADirectorRange);
+        Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
         Vector targetVector;
-        if (targetBlock == null) // the player is looking at nothing, shoot in that general direction
+        if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
             targetVector = p.getLocation().getDirection();
         else { // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
