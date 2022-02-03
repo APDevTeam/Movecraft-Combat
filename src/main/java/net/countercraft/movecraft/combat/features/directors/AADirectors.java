@@ -68,7 +68,7 @@ public class AADirectors extends Directors implements Listener {
     }
 
     private void processFireball(@NotNull SmallFireball fireball) {
-        if (fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
+        if (fireball.getShooter() instanceof LivingEntity && !(fireball.getShooter() instanceof Player))
             return;
 
         Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
