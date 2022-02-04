@@ -1,6 +1,5 @@
 package net.countercraft.movecraft.combat.features;
 
-import net.countercraft.movecraft.Movecraft;
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
