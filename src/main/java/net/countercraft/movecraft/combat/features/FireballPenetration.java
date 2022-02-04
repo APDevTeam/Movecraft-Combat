@@ -16,9 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class FireballPenetration implements Listener {
     public static boolean EnableFireballPenetration = true;
+    public static boolean UnderwaterFireballPenetration = true;
 
     public static void load(@NotNull FileConfiguration config) {
         EnableFireballPenetration = config.getBoolean("EnableFireballPenetration", false);
+        UnderwaterFireballPenetration = config.getBoolean("UnderwaterFireballPenetration", false);
     }
 
 
@@ -53,7 +55,7 @@ public class FireballPenetration implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onProjectileHit(@NotNull ProjectileHitEvent e) {
-        if (!EnableFireballPenetration)
+        if (!UnderwaterFireballPenetration)
             return;
         if (!(e.getEntity() instanceof Fireball))
             return;
