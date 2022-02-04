@@ -1,21 +1,26 @@
 package net.countercraft.movecraft.combat.features;
 
+import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class FireballPenetration implements Listener {
     public static boolean EnableFireballPenetration = true;
+    public static boolean UnderwaterFireballPenetration = true;
 
     public static void load(@NotNull FileConfiguration config) {
         EnableFireballPenetration = config.getBoolean("EnableFireballPenetration", false);
+        UnderwaterFireballPenetration = config.getBoolean("UnderwaterFireballPenetration", false);
     }
 
 
@@ -46,5 +51,29 @@ public class FireballPenetration implements Listener {
             return;
 
         testBlock.setType(Material.AIR);
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onProjectileHit(@NotNull ProjectileHitEvent e) {
+        if (!UnderwaterFireballPenetration)
+            return;
+        if (!(e.getEntity() instanceof Fireball))
+            return;
+
+        Block sourceBlock = e.getHitBlock();
+        BlockFace hitFace = e.getHitBlockFace();
+        if (sourceBlock == null || hitFace == null)
+            return; // Hit an entity instead of a block
+        if (!sourceBlock.getType().isBurnable())
+            return;
+        if (!Tags.FLUID.contains(sourceBlock.getRelative(hitFace).getType()))
+            return;
+
+        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(sourceBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getEntity());
+        Bukkit.getPluginManager().callEvent(igniteEvent);
+        if (igniteEvent.isCancelled())
+            return;
+
+        sourceBlock.setType(Material.AIR);
     }
 }
