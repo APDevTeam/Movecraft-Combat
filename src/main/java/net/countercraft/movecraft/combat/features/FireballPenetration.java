@@ -53,21 +53,24 @@ public class FireballPenetration implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onProjectileHit(@NotNull ProjectileHitEvent e) {
-        if(!(e.getEntity() instanceof Fireball && EnableFireballPenetration)) {
+        if (!EnableFireballPenetration)
             return;
-        }
+        if (!(e.getEntity() instanceof Fireball))
+            return;
 
         Block sourceBlock = e.getHitBlock();
+        BlockFace hitFace = e.getHitBlockFace();
+        if (sourceBlock == null || hitFace == null)
+            return; // Hit an entity instead of a block
         if (!sourceBlock.getType().isBurnable())
             return;
-        if (!Tags.FLUID.contains(sourceBlock.getRelative(e.getHitBlockFace()).getType()))
+        if (!Tags.FLUID.contains(sourceBlock.getRelative(hitFace).getType()))
             return;
 
         BlockIgniteEvent igniteEvent = new BlockIgniteEvent(sourceBlock, BlockIgniteEvent.IgniteCause.SPREAD, e.getEntity());
         Bukkit.getPluginManager().callEvent(igniteEvent);
-        if (igniteEvent.isCancelled()) {
+        if (igniteEvent.isCancelled())
             return;
-        }
 
         sourceBlock.setType(Material.AIR);
     }
