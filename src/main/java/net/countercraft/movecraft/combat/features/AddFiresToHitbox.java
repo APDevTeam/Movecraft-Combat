@@ -5,6 +5,7 @@ import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.util.MathUtils;
 import net.countercraft.movecraft.util.hitboxes.MutableHitBox;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -54,6 +55,9 @@ public class AddFiresToHitbox implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(@NotNull BlockBreakEvent e) {
+        // Allow punching fire out on crafts
+        if (e.getBlock().getType() != Material.FIRE)
+            return;
         Craft craft = adjacentCraft(e.getBlock().getLocation());
         if (craft == null || craft.getHitBox().isEmpty())
             return;
