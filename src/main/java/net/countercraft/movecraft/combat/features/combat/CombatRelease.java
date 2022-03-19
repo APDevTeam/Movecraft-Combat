@@ -11,8 +11,10 @@ import net.countercraft.movecraft.combat.features.tracking.events.CraftFireWeapo
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.config.Settings;
 import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PilotedCraft;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.SinkingCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.events.CraftReleaseEvent;
 import net.countercraft.movecraft.events.CraftScuttleEvent;
@@ -104,7 +106,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
             return;
 
         Craft craft = e.getCraft();
-        if (craft.getSinking())
+        if (craft instanceof SinkingCraft)
             return;
         if (!(craft instanceof PlayerCraft))
             return;
@@ -134,9 +136,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
 
         if (CombatReleaseScuttle) {
             e.setCancelled(true);
-            craft.setNotificationPlayer(null);
-            craft.setCruising(false);
-            craft.sink();
+            CraftManager.getInstance().sink(craft);
         }
 
         if (!EnableCombatReleaseKick)

@@ -60,7 +60,7 @@ public class FireballTracking implements Listener {
             return;
 
         SmallFireball fireball = (SmallFireball) e.getEntity();
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
+        Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), fireball.getLocation());
         if (!(craft instanceof PlayerCraft))
             return;
         if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))
@@ -90,7 +90,7 @@ public class FireballTracking implements Listener {
             return;
 
         org.bukkit.entity.Fireball fireball = (org.bukkit.entity.Fireball) e.getEntity();
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
+        Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), fireball.getLocation());
         if (!(craft instanceof PlayerCraft))
             return;
         if (!MathUtils.locIsNearCraftFast(craft, MathUtils.bukkit2MovecraftLoc(fireball.getLocation())))

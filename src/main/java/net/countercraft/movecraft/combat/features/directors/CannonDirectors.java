@@ -8,6 +8,7 @@ import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.SinkingCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
@@ -89,9 +90,9 @@ public class CannonDirectors extends Directors implements Listener {
 
         Craft c = getDirectingCraft(tnt);
         if (c == null) {
-            c = CraftManager.getInstance().fastNearestCraftToLoc(tnt.getLocation());
+            c = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), tnt.getLocation());
 
-            if (c == null || c.getSinking())
+            if (c == null || c instanceof SinkingCraft)
                 return;
         }
         if (!(c instanceof PlayerCraft))
@@ -150,7 +151,7 @@ public class CannonDirectors extends Directors implements Listener {
             return null;
 
         Craft c = CraftManager.getInstance().getCraftByPlayer(sender);
-        if (c == null || c.getSinking())
+        if (c == null || c instanceof SinkingCraft)
             return null;
 
         return c;

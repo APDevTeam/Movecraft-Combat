@@ -124,7 +124,8 @@ public class TNTTracking implements Listener {
         }
 
         // Find nearest craft
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(e.getBlock().getLocation());
+        Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(),
+                e.getBlock().getLocation());
         if (!(craft instanceof PlayerCraft))
             return;
         if (!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))

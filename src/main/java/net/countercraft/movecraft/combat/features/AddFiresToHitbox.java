@@ -25,7 +25,7 @@ public class AddFiresToHitbox implements Listener {
 
     @Nullable
     private Craft adjacentCraft(@NotNull Location location) {
-        Craft craft = CraftManager.getInstance().fastNearestCraftToLoc(location);
+        Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), location);
         if (craft == null)
             return null; //return null if no craft found
 

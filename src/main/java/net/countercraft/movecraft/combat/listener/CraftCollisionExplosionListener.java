@@ -35,8 +35,7 @@ public class CraftCollisionExplosionListener implements Listener {
         CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
         if (status.isSinking()) {
             e.setCancelled(true);
-            e.getCraft().setCruising(false);
-            e.getCraft().sink();
+            CraftManager.getInstance().sink(e.getCraft());
         }
 
         PlayerCraft damaged = fastNearestPlayerCraftToCraft(damaging);

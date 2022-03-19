@@ -71,7 +71,7 @@ public class AADirectors extends Directors implements Listener {
         if (fireball.getShooter() instanceof org.bukkit.entity.LivingEntity)
             return;
 
-        Craft c = CraftManager.getInstance().fastNearestCraftToLoc(fireball.getLocation());
+        Craft c = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(), fireball.getLocation());
         if (!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
             return;
 
