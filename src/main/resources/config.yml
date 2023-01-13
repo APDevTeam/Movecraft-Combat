@@ -6,16 +6,10 @@ Locale: "en" # Language file to load, currently the plugin comes with en and no,
 # AA Directors
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
 AADirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
-AADirectorsAllowed: # List of string names to craft types that are allowed to use AA Directors
-  - "Airship"
-  - "SubAirship"
 
 # Cannon Directors
 CannonDirectorDistance: 100 # Max range at which TNT will be redirected
 CannonDirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
-CannonDirectorsAllowed: # List of string names to craft types that are allowed to use Cannon Directors
-  - "Airship"
-  - "SubAirship"
 
 # Directors
 DirectorTool: STICK # Material name for director control.
