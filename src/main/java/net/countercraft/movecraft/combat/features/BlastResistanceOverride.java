@@ -1,11 +1,13 @@
 package net.countercraft.movecraft.combat.features;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -35,10 +37,25 @@ public class BlastResistanceOverride {
         return FieldUtils.getField(Material.class, "durability");
     }
 
+    private static Class<?> getCraftMagicNumbers() throws ClassNotFoundException {
+        return Class.forName("org.bukkit.craftbukkit." + getVersion() + ".util.CraftMagicNumbers");
+    }
+
+    private static Object getBlock(Material m) throws IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+        return getCraftMagicNumbers().getMethod("getBlock", Material.class).invoke(null, m);
+    }
+
+    private static String getVersion() {
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        return packageName.substring(packageName.lastIndexOf('.') + 1);
+    }
+
     public static boolean setBlastResistance(Material m, float resistance) {
         try {
-            FieldUtils.writeField(getField(), m, resistance);
-        } catch (IllegalAccessException e) {
+            FieldUtils.writeField(getField(), getBlock(m), resistance);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | SecurityException | ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }
