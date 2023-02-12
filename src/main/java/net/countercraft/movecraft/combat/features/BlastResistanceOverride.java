@@ -37,8 +37,8 @@ public class BlastResistanceOverride {
 
     public static boolean setBlastResistance(Material m, float resistance) {
         try {
-            // FieldUtils.writeField(getField(), m, resistance);
-        } catch (IllegalAccessError e) {
+            FieldUtils.writeField(getField(), m, resistance);
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
             return false;
         }
@@ -47,5 +47,17 @@ public class BlastResistanceOverride {
 
     public static boolean revertToVanilla(Material m) {
         return setBlastResistance(m, m.getBlastResistance()); // Spigot stores the vanilla values for us
+    }
+
+    public static void enable() {
+        for (var entry : BlastResistanceOverride.entrySet()) {
+            setBlastResistance(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public static void disable() {
+        for (Material m : BlastResistanceOverride.keySet()) {
+            revertToVanilla(m);
+        }
     }
 }

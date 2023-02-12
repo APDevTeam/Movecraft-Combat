@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat;
 
 import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
 import net.countercraft.movecraft.combat.features.AntiRadar;
+import net.countercraft.movecraft.combat.features.BlastResistanceOverride;
 import net.countercraft.movecraft.combat.features.ContactExplosives;
 import net.countercraft.movecraft.combat.features.DurabilityOverride;
 import net.countercraft.movecraft.combat.features.FireballLifespan;
@@ -84,6 +85,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
+        BlastResistanceOverride.load(getConfig());
 
 
         // Register event translation listeners
@@ -134,5 +136,13 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("tnttracersetting").setExecutor(new TNTTracerSettingCommand(playerManager));
         getCommand("tnttracermode").setExecutor(new TNTTracerModeCommand(playerManager));
         getCommand("movementtracersetting").setExecutor(new MovementTracerSettingCommand(playerManager));
+
+        // Modify blast resistances
+        BlastResistanceOverride.enable();
+    }
+
+    @Override
+    public void onDisable() {
+        BlastResistanceOverride.disable(); // Revert to vanilla
     }
 }
