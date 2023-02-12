@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.util.Tags;
 
 public class BlastResistanceOverride {
@@ -28,7 +29,19 @@ public class BlastResistanceOverride {
         for (var entry : section.getValues(false).entrySet()) {
             EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
             for (Material m : materials) {
-                BlastResistanceOverride.put(m, (Float) entry.getValue());
+                float value;
+                if (entry.getValue() instanceof Float) {
+                    value = (float) entry.getValue();
+                }
+                else if (entry.getValue() instanceof Integer) {
+                    int intVal = (int) entry.getValue();
+                    value = (float) intVal;
+                }
+                else {
+                    MovecraftCombat.getInstance().getLogger().warning("Unable to load " + m.name() + ": " + entry.getValue());
+                    continue;
+                }
+                BlastResistanceOverride.put(m, value);
             }
         }
     }
@@ -70,6 +83,7 @@ public class BlastResistanceOverride {
         for (var entry : BlastResistanceOverride.entrySet()) {
             setBlastResistance(entry.getKey(), entry.getValue());
         }
+        MovecraftCombat.getInstance().getLogger().info("Overwrote " + BlastResistanceOverride.keySet().size() + " blast resistances!");
     }
 
     public static void disable() {
