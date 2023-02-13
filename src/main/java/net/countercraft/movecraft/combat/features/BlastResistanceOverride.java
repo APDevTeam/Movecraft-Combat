@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.features;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +33,12 @@ public class BlastResistanceOverride {
                 float value;
                 if (entry.getValue() instanceof Float) {
                     value = (float) entry.getValue();
-                }
-                else if (entry.getValue() instanceof Integer) {
+                } else if (entry.getValue() instanceof Integer) {
                     int intVal = (int) entry.getValue();
                     value = (float) intVal;
-                }
-                else {
-                    MovecraftCombat.getInstance().getLogger().warning("Unable to load " + m.name() + ": " + entry.getValue());
+                } else {
+                    MovecraftCombat.getInstance().getLogger()
+                            .warning("Unable to load " + m.name() + ": " + entry.getValue());
                     continue;
                 }
                 BlastResistanceOverride.put(m, value);
@@ -46,27 +46,26 @@ public class BlastResistanceOverride {
         }
     }
 
-    private static Field getField() {
-        return FieldUtils.getField(Material.class, "durability");
-    }
-
-    private static Class<?> getCraftMagicNumbers() throws ClassNotFoundException {
-        return Class.forName("org.bukkit.craftbukkit." + getVersion() + ".util.CraftMagicNumbers");
-    }
-
-    private static Object getBlock(Material m) throws IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
-        return getCraftMagicNumbers().getMethod("getBlock", Material.class).invoke(null, m);
-    }
-
-    private static String getVersion() {
-        String packageName = Bukkit.getServer().getClass().getPackage().getName();
-        return packageName.substring(packageName.lastIndexOf('.') + 1);
-    }
-
     public static boolean setBlastResistance(Material m, float resistance) {
         try {
-            FieldUtils.writeField(getField(), getBlock(m), resistance);
+            String packageName = Bukkit.getServer().getClass().getPackage().getName();
+            String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+            MovecraftCombat.getInstance().getLogger().info("Found version: " + version);
+
+            Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
+            MovecraftCombat.getInstance().getLogger().info("Found class: " + clazz.getName());
+
+            Method method = clazz.getMethod("getBlock", Material.class);
+            MovecraftCombat.getInstance().getLogger().info("Found method: " + method);
+
+            Object block = method.invoke(null, m);
+            MovecraftCombat.getInstance().getLogger()
+                    .info("Got object of type " + block.getClass().getName() + ": " + block);
+
+            Field field = FieldUtils.getField(block.getClass(), "durability");
+            MovecraftCombat.getInstance().getLogger().info("Found field: " + field);
+
+            FieldUtils.writeField(field, block, resistance);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                 | SecurityException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -83,7 +82,8 @@ public class BlastResistanceOverride {
         for (var entry : BlastResistanceOverride.entrySet()) {
             setBlastResistance(entry.getKey(), entry.getValue());
         }
-        MovecraftCombat.getInstance().getLogger().info("Overwrote " + BlastResistanceOverride.keySet().size() + " blast resistances!");
+        MovecraftCombat.getInstance().getLogger()
+                .info("Overwrote " + BlastResistanceOverride.keySet().size() + " blast resistances!");
     }
 
     public static void disable() {
