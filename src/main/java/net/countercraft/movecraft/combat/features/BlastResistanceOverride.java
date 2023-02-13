@@ -62,7 +62,11 @@ public class BlastResistanceOverride {
             MovecraftCombat.getInstance().getLogger()
                     .info("Got object of type " + block.getClass().getName() + ": " + block);
 
-            Field field = FieldUtils.getField(block.getClass(), "durability");
+            MovecraftCombat.getInstance().getLogger().info("Fields: ");
+            for (Field field : block.getClass().getFields()) {
+                MovecraftCombat.getInstance().getLogger().info("\t- " + field);
+            }
+            Field field = FieldUtils.getField(block.getClass(), "durability", true);
             MovecraftCombat.getInstance().getLogger().info("Found field: " + field);
 
             FieldUtils.writeField(field, block, resistance);
