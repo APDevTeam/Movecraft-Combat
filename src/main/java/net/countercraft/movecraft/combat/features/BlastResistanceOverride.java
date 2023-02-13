@@ -71,8 +71,6 @@ public class BlastResistanceOverride {
         for (var entry : BlastResistanceOverride.entrySet()) {
             setBlastResistance(entry.getKey(), entry.getValue());
         }
-        MovecraftCombat.getInstance().getLogger()
-                .info("Overwrote " + BlastResistanceOverride.keySet().size() + " blast resistances!");
     }
 
     public static void disable() {
