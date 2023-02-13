@@ -10,11 +10,16 @@ Home of the code for the following features:
  - TNT Tracers
  - Damage Tracking
  - Combat Release Tracking
+ - Anti-Player Radar
+ - Fire Behavior
+ - TNT Translocation Behavior
+ - Movement Tracers
+ - Blast Resistance Override
 
 ## Version support
-The `legacy` branch is coded for 1.10.2 to 1.16.5 and Movecraft 7.x.
+The `legacy` branch is coded for 1.10.2 to 1.12.2 and Movecraft 7.x.
 
-The `main` branch is coded for 1.14.4 to 1.18.1 and Movecraft 8.x.
+The `main` branch is coded for 1.14.4 and up with Movecraft 8.x.
 
 ## Download
 Devevlopment builds can be found on the [GitHub Actions tab](https://github.com/TylerS1066/Movecraft-Combat/actions) of this repository.
