@@ -50,25 +50,10 @@ public class BlastResistanceOverride {
         try {
             String packageName = Bukkit.getServer().getClass().getPackage().getName();
             String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-            MovecraftCombat.getInstance().getLogger().info("Found version: " + version);
-
             Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
-            MovecraftCombat.getInstance().getLogger().info("Found class: " + clazz.getName());
-
             Method method = clazz.getMethod("getBlock", Material.class);
-            MovecraftCombat.getInstance().getLogger().info("Found method: " + method);
-
             Object block = method.invoke(null, m);
-            MovecraftCombat.getInstance().getLogger()
-                    .info("Got object of type " + block.getClass().getName() + ": " + block);
-
-            MovecraftCombat.getInstance().getLogger().info("Fields: ");
-            for (Field field : block.getClass().getFields()) {
-                MovecraftCombat.getInstance().getLogger().info("\t- " + field);
-            }
             Field field = FieldUtils.getField(block.getClass(), "durability", true);
-            MovecraftCombat.getInstance().getLogger().info("Found field: " + field);
-
             FieldUtils.writeField(field, block, resistance);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                 | SecurityException | ClassNotFoundException e) {
