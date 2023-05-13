@@ -1,7 +1,12 @@
   
 name: Java CI
 
-on: [workflow_dispatch, push, pull_request]
+on: 
+  workflow_dispatch:
+  push:
+  pull_request:
+  schedule:
+    - cron: '22 10 * * 6'
 
 jobs:
   build:
