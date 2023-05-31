@@ -56,7 +56,7 @@ public class CannonDirectors extends Directors implements Listener {
     }
 
     public static void load(@NotNull FileConfiguration config) {
-        CannonDirectorDistance = config.getInt("CannonDirectorsDistance", 100);
+        CannonDirectorDistance = config.getInt("CannonDirectorDistance", 100);
         CannonDirectorRange = config.getInt("CannonDirectorRange", 120);
     }
 
