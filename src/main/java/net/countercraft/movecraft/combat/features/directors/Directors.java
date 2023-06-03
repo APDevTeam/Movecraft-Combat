@@ -1,24 +1,31 @@
 package net.countercraft.movecraft.combat.features.directors;
 
 import com.google.common.collect.HashBiMap;
+import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Directors extends BukkitRunnable {
     private static final Set<Directors> instances = new HashSet<>();
+    public static boolean AllowNodeDirectors;
     public static Material DirectorTool = null;
     public static Set<Material> Transparent = null;
     private final HashBiMap<PlayerCraft, Player> directors = HashBiMap.create();
+    private Map<Player, HashSet<String>> selectedSigns = new HashMap<>();
 
 
     public Directors() {
@@ -53,6 +60,17 @@ public class Directors extends BukkitRunnable {
                 MovecraftCombat.getInstance().getLogger().severe("Failed to load transparent " + o.toString());
             }
         }
+
+        Object allowNodes = config.get("AllowNodeDirectors");
+        boolean allowNodeDirectors = false;
+        if (!(allowNodes instanceof Boolean)) {
+            MovecraftCombat.getInstance().getLogger().severe("Failed load AllowNodeDirectors setting.");
+            AllowNodeDirectors = allowNodeDirectors;
+        } else {
+            AllowNodeDirectors = (boolean) allowNodes;
+        }
+
+
     }
 
     @Override
@@ -60,12 +78,30 @@ public class Directors extends BukkitRunnable {
 
     }
 
-
-    public void addDirector(@NotNull PlayerCraft craft, @NotNull Player player) {
+    public void addDirector(@NotNull PlayerCraft craft, @NotNull Player player,
+                            @Nullable String string1, @Nullable String string2, @Nullable String string3) {
         if (directors.containsValue(player))
             directors.inverse().remove(player);
 
         directors.put(craft, player);
+
+        if (!AllowNodeDirectors)
+            return;
+
+        if (selectedSigns.containsKey(player))
+            selectedSigns.remove(player);
+
+        HashSet<String> signs = new HashSet<>();
+        if (string1 != null) {
+            signs.add(string1);
+        }
+        if (string2 != null) {
+            signs.add(string2);
+        }
+        if (string3 != null) {
+            signs.add(string3);
+        }
+        selectedSigns.put(player, signs);
     }
 
     public boolean isDirector(@NotNull Player player) {
@@ -96,5 +132,9 @@ public class Directors extends BukkitRunnable {
             return null;
 
         return director;
+    }
+
+    public HashSet<String> getSignStrings(@NotNull Player player) {
+        return selectedSigns.get(player);
     }
 }

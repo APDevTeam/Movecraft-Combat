@@ -98,17 +98,37 @@ public class CannonDirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft))
             return;
 
-        MovecraftLocation midpoint = c.getHitBox().getMidPoint();
-        int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
-        int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
-        int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-        if (!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
-                || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
-            return;
-
         Player p = getDirector((PlayerCraft) c);
         if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
+
+        if (AllowNodeDirectors && !getSignStrings(p).isEmpty()) {
+            for (MovecraftLocation location : c.getHitBox()) {
+                Block block = c.getWorld().getBlockAt(location.getX(), location.getY(), location.getZ());
+                if (!(block.getState() instanceof Sign))
+                    continue;
+
+                Sign sign = (Sign) block.getState();
+
+                if (sign.getLine(0).equalsIgnoreCase("subcraft rotate") && !sign.getLine(3).isBlank() && getSignStrings(p).contains(sign.getLine(3))) {
+                    int distX = Math.abs(location.getX() - tnt.getLocation().getBlockX());
+                    int distY = Math.abs(location.getY() - tnt.getLocation().getBlockY());
+                    int distZ = Math.abs(location.getZ() - tnt.getLocation().getBlockZ());
+                    if (!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
+                            || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
+                        return;
+                }
+            }
+        } else {
+            MovecraftLocation midpoint = c.getHitBox().getMidPoint();
+            int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
+            int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
+            int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
+
+            if (!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
+                    || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
+                return;
+        }
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         // We're only interested in the horizontal speed for now since that's all directors *should* affect.
@@ -208,7 +228,7 @@ public class CannonDirectors extends Directors implements Listener {
         }
 
         clearDirector(p);
-        addDirector(foundCraft, p);
+        addDirector(foundCraft, p, sign.getLine(1), sign.getLine(2), sign.getLine(3));
         p.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
     }
 

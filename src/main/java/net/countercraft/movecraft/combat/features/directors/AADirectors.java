@@ -77,17 +77,38 @@ public class AADirectors extends Directors implements Listener {
 
         Player p = getDirector((PlayerCraft) c);
 
-        MovecraftLocation midPoint = c.getHitBox().getMidPoint();
-        int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
-        int distY = Math.abs(midPoint.getY() - fireball.getLocation().getBlockY());
-        int distZ = Math.abs(midPoint.getZ() - fireball.getLocation().getBlockZ());
-        if (distX > AADirectorDistance || distY > AADirectorDistance || distZ > AADirectorDistance)
-            return;
-
         fireball.setShooter(p);
 
         if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
+
+        if (AllowNodeDirectors && !getSignStrings(p).isEmpty()) {
+            for (MovecraftLocation location : c.getHitBox()) {
+                Block block = c.getWorld().getBlockAt(location.getX(), location.getY(), location.getZ());
+                if (!(block.getState() instanceof Sign))
+                    continue;
+
+                Sign sign = (Sign) block.getState();
+
+                if (sign.getLine(0).equalsIgnoreCase("subcraft rotate") && !sign.getLine(3).isBlank() && getSignStrings(p).contains(sign.getLine(3))) {
+                    int distX = Math.abs(location.getX() - fireball.getLocation().getBlockX());
+                    int distY = Math.abs(location.getY() - fireball.getLocation().getBlockY());
+                    int distZ = Math.abs(location.getZ() - fireball.getLocation().getBlockZ());
+                    if (!hasDirector((PlayerCraft) c) || distX >= AADirectorDistance
+                            || distY >= AADirectorDistance || distZ >= AADirectorDistance)
+                        return;
+                }
+            }
+        } else {
+            MovecraftLocation midpoint = c.getHitBox().getMidPoint();
+            int distX = Math.abs(midpoint.getX() - fireball.getLocation().getBlockX());
+            int distY = Math.abs(midpoint.getY() - fireball.getLocation().getBlockY());
+            int distZ = Math.abs(midpoint.getZ() - fireball.getLocation().getBlockZ());
+
+            if (!hasDirector((PlayerCraft) c) || distX >= AADirectorDistance
+                    || distY >= AADirectorDistance || distZ >= AADirectorDistance)
+                return;
+        }
 
         Vector fireballVector = fireball.getVelocity();
         double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
@@ -178,7 +199,7 @@ public class AADirectors extends Directors implements Listener {
         }
 
         clearDirector(p);
-        addDirector(foundCraft, p);
+        addDirector(foundCraft, p, sign.getLine(1), sign.getLine(2), sign.getLine(3));
         p.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
     }
 }

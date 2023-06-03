@@ -11,6 +11,9 @@ AADirectorRange: 120 # Max range at which it will direct to a block vs in the ge
 CannonDirectorDistance: 100 # Max range at which TNT will be redirected
 CannonDirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 
+# Nodal Directors
+AllowNodeDirectors: false # Turning this on will allow you to direct selected cannons on your ship.
+                          # However, keep in mind that you will have to adjust CannonDirectorDistance and AADirectorDistance to a lower value as it calculates the distance from the subcraft rotate sign.
 # Directors
 DirectorTool: STICK # Material name for director control.
 TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
