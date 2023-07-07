@@ -8,10 +8,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Stray;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,8 +30,14 @@ import java.util.Random;
 public class TNTTracers extends BukkitRunnable implements Listener {
     public static double TracerRateTicks = 5.0;
     public static long TracerMinDistanceSqrd = 360;
+    public static long TracerDelayTicks = 5;
+    public static long TracerExplosionDelayTicks = 5;
     public static Particle TracerParticle = null;
     public static Particle ExplosionParticle = null;
+    public static Material TracerBlock = null;
+    public static Material TracerExplosionBlock = null;
+    private static BlockData tracerBlockData;
+    private static BlockData tracerExplosionBlockData;
     @NotNull
     private final PlayerManager manager;
     private long lastUpdate = 0;
@@ -38,9 +49,28 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     public static void load(@NotNull FileConfiguration config) {
         TracerRateTicks = config.getDouble("TracerRateTicks", 5.0);
         TracerMinDistanceSqrd = config.getLong("TracerMinDistance", 60);
+        TracerDelayTicks = config.getLong("TracerDelayTicks", 5);
+        TracerExplosionDelayTicks = config.getLong("TracerExplosionDelayTicks", 20);
         TracerMinDistanceSqrd *= TracerMinDistanceSqrd;
         TracerParticle = Particle.valueOf(config.getString("TracerParticles", "FIREWORKS_SPARK"));
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
+        TracerBlock = Material.valueOf(config.getString("TracerBlock", "COBWEB"));
+        TracerExplosionBlock = Material.valueOf(config.getString("TracerExplosionBlock", "GLOWSTONE"));
+        System.out.println(TracerBlock.toString());
+        System.out.println(TracerExplosionBlock.toString());
+        tracerBlockData = setNonWaterLogged(TracerBlock);
+        tracerExplosionBlockData = setNonWaterLogged(TracerExplosionBlock);
+        System.out.println(tracerExplosionBlockData.getAsString());
+    }
+
+    private static BlockData setNonWaterLogged(Material material) {
+        BlockData blockData = material.createBlockData();
+        if (blockData instanceof Waterlogged) {
+            Waterlogged waterloggedData = (Waterlogged) blockData;
+            waterloggedData.setWaterlogged(false);
+            return blockData;
+        }
+        return blockData;
     }
 
     @Override
@@ -99,7 +129,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         public void run() {
                             fp.spawnParticle(TracerParticle, tntLoc, 0, 0.0, 0.0, 0.0);
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerDelayTicks);
                     break;
                 case BLOCKS:
                 default:
@@ -109,16 +139,16 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            fp.sendBlockChange(tntLoc, Material.COBWEB.createBlockData());
+                            fp.sendBlockChange(tntLoc, tracerBlockData);
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerDelayTicks);
                     // then restore it
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             fp.sendBlockChange(tntLoc, tntLoc.getBlock().getBlockData());
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerDelayTicks + 160);
                     break;
             }
         }
@@ -161,7 +191,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                         public void run() {
                             fp.spawnParticle(ExplosionParticle, loc, 9);
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 20);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerExplosionDelayTicks);
                     break;
                 case BLOCKS:
                 default:
@@ -169,16 +199,16 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            fp.sendBlockChange(loc, Material.GLOWSTONE.createBlockData());
+                            fp.sendBlockChange(loc, tracerExplosionBlockData);
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 5);
+                    }.runTaskLater(MovecraftCombat.getInstance(),TracerExplosionDelayTicks);
                     // then remove it
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             fp.sendBlockChange(loc, Material.AIR.createBlockData());
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(), 160);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerExplosionDelayTicks + 160);
                     break;
             }
         }
