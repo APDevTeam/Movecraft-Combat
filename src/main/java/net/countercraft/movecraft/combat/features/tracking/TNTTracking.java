@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -145,5 +146,12 @@ public class TNTTracking implements Listener {
 
         CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new TNTCannon());
         Bukkit.getPluginManager().callEvent(event);
+    }
+
+    @EventHandler
+    public void onEntitySpawn (@NotNull EntitySpawnEvent e) {
+        if(e.getEntityType().equals(EntityType.PRIMED_TNT)) {
+            Bukkit.getServer().broadcastMessage("TNT created!");
+        }
     }
 }
