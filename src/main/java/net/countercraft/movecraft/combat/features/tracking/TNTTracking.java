@@ -134,8 +134,7 @@ public class TNTTracking implements Listener {
             sender = playerCraft.getPilot();
         if (sender == null)
             return;
-
-        Bukkit.getServer().broadcastMessage("Debug: TNT Found!");
+        
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
 
         CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new TNTCannon());
