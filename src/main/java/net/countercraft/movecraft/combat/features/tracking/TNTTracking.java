@@ -80,25 +80,6 @@ public class TNTTracking implements Listener {
         return v;
     }
 
-    private boolean subtractItem(@NotNull Inventory inv, @NotNull ItemStack item) {
-        int count = item.getAmount();
-        for (int i = 0; i < inv.getSize(); i++) {
-            ItemStack temp = inv.getItem(i);
-            if (temp == null || !temp.isSimilar(item))
-                continue;
-
-            if (temp.getAmount() <= count) {
-                count -= temp.getAmount();
-                inv.remove(temp);
-            } else {
-                temp.setAmount(temp.getAmount() - count);
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     @EventHandler
     public void onEntitySpawn (@NotNull EntitySpawnEvent e) {
         if (!DamageTracking.EnableTNTTracking)
@@ -134,7 +115,7 @@ public class TNTTracking implements Listener {
             sender = playerCraft.getPilot();
         if (sender == null)
             return;
-        
+
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
 
         CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new TNTCannon());
