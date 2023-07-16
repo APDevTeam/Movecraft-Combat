@@ -14,6 +14,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -96,41 +98,32 @@ public class TNTTracking implements Listener {
         return false;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onBlockDispense(@NotNull BlockDispenseEvent e) {
+
+    @EventHandler
+    public void onEntitySpawn (@NotNull EntitySpawnEvent e) {
         if (!DamageTracking.EnableTNTTracking)
             return;
-        if (e.getBlock().getType() != Material.DISPENSER || e.getItem().getType() != Material.TNT)
+        if(!e.getEntityType().equals(EntityType.PRIMED_TNT))
             return;
-
-        // Cancel dispense event
-        e.setCancelled(true);
-
-        // Subtract item yourself
-        Dispenser d = (Dispenser) e.getBlock().getState();
-        Inventory inv = d.getInventory();
-        if (!subtractItem(inv, e.getItem())) {
-            Bukkit.getScheduler().runTask(MovecraftCombat.getInstance(), () -> {
-                subtractItem(inv, e.getItem());
-            });
-        }
-
-        // Spawn TNT
-        Location l = e.getVelocity().toLocation(e.getBlock().getWorld());
-        TNTPrimed tnt = (TNTPrimed) e.getBlock().getWorld().spawnEntity(l, EntityType.PRIMED_TNT);
-        Vector velocity = getTNTVector();
-        tnt.setVelocity(velocity);
-        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            p.playSound(l, Sound.ENTITY_TNT_PRIMED, 1.5f, 1.5f);
-        }
+        TNTPrimed tnt = (TNTPrimed)e.getEntity();
 
         // Find nearest craft
         Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(),
-                e.getBlock().getLocation());
+                tnt.getLocation());
         if (!(craft instanceof PlayerCraft))
             return;
-        if (!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(e.getBlock().getLocation())))
-            return;
+        if (!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(tnt.getLocation()))) {
+            //check adjacent blocks
+            boolean found = false;
+            Block center = tnt.getLocation().getBlock();
+            for (BlockFace face : BlockFace.values()) {
+                if (craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(center.getRelative(face).getLocation()))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return;
+        }
 
         // Report to tracking
         PlayerCraft playerCraft = (PlayerCraft) craft;
@@ -142,16 +135,10 @@ public class TNTTracking implements Listener {
         if (sender == null)
             return;
 
+        Bukkit.getServer().broadcastMessage("Debug: TNT Found!");
         tnt.setMetadata("MCC-Sender", new FixedMetadataValue(MovecraftCombat.getInstance(), sender.getUniqueId().toString()));
 
         CraftFireWeaponEvent event = new CraftFireWeaponEvent(playerCraft, new TNTCannon());
         Bukkit.getPluginManager().callEvent(event);
-    }
-
-    @EventHandler
-    public void onEntitySpawn (@NotNull EntitySpawnEvent e) {
-        if(e.getEntityType().equals(EntityType.PRIMED_TNT)) {
-            Bukkit.getServer().broadcastMessage("TNT created!");
-        }
     }
 }
