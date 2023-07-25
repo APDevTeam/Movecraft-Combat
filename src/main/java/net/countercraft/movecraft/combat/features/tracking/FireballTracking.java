@@ -68,11 +68,7 @@ public class FireballTracking implements Listener {
 
         PlayerCraft playerCraft = (PlayerCraft) craft;
 
-        Player sender;
-        if (directors.hasDirector(playerCraft))
-            sender = directors.getDirector(playerCraft);
-        else
-            sender = playerCraft.getPilot();
+        Player sender = playerCraft.getPilot();
         if (sender == null)
             return;
 

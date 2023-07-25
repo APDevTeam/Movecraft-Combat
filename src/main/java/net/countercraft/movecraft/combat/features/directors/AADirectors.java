@@ -75,7 +75,7 @@ public class AADirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
             return;
 
-        Player p = getDirector((PlayerCraft) c);
+        Player p = null;
 
         MovecraftLocation midPoint = c.getHitBox().getMidPoint();
         int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
@@ -178,7 +178,7 @@ public class AADirectors extends Directors implements Listener {
         }
 
         clearDirector(p);
-        addDirector(foundCraft, p);
+        addDirector(p, foundCraft, sign.getLine(1), sign.getLine(2), sign.getLine(3));
         p.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
     }
 }
