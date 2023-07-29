@@ -56,11 +56,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
         TracerBlock = Material.valueOf(config.getString("TracerBlock", "COBWEB"));
         TracerExplosionBlock = Material.valueOf(config.getString("TracerExplosionBlock", "GLOWSTONE"));
-        System.out.println(TracerBlock.toString());
-        System.out.println(TracerExplosionBlock.toString());
         tracerBlockData = setNonWaterLogged(TracerBlock);
         tracerExplosionBlockData = setNonWaterLogged(TracerExplosionBlock);
-        System.out.println(tracerExplosionBlockData.getAsString());
     }
 
     private static BlockData setNonWaterLogged(Material material) {
