@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.directors;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
@@ -108,7 +109,6 @@ public class CannonDirectors extends Directors implements Listener {
         // Adjust the TNT location based on its velocity to make it closer to the firing point.
         int ticks = 1;
         Location correctedLocation = tnt.getLocation().clone().add(tnt.getVelocity().clone().multiply(-ticks));
-        System.out.println("Corrected location at: " + correctedLocation.getBlockX() + ", " + correctedLocation.getBlockY() + ", " + correctedLocation.getBlockZ());
 
         for (DirectorData data : directorDataSet) {
             if (data.getSelectedSigns().isEmpty()) {
@@ -116,34 +116,34 @@ public class CannonDirectors extends Directors implements Listener {
             }
         }
         if (dominantPlayer != null) {
-            System.out.println("Dominant player is: " + dominantPlayer.getName());
             player = dominantPlayer;
         } else {
-            System.out.println("Dominant player not found, finding others...");
             for (DirectorData data : directorDataSet) {
                 HashSet<Location> locations = getLocations(data);
                 for (Location location : locations) {
-                    System.out.println("Location of sign: " + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
                     int distX = Math.abs(location.getBlockX() - correctedLocation.getBlockX());
                     int distY = Math.abs(location.getBlockY() - correctedLocation.getBlockY());
                     int distZ = Math.abs(location.getBlockZ() - correctedLocation.getBlockZ());
 
-                    System.out.println("Node distances are for xyz: " + distX + " , " + distY + " , " + distZ);
-
                     if (distX <= CannonDirectorNodeDistance && distY <= CannonDirectorNodeDistance && distZ <= CannonDirectorNodeDistance) {
                         player = data.getPlayer();
-                        System.out.println("Non-dominant player is: " + data.getPlayer());
                         break;
                     }
                 }
                 if (player != null) {
-                    System.out.println("Non-dominant player is not null.");
                     break;
                 }
             }
         }
 
         if (player == null || player.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+            return;
+
+        MovecraftLocation midpoint = c.getHitBox().getMidPoint();
+        int distX = Math.abs(midpoint.getX() - correctedLocation.getBlockX());
+        int distY = Math.abs(midpoint.getY() - correctedLocation.getBlockY());
+        int distZ = Math.abs(midpoint.getZ() - correctedLocation.getBlockZ());
+        if (distX >= CannonDirectorDistance || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
             return;
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1

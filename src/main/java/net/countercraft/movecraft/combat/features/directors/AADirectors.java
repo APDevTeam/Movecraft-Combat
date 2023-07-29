@@ -11,6 +11,7 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -27,12 +28,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
 public class AADirectors extends Directors implements Listener {
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
     private static final String HEADER = "AA Director";
     public static int AADirectorDistance = 50;
+    public static int AADirectorNodeDistance = 3;
     public static int AADirectorRange = 120;
     private long lastCheck = 0;
 
@@ -46,6 +50,7 @@ public class AADirectors extends Directors implements Listener {
 
     public static void load(@NotNull FileConfiguration config) {
         AADirectorDistance = config.getInt("AADirectorDistance", 50);
+        AADirectorNodeDistance = config.getInt("AADirectorNodeDistance", 3);
         AADirectorRange = config.getInt("AADirectorRange", 120);
     }
 
@@ -75,28 +80,56 @@ public class AADirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
             return;
 
-        Player p = null;
+        HashSet<DirectorData> directorDataSet = getDirectorDataSet((PlayerCraft) c);
+        Player player = null;
+        Player dominantPlayer = null;
 
-        MovecraftLocation midPoint = c.getHitBox().getMidPoint();
-        int distX = Math.abs(midPoint.getX() - fireball.getLocation().getBlockX());
-        int distY = Math.abs(midPoint.getY() - fireball.getLocation().getBlockY());
-        int distZ = Math.abs(midPoint.getZ() - fireball.getLocation().getBlockZ());
-        if (distX > AADirectorDistance || distY > AADirectorDistance || distZ > AADirectorDistance)
+        for (DirectorData data : directorDataSet) {
+            if (data.getSelectedSigns().isEmpty()) {
+                dominantPlayer = data.getPlayer();
+            }
+        }
+        if (dominantPlayer != null) {
+            player = dominantPlayer;
+        } else {
+            for (DirectorData data : directorDataSet) {
+                HashSet<Location> locations = getLocations(data);
+                for (Location location : locations) {
+                    int distX = Math.abs(location.getBlockX() - fireball.getLocation().getBlockX());
+                    int distY = Math.abs(location.getBlockY() - fireball.getLocation().getBlockY());
+                    int distZ = Math.abs(location.getBlockZ() - fireball.getLocation().getBlockZ());
+
+                    if (distX <= AADirectorNodeDistance && distY <= AADirectorNodeDistance && distZ <= AADirectorNodeDistance) {
+                        player = data.getPlayer();
+                        break;
+                    }
+                }
+                if (player != null) {
+                    break;
+                }
+            }
+        }
+
+        if (player == null || player.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
 
-        fireball.setShooter(p);
-
-        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+        MovecraftLocation midpoint = c.getHitBox().getMidPoint();
+        int distX = Math.abs(midpoint.getX() - fireball.getLocation().getBlockX());
+        int distY = Math.abs(midpoint.getY() - fireball.getLocation().getBlockY());
+        int distZ = Math.abs(midpoint.getZ() - fireball.getLocation().getBlockZ());
+        if (distX >= AADirectorDistance || distY >= AADirectorDistance || distZ >= AADirectorDistance)
             return;
+
+        fireball.setShooter(player);
 
         Vector fireballVector = fireball.getVelocity();
         double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
+        Block targetBlock = DirectorUtils.getDirectorBlock(player, AADirectorRange);
         Vector targetVector;
         if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
-            targetVector = p.getLocation().getDirection();
+            targetVector = player.getLocation().getDirection();
         else { // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
             targetVector = targetVector.normalize();
@@ -178,7 +211,13 @@ public class AADirectors extends Directors implements Listener {
         }
 
         clearDirector(p);
-        addDirector(p, foundCraft, sign.getLine(1), sign.getLine(2), sign.getLine(3));
+        DirectorData data = addDirector(p, foundCraft, sign.getLine(1), sign.getLine(2), sign.getLine(3));
+
+        if (isNodesShared(data)) {
+            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Must Not Share Nodes"));
+            return;
+        }
+
         p.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
     }
 }
