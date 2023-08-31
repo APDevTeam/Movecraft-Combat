@@ -52,7 +52,7 @@ ExplosionParticles: VILLAGER_ANGRY # Particle to use for particle tracer explosi
 
 # Damage Tracking
 EnableFireballTracking: false # Enable tracking and recording of fireballs (higher lag than other tracking methods)
-EnableTNTTracking: false # Enable tracking and recording of TNT damage (please read the wiki page before enabling!)
+EnableTNTTracking: false # Enable tracking and recording of TNT damage
 EnableTorpedoTracking: false # Enable tracking and recording of Torpedo damage
 DamageTimeout: 300 # Timeout for damages in seconds
 
