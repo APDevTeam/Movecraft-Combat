@@ -111,7 +111,7 @@ public class CannonDirectors extends Directors implements Listener {
         Location correctedLocation = tnt.getLocation().clone().add(tnt.getVelocity().clone().multiply(-ticks));
 
         for (DirectorData data : directorDataSet) {
-            if (data.getSelectedSigns().isEmpty()) {
+            if (data.getSelectedSigns().isEmpty() || getLocations(data).isEmpty()) {
                 dominantPlayer = data.getPlayer();
             }
         }

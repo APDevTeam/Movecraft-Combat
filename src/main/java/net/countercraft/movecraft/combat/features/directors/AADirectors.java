@@ -85,7 +85,7 @@ public class AADirectors extends Directors implements Listener {
         Player dominantPlayer = null;
 
         for (DirectorData data : directorDataSet) {
-            if (data.getSelectedSigns().isEmpty()) {
+            if (data.getSelectedSigns().isEmpty() || getLocations(data).isEmpty()) {
                 dominantPlayer = data.getPlayer();
             }
         }
