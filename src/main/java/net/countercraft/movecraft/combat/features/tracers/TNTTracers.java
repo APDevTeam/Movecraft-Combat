@@ -34,10 +34,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     public static long TracerExplosionDelayTicks = 5;
     public static Particle TracerParticle = null;
     public static Particle ExplosionParticle = null;
-    public static Material TracerBlock = null;
-    public static Material TracerExplosionBlock = null;
-    private static BlockData tracerBlockData;
-    private static BlockData tracerExplosionBlockData;
+    private static BlockData TracerBlockData;
+    private static BlockData TracerExplosionBlockData;
     @NotNull
     private final PlayerManager manager;
     private long lastUpdate = 0;
@@ -54,10 +52,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         TracerMinDistanceSqrd *= TracerMinDistanceSqrd;
         TracerParticle = Particle.valueOf(config.getString("TracerParticles", "FIREWORKS_SPARK"));
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
-        TracerBlock = Material.valueOf(config.getString("TracerBlock", "COBWEB"));
-        TracerExplosionBlock = Material.valueOf(config.getString("TracerExplosionBlock", "GLOWSTONE"));
-        tracerBlockData = setNonWaterLogged(TracerBlock);
-        tracerExplosionBlockData = setNonWaterLogged(TracerExplosionBlock);
+        TracerBlockData = setNonWaterLogged(Material.valueOf(config.getString("TracerBlock", "COBWEB")));
+        TracerExplosionBlockData = setNonWaterLogged(Material.valueOf(config.getString("TracerExplosionBlock", "GLOWSTONE")));
     }
 
     private static BlockData setNonWaterLogged(Material material) {
@@ -136,7 +132,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            fp.sendBlockChange(tntLoc, tracerBlockData);
+                            fp.sendBlockChange(tntLoc, TracerBlockData);
                         }
                     }.runTaskLater(MovecraftCombat.getInstance(), TracerDelayTicks);
                     // then restore it
@@ -196,7 +192,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            fp.sendBlockChange(loc, tracerExplosionBlockData);
+                            fp.sendBlockChange(loc, TracerExplosionBlockData);
                         }
                     }.runTaskLater(MovecraftCombat.getInstance(),TracerExplosionDelayTicks);
                     // then remove it
