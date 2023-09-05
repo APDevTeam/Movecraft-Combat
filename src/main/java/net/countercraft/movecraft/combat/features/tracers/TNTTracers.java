@@ -8,15 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Stray;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +32,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     public static Particle TracerParticle = null;
     public static Particle ExplosionParticle = null;
     private static BlockData TracerBlockData;
-    private static BlockData TracerExplosionBlockData;
+    private static BlockData ExplosionBlockData;
     @NotNull
     private final PlayerManager manager;
     private long lastUpdate = 0;
@@ -47,16 +44,16 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     public static void load(@NotNull FileConfiguration config) {
         TracerRateTicks = config.getDouble("TracerRateTicks", 5.0);
         TracerMinDistanceSqrd = config.getLong("TracerMinDistance", 60);
+        TracerMinDistanceSqrd *= TracerMinDistanceSqrd;
         TracerDelayTicks = config.getLong("TracerDelayTicks", 5);
         TracerExplosionDelayTicks = config.getLong("TracerExplosionDelayTicks", 20);
-        TracerMinDistanceSqrd *= TracerMinDistanceSqrd;
         TracerParticle = Particle.valueOf(config.getString("TracerParticles", "FIREWORKS_SPARK"));
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
-        TracerBlockData = setNonWaterLogged(Material.valueOf(config.getString("TracerBlock", "COBWEB")));
-        TracerExplosionBlockData = setNonWaterLogged(Material.valueOf(config.getString("TracerExplosionBlock", "GLOWSTONE")));
+        TracerBlockData = createNonWaterLogged(Material.valueOf(config.getString("TracerBlock", "COBWEB")));
+        ExplosionBlockData = createNonWaterLogged(Material.valueOf(config.getString("ExplosionBlock", "GLOWSTONE")));
     }
 
-    private static BlockData setNonWaterLogged(Material material) {
+    private static BlockData createNonWaterLogged(Material material) {
         BlockData blockData = material.createBlockData();
         if (blockData instanceof Waterlogged) {
             Waterlogged waterloggedData = (Waterlogged) blockData;
@@ -103,7 +100,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                 long seed = (long) (tntLoc.getX() * tntLoc.getY() * tntLoc.getZ() + (System.currentTimeMillis() >> 12));
                 int random = new Random(seed).nextInt(100);
                 if (random < 50)
-                    continue;   // Medium merely spawns half the particles/cobwebs
+                    continue; // Medium merely spawns half the particles/cobwebs
             }
 
             // is the TNT within the view distance (rendered world) of the player?
@@ -147,7 +144,6 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         }
     }
 
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
         Entity tnt = e.getEntity();
@@ -165,7 +161,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             if (setting == null || setting == PlayerConfig.TNTSetting.OFF)
                 continue;
 
-            // is the TNT within the view distance (rendered world) of the player, yet further than TracerMinDistance blocks?
+            // is the TNT within the view distance (rendered world) of the player, yet
+            // further than TracerMinDistance blocks?
             double distance = p.getLocation().distanceSquared(tnt.getLocation());
             if (distance >= maxDistSquared || distance < TracerMinDistanceSqrd)
                 return;
@@ -188,13 +185,14 @@ public class TNTTracers extends BukkitRunnable implements Listener {
                     break;
                 case BLOCKS:
                 default:
-                    // then make a glowstone to look like the explosion, place it a little later so it isn't right in the middle of the volley
+                    // then make a glowstone to look like the explosion, place it a little later so
+                    // it isn't right in the middle of the volley
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            fp.sendBlockChange(loc, TracerExplosionBlockData);
+                            fp.sendBlockChange(loc, ExplosionBlockData);
                         }
-                    }.runTaskLater(MovecraftCombat.getInstance(),TracerExplosionDelayTicks);
+                    }.runTaskLater(MovecraftCombat.getInstance(), TracerExplosionDelayTicks);
                     // then remove it
                     new BukkitRunnable() {
                         @Override
