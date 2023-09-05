@@ -46,7 +46,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         TracerMinDistanceSqrd = config.getLong("TracerMinDistance", 60);
         TracerMinDistanceSqrd *= TracerMinDistanceSqrd;
         TracerDelayTicks = config.getLong("TracerDelayTicks", 5);
-        TracerExplosionDelayTicks = config.getLong("TracerExplosionDelayTicks", 20);
+        TracerExplosionDelayTicks = config.getLong("TracerExplosionDelayTicks", 5);
         TracerParticle = Particle.valueOf(config.getString("TracerParticles", "FIREWORKS_SPARK"));
         ExplosionParticle = Particle.valueOf(config.getString("ExplosionParticles", "VILLAGER_ANGRY"));
         TracerBlockData = createNonWaterLogged(Material.valueOf(config.getString("TracerBlock", "COBWEB")));
