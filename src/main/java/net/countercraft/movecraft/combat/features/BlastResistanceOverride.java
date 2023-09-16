@@ -18,6 +18,7 @@ import net.countercraft.movecraft.util.Tags;
 
 public class BlastResistanceOverride {
     public static Map<Material, Float> BlastResistanceOverride = null;
+    private static BlastResistanceNMS nmsInterface;
 
     public static void load(@NotNull FileConfiguration config) {
         if (!config.contains("BlastResistanceOverride"))
@@ -44,23 +45,12 @@ public class BlastResistanceOverride {
                 BlastResistanceOverride.put(m, value);
             }
         }
+
+        nmsInterface = new BlastResistanceNMS_V1(); // TODO!
     }
 
     public static boolean setBlastResistance(Material m, float resistance) {
-        try {
-            String packageName = Bukkit.getServer().getClass().getPackage().getName();
-            String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-            Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
-            Method method = clazz.getMethod("getBlock", Material.class);
-            Object block = method.invoke(null, m);
-            Field field = FieldUtils.getField(block.getClass(), "durability", true);
-            FieldUtils.writeField(field, block, resistance);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                | SecurityException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        return nmsInterface.setBlastResistance(m, resistance);
     }
 
     public static boolean revertToVanilla(Material m) {
@@ -69,13 +59,40 @@ public class BlastResistanceOverride {
 
     public static void enable() {
         for (var entry : BlastResistanceOverride.entrySet()) {
-            setBlastResistance(entry.getKey(), entry.getValue());
+            if (!setBlastResistance(entry.getKey(), entry.getValue()))
+                MovecraftCombat.getInstance().getLogger()
+                        .warning("Unable to set " + entry.getKey().name() + ": " + entry.getValue());
         }
     }
 
     public static void disable() {
         for (Material m : BlastResistanceOverride.keySet()) {
-            revertToVanilla(m);
+            if (!revertToVanilla(m))
+                MovecraftCombat.getInstance().getLogger().warning("Unable to reset " + m.name());
+        }
+    }
+
+    private static interface BlastResistanceNMS {
+        public boolean setBlastResistance(Material m, float resistance);
+    }
+
+    private static class BlastResistanceNMS_V1 implements BlastResistanceNMS {
+        public boolean setBlastResistance(Material m, float resistance) {
+            try {
+                String packageName = Bukkit.getServer().getClass().getPackage().getName();
+                String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+                Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
+                Method method = clazz.getMethod("getBlock", Material.class);
+                Object block = method.invoke(null, m);
+                Field field = FieldUtils.getField(block.getClass(), "durability", true);
+                FieldUtils.writeField(field, block, resistance);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException
+                    | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
         }
     }
 }
