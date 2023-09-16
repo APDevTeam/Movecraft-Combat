@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,13 +50,13 @@ public class BlastResistanceOverride {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         int major_version = Integer.parseInt(version.split("_")[1]);
+        MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS " + major_version);
         if (major_version < 17) {
             nmsInterface = new BlastResistanceNMS_V1();
-            MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS v1");
-        }
-        else {
+        } else if (major_version == 20) {
+            nmsInterface = new BlastResistanceNMS_v1_20();
+        } else {
             nmsInterface = new BlastResistanceNMS_V2();
-            MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS v2");
         }
     }
 
@@ -82,20 +83,34 @@ public class BlastResistanceOverride {
         }
     }
 
-    private static interface BlastResistanceNMS {
-        public boolean setBlastResistance(Material m, float resistance);
+    private static class BlastResistanceNMS {
+        public boolean setBlastResistance(Material m, float resistance) {
+            throw new NotImplementedException();
+        }
+
+        protected static Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException {
+            String packageName = Bukkit.getServer().getClass().getPackage().getName();
+            String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+            return Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
+        }
+
+        protected static Object getBlockClass(Class<?> magicNumbers, Material m)
+                throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            Method method = magicNumbers.getMethod("getBlock", Material.class);
+            return method.invoke(null, m);
+        }
+
+        protected static void writeField(Object block, String fieldName, float resistance) throws IllegalAccessException {
+            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
+            FieldUtils.writeField(field, block, resistance);
+        }
     }
 
-    private static class BlastResistanceNMS_V1 implements BlastResistanceNMS {
+    private static class BlastResistanceNMS_V1 extends BlastResistanceNMS {
         public boolean setBlastResistance(Material m, float resistance) {
             try {
-                String packageName = Bukkit.getServer().getClass().getPackage().getName();
-                String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-                Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
-                Method method = clazz.getMethod("getBlock", Material.class);
-                Object block = method.invoke(null, m);
-                Field field = FieldUtils.getField(block.getClass(), "durability", true);
-                FieldUtils.writeField(field, block, resistance);
+                Object block = getBlockClass(getCraftMagicNumbersClass(), m);
+                writeField(block, "durability", resistance);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
                     | SecurityException | ClassNotFoundException e) {
@@ -106,16 +121,26 @@ public class BlastResistanceOverride {
         }
     }
 
-    private static class BlastResistanceNMS_V2 implements BlastResistanceNMS {
+    private static class BlastResistanceNMS_V2 extends BlastResistanceNMS {
         public boolean setBlastResistance(Material m, float resistance) {
             try {
-                String packageName = Bukkit.getServer().getClass().getPackage().getName();
-                String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-                Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
-                Method method = clazz.getMethod("getBlock", Material.class);
-                Object block = method.invoke(null, m);
-                Field field = FieldUtils.getField(block.getClass(), "aH", true); // obfuscated explosionResistance
-                FieldUtils.writeField(field, block, resistance);
+                Object block = getBlockClass(getCraftMagicNumbersClass(), m);
+                writeField(block, "aH", resistance); // obfuscated explosionResistance
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException
+                    | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private static class BlastResistanceNMS_v1_20 extends BlastResistanceNMS {
+        public boolean setBlastResistance(Material m, float resistance) {
+            try {
+                Object block = getBlockClass(getCraftMagicNumbersClass(), m);
+                writeField(block, "aF", resistance); // obfuscated explosionResistance
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
                     | SecurityException | ClassNotFoundException e) {
