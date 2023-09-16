@@ -46,7 +46,17 @@ public class BlastResistanceOverride {
             }
         }
 
-        nmsInterface = new BlastResistanceNMS_V1(); // TODO!
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        int major_version = Integer.parseInt(version.split("_")[1]);
+        if (major_version < 17) {
+            nmsInterface = new BlastResistanceNMS_V1();
+            MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS v1");
+        }
+        else {
+            nmsInterface = new BlastResistanceNMS_V2();
+            MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS v2");
+        }
     }
 
     public static boolean setBlastResistance(Material m, float resistance) {
@@ -85,6 +95,26 @@ public class BlastResistanceOverride {
                 Method method = clazz.getMethod("getBlock", Material.class);
                 Object block = method.invoke(null, m);
                 Field field = FieldUtils.getField(block.getClass(), "durability", true);
+                FieldUtils.writeField(field, block, resistance);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                    | NoSuchMethodException
+                    | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private static class BlastResistanceNMS_V2 implements BlastResistanceNMS {
+        public boolean setBlastResistance(Material m, float resistance) {
+            try {
+                String packageName = Bukkit.getServer().getClass().getPackage().getName();
+                String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+                Class<?> clazz = Class.forName("org.bukkit.craftbukkit." + version + ".util.CraftMagicNumbers");
+                Method method = clazz.getMethod("getBlock", Material.class);
+                Object block = method.invoke(null, m);
+                Field field = FieldUtils.getField(block.getClass(), "aH", true); // obfuscated explosionResistance
                 FieldUtils.writeField(field, block, resistance);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
