@@ -50,13 +50,12 @@ public class BlastResistanceOverride {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
         int major_version = Integer.parseInt(version.split("_")[1]);
-        MovecraftCombat.getInstance().getLogger().info("Loaded BlastResistanceOverride NMS " + major_version);
         if (major_version < 17) {
-            nmsInterface = new BlastResistanceNMS_V1();
+            nmsInterface = new BlastResistanceNMS_V1(); // Tested on 1.14.4 and 1.16.5
         } else if (major_version == 20) {
-            nmsInterface = new BlastResistanceNMS_v1_20();
+            nmsInterface = new BlastResistanceNMS_v1_20(); // Tested on 1.20.1
         } else {
-            nmsInterface = new BlastResistanceNMS_V2();
+            nmsInterface = new BlastResistanceNMS_V2(); // Tested on 1.19.4 and 1.18.2
         }
     }
 
@@ -100,7 +99,8 @@ public class BlastResistanceOverride {
             return method.invoke(null, m);
         }
 
-        protected static void writeField(Object block, String fieldName, float resistance) throws IllegalAccessException {
+        protected static void writeField(Object block, String fieldName, float resistance)
+                throws IllegalAccessException {
             Field field = FieldUtils.getField(block.getClass(), fieldName, true);
             FieldUtils.writeField(field, block, resistance);
         }
