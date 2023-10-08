@@ -72,6 +72,8 @@ public final class MovecraftCombat extends JavaPlugin {
         CombatRelease.load(getConfig());
 
         Directors.load(getConfig());
+        CannonDirectors.load(getConfig());
+        AADirectors.load(getConfig());
 
         MovementTracers.load(getConfig());
         TNTTracers.load(getConfig());
