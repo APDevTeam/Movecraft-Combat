@@ -5,7 +5,7 @@ Locale: "en" # Language file to load, currently the plugin comes with en and no,
 
 # AA Directors
 AADirectorDistance: 50 # Max range at which fireballs will be redirected
-AADirectorNodeDistance: # See node directors
+AADirectorNodeDistance: 3 # See node directors
 AADirectorRange: 120 # Max range at which it will direct to a block vs in the general direction
 
 # Cannon Directors

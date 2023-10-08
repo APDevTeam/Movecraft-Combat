@@ -1,25 +1,19 @@
 package net.countercraft.movecraft.combat.features.directors;
 
-import com.google.common.collect.HashBiMap;
-import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.util.Tags;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,29 +62,23 @@ public class Directors extends BukkitRunnable {
 
     }
 
-    public DirectorData addDirector(Player player, PlayerCraft craft, String line1, String line2, String line3) {
+    public void addDirector(Player player, PlayerCraft craft, Set<String> selectedLines) {
         if (directors.containsValue(player)) directors.remove(player);
-        List<String> selectedLines = new ArrayList<>();
-        selectedLines.add(line1);
-        selectedLines.add(line2);
-        selectedLines.add(line3);
-        if (line1.isBlank() && line2.isBlank() && line3.isBlank()) selectedLines.clear();
         DirectorData data = new DirectorData(player, craft, selectedLines);
         directors.put(player, data);
-        System.out.println("New director added: " + directors.get(player).getSelectedSigns());
-        System.out.println("Director name: " + directors.get(player).getPlayer());
-        return data;
     }
 
-    public HashSet<DirectorData> getDirectorDataSet(PlayerCraft craft) {
+    @NotNull
+    public HashSet<DirectorData> getCraftDirectors(@NotNull PlayerCraft craft) {
         HashSet<DirectorData> directorDataSet = new HashSet<>();
-        for (DirectorData data : directors.values()) {
-            if (data.getCraft() == craft) directorDataSet.add(data);
+        for (DirectorData directorData : directors.values()) {
+            if (directorData.getCraft() == craft) directorDataSet.add(directorData);
         }
         return directorDataSet;
     }
 
-    public boolean hasDirector(PlayerCraft craft) {
+
+    public boolean hasDirector(@Nullable PlayerCraft craft) {
         if (craft == null) return false;
         for (DirectorData data : directors.values()) {
             if (data.getCraft() == craft) return true;
@@ -98,12 +86,46 @@ public class Directors extends BukkitRunnable {
         return false;
     }
 
-    public boolean isNodesShared(DirectorData director) {
-        PlayerCraft craft = director.getCraft();
-        List<String> selectedSigns = director.getSelectedSigns();
-        return directors.values().stream()
-                .filter(data -> data != director && data.getCraft() == craft)
-                .anyMatch(data -> data.getSelectedSigns().stream().anyMatch(selectedSigns::contains));
+    //This ensures that no two director nodes are shared between the director players.
+    public boolean isNodesShared(Set<String> selectedStrings, PlayerCraft craft, Player player) {
+        for (DirectorData directorData : getCraftDirectors(craft)) {
+            if (directorData.getPlayer() == player) continue;
+            if (selectedStrings.isEmpty()) return false;
+            Set<String> stringsCopy = new HashSet<>(selectedStrings);
+            stringsCopy.retainAll(directorData.getSelectedNodes());
+            if (!stringsCopy.isEmpty()) return true;
+        }
+        return false;
+    }
+
+    @NotNull
+    public Set<String> processSign(Sign sign) {
+        String[] lines = sign.getLines();
+        Set<String> selectedLines = new HashSet<>();
+
+        for (int i = 1; i < lines.length ; i++) {
+            String line = lines[i].trim();
+            if (!line.isBlank()) selectedLines.add(line);
+        }
+
+        return selectedLines;
+    }
+
+    @Nullable
+    public Player getClosestDirectorFromProjectile(
+            Set<DirectorData> directorDataSet,
+            Vector projectile,
+            int nodeDistance
+    ) {
+        for (DirectorData directorData : directorDataSet) {
+            for (Vector signLocation : directorData.getSignLocations()) {
+                // Calculate squared distance.
+                if (signLocation.distanceSquared(projectile) <= (nodeDistance * nodeDistance)) {
+                    return directorData.getPlayer();
+                }
+            }
+        }
+        return null;
     }
 
     public boolean isDirector(@NotNull Player player) {
@@ -114,37 +136,9 @@ public class Directors extends BukkitRunnable {
         directors.remove(player);
     }
 
+    //This clears all DirectorData that might be already assigned to the player.
     public void clearDirector(@NotNull Player player) {
         for (var instance : instances)
             instance.removeDirector(player);
-    }
-
-    public HashSet<Location> getLocations(DirectorData data) {
-        if (data.getSelectedSigns().isEmpty() || data.getCraft() == null) {
-            return null;
-        }
-        PlayerCraft craft = data.getCraft();
-
-        HashSet<Location> locations = new HashSet<>();
-        for (MovecraftLocation location : craft.getHitBox()) {
-            Block block = craft.getWorld().getBlockAt(location.getX(), location.getY(), location.getZ());
-            if (!(block.getState() instanceof Sign))
-                continue;
-
-            Sign sign = (Sign) block.getState();
-
-            if (!sign.getLine(0).equalsIgnoreCase("subcraft rotate")) {
-                continue;
-            }
-            if (sign.getLine(3).isBlank()) {
-                System.out.println("Sign is blank");
-                continue;
-            }
-            if (data.getSelectedSigns().contains(sign.getLine(3))) {
-                System.out.println("Sign found.");
-                locations.add(block.getLocation());
-            }
-        }
-        return locations;
     }
 }

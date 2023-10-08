@@ -11,7 +11,6 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -29,6 +28,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
 
@@ -80,34 +80,23 @@ public class AADirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft) || !hasDirector((PlayerCraft) c))
             return;
 
-        HashSet<DirectorData> directorDataSet = getDirectorDataSet((PlayerCraft) c);
-        Player player = null;
+        HashSet<DirectorData> craftDirectors = getCraftDirectors((PlayerCraft) c);
+        Player player;
         Player dominantPlayer = null;
 
-        for (DirectorData data : directorDataSet) {
-            if (data.getSelectedSigns().isEmpty() || getLocations(data).isEmpty()) {
+        for (DirectorData data : craftDirectors) {
+            if (data.getSelectedNodes().isEmpty() || data.getSignLocations().isEmpty()) {
                 dominantPlayer = data.getPlayer();
             }
         }
         if (dominantPlayer != null) {
             player = dominantPlayer;
         } else {
-            for (DirectorData data : directorDataSet) {
-                HashSet<Location> locations = getLocations(data);
-                for (Location location : locations) {
-                    int distX = Math.abs(location.getBlockX() - fireball.getLocation().getBlockX());
-                    int distY = Math.abs(location.getBlockY() - fireball.getLocation().getBlockY());
-                    int distZ = Math.abs(location.getBlockZ() - fireball.getLocation().getBlockZ());
-
-                    if (distX <= AADirectorNodeDistance && distY <= AADirectorNodeDistance && distZ <= AADirectorNodeDistance) {
-                        player = data.getPlayer();
-                        break;
-                    }
-                }
-                if (player != null) {
-                    break;
-                }
-            }
+            player = getClosestDirectorFromProjectile(
+                    craftDirectors,
+                    fireball.getLocation().toVector(),
+                    AADirectorNodeDistance
+            );
         }
 
         if (player == null || player.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
@@ -117,7 +106,7 @@ public class AADirectors extends Directors implements Listener {
         int distX = Math.abs(midpoint.getX() - fireball.getLocation().getBlockX());
         int distY = Math.abs(midpoint.getY() - fireball.getLocation().getBlockY());
         int distZ = Math.abs(midpoint.getZ() - fireball.getLocation().getBlockZ());
-        if (distX >= AADirectorDistance || distY >= AADirectorDistance || distZ >= AADirectorDistance)
+        if (distX*distX + distY*distY + distZ*distZ >= AADirectorDistance*AADirectorDistance)
             return;
 
         fireball.setShooter(player);
@@ -210,13 +199,14 @@ public class AADirectors extends Directors implements Listener {
             return;
         }
 
-        clearDirector(p);
-        DirectorData data = addDirector(p, foundCraft, sign.getLine(1), sign.getLine(2), sign.getLine(3));
-
-        if (isNodesShared(data)) {
-            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Must Not Share Nodes"));
+        Set<String> selectedLines = processSign(sign);
+        if (isNodesShared(selectedLines, foundCraft, p)) {
+            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Must Not Share Nodes"));
             return;
         }
+
+        clearDirector(p);
+        addDirector(p, foundCraft, selectedLines);
 
         p.sendMessage(I18nSupport.getInternationalisedString("AADirector - Directing"));
     }

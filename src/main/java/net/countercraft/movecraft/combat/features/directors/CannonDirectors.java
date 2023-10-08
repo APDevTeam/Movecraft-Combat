@@ -20,6 +20,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.TNT;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -34,9 +35,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
@@ -49,7 +50,6 @@ public class CannonDirectors extends Directors implements Listener {
     public static int CannonDirectorRange = 120;
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastCheck = 0;
-
 
     public CannonDirectors() {
         super();
@@ -103,47 +103,33 @@ public class CannonDirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft))
             return;
 
-        HashSet<DirectorData> directorDataSet = getDirectorDataSet((PlayerCraft) c);
-        Player player = null;
-        Player dominantPlayer = null;
-        // Adjust the TNT location based on its velocity to make it closer to the firing point.
-        int ticks = 1;
-        Location correctedLocation = tnt.getLocation().clone().add(tnt.getVelocity().clone().multiply(-ticks));
+        // Automatically calibrate the TNT location based on its velocity to make it closer to the firing point.
+        Location correctedLocation = tnt.getLocation().clone().add(tnt.getVelocity().clone().multiply(-1.2));
+        Vector correctedPosition = correctedLocation.toVector();
 
-        for (DirectorData data : directorDataSet) {
-            if (data.getSelectedSigns().isEmpty() || getLocations(data).isEmpty()) {
-                dominantPlayer = data.getPlayer();
+        HashSet<DirectorData> craftDirectors = getCraftDirectors((PlayerCraft) c);
+        Player player = null;
+        for (DirectorData data : craftDirectors) {
+            if (data.getSelectedNodes().isEmpty()) {
+                player = data.getPlayer();
             }
         }
-        if (dominantPlayer != null) {
-            player = dominantPlayer;
-        } else {
-            for (DirectorData data : directorDataSet) {
-                HashSet<Location> locations = getLocations(data);
-                for (Location location : locations) {
-                    int distX = Math.abs(location.getBlockX() - correctedLocation.getBlockX());
-                    int distY = Math.abs(location.getBlockY() - correctedLocation.getBlockY());
-                    int distZ = Math.abs(location.getBlockZ() - correctedLocation.getBlockZ());
-
-                    if (distX <= CannonDirectorNodeDistance && distY <= CannonDirectorNodeDistance && distZ <= CannonDirectorNodeDistance) {
-                        player = data.getPlayer();
-                        break;
-                    }
-                }
-                if (player != null) {
-                    break;
-                }
-            }
+        if (player == null) {
+            player = getClosestDirectorFromProjectile(
+                    craftDirectors,
+                    correctedPosition,
+                    CannonDirectorNodeDistance
+            );
         }
 
         if (player == null || player.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
 
         MovecraftLocation midpoint = c.getHitBox().getMidPoint();
-        int distX = Math.abs(midpoint.getX() - correctedLocation.getBlockX());
-        int distY = Math.abs(midpoint.getY() - correctedLocation.getBlockY());
-        int distZ = Math.abs(midpoint.getZ() - correctedLocation.getBlockZ());
-        if (distX >= CannonDirectorDistance || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
+        int distX = Math.abs(midpoint.getX() - correctedPosition.getBlockX());
+        int distY = Math.abs(midpoint.getY() - correctedPosition.getBlockY());
+        int distZ = Math.abs(midpoint.getZ() - correctedPosition.getBlockZ());
+        if (distX*distX + distY*distY + distZ*distZ >= CannonDirectorDistance*CannonDirectorDistance)
             return;
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
@@ -243,13 +229,14 @@ public class CannonDirectors extends Directors implements Listener {
             return;
         }
 
-        clearDirector(p);
-        DirectorData data = addDirector(p, foundCraft, sign.getLine(1), sign.getLine(2), sign.getLine(3));
-
-        if (isNodesShared(data)) {
+        Set<String> selectedLines = processSign(sign);
+        if (isNodesShared(selectedLines, foundCraft, p)) {
             p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Must Not Share Nodes"));
             return;
         }
+
+        clearDirector(p);
+        addDirector(p, foundCraft, selectedLines);
 
         p.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
     }
