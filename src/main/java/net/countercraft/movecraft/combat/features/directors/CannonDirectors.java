@@ -157,7 +157,6 @@ public class CannonDirectors extends Directors implements Listener {
         return c;
     }
 
-
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public final void onSignClick(@NotNull PlayerInteractEvent e) {
         var action = e.getAction();
@@ -175,7 +174,7 @@ public class CannonDirectors extends Directors implements Listener {
         if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
             return;
 
-
+        e.setCancelled(true);
         PlayerCraft foundCraft = null;
         for (Craft c : CraftManager.getInstance()) {
             if (!(c instanceof PlayerCraft))
@@ -203,7 +202,6 @@ public class CannonDirectors extends Directors implements Listener {
 
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - No Longer Directing"));
-            e.setCancelled(true);
             return;
         }
 

@@ -128,7 +128,6 @@ public class AADirectors extends Directors implements Listener {
         fireball.setDirection(fireballVector);
     }
 
-
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onSignClick(@NotNull PlayerInteractEvent e) {
         var action = e.getAction();
@@ -146,6 +145,7 @@ public class AADirectors extends Directors implements Listener {
         if (!ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase(HEADER))
             return;
 
+        e.setCancelled(true);
         PlayerCraft foundCraft = null;
         for (Craft c : CraftManager.getInstance()) {
             if (!(c instanceof PlayerCraft))
@@ -173,7 +173,6 @@ public class AADirectors extends Directors implements Listener {
 
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Longer Directing"));
-            e.setCancelled(true);
             return;
         }
 
