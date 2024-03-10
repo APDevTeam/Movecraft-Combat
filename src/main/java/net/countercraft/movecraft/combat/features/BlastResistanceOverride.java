@@ -52,10 +52,8 @@ public class BlastResistanceOverride {
         int major_version = Integer.parseInt(version.split("_")[1]);
         if (major_version < 17) {
             nmsInterface = new BlastResistanceNMS_V1(); // Tested on 1.14.4 and 1.16.5
-        } else if (major_version == 20) {
-            nmsInterface = new BlastResistanceNMS_v1_20(); // Tested on 1.20.1
         } else {
-            nmsInterface = new BlastResistanceNMS_V2(); // Tested on 1.19.4 and 1.18.2
+            nmsInterface = new BlastResistanceNMS_V2(); // Tested on 1.18.2, 1.19.4, and 1.20.4
         }
     }
 
@@ -126,21 +124,6 @@ public class BlastResistanceOverride {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
                 writeField(block, "aH", resistance); // obfuscated explosionResistance
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                    | NoSuchMethodException
-                    | SecurityException | ClassNotFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-            return true;
-        }
-    }
-
-    private static class BlastResistanceNMS_v1_20 extends BlastResistanceNMS {
-        public boolean setBlastResistance(Material m, float resistance) {
-            try {
-                Object block = getBlockClass(getCraftMagicNumbersClass(), m);
-                writeField(block, "aF", resistance); // obfuscated explosionResistance
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
                     | SecurityException | ClassNotFoundException e) {
