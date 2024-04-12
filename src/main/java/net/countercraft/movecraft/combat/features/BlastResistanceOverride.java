@@ -33,12 +33,10 @@ public class BlastResistanceOverride {
             EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
             for (Material m : materials) {
                 float value;
-                if (entry.getValue() instanceof Float) {
-                    value = (float) entry.getValue();
-                } else if (entry.getValue() instanceof Integer) {
-                    int intVal = (int) entry.getValue();
-                    value = (float) intVal;
-                } else {
+                String valStr = entry.getValue().toString();
+                try {
+                    value = Float.parseFloat(valStr);
+                } catch(NumberFormatException | NullPointerException ex) {
                     MovecraftCombat.getInstance().getLogger()
                             .warning("Unable to load " + m.name() + ": " + entry.getValue());
                     continue;
