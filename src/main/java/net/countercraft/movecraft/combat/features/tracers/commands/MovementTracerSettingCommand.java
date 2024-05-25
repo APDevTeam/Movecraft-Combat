@@ -35,7 +35,7 @@ public class MovementTracerSettingCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getTNTSetting(player));
+            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getMovementSetting(player));
             return true;
         }
         if (args.length != 1) {

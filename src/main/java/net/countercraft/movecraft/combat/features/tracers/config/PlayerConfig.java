@@ -1,38 +1,39 @@
 package net.countercraft.movecraft.combat.features.tracers.config;
 
-import net.countercraft.movecraft.combat.MovecraftCombat;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.UUID;
 
 public class PlayerConfig {
-    private final YamlConfiguration config;
-    private final UUID owner;
+    @Nullable
+    private UUID owner = null;
+    @NotNull
     private TNTSetting tntSetting = TNTSetting.DEFAULT;
+    @NotNull
     private TNTMode tntMode = TNTMode.DEFAULT;
+    @NotNull
     private MovementSetting movementSetting = MovementSetting.DEFAULT;
 
+    public PlayerConfig() {
+    }
 
     public PlayerConfig(UUID owner) {
-        File configFile = new File(
-                MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/userdata/" + owner + ".yml"
-        );
-        config = YamlConfiguration.loadConfiguration(configFile);
         this.owner = owner;
     }
 
-
+    @Nullable
     public UUID getOwner() {
         return owner;
     }
 
+    @NotNull
     public TNTSetting getTNTSetting() {
         return tntSetting;
     }
 
+    @NotNull
     public void setTNTSetting(@NotNull String setting) throws IllegalArgumentException {
         switch (setting) {
             case "OFF":
@@ -52,10 +53,12 @@ public class PlayerConfig {
         }
     }
 
+    @NotNull
     public TNTMode getTNTMode() {
         return tntMode;
     }
 
+    @NotNull
     public void setTNTMode(@NotNull String mode) throws IllegalArgumentException {
         switch (mode) {
             case "BLOCKS":
@@ -69,10 +72,12 @@ public class PlayerConfig {
         }
     }
 
+    @NotNull
     public MovementSetting getMovementSetting() {
         return movementSetting;
     }
 
+    @NotNull
     public void setMovementSetting(@NotNull String setting) throws IllegalArgumentException {
         switch (setting) {
             case "OFF":
@@ -89,79 +94,6 @@ public class PlayerConfig {
         }
     }
 
-    public void load() {
-        String temp;
-
-        temp = config.getString(TNTSetting.DATABASE_KEY);
-        if(temp != null) {
-            switch (temp) {
-                case "OFF":
-                    tntSetting = TNTSetting.OFF;
-                    break;
-                case "LOW":
-                    tntSetting = TNTSetting.LOW;
-                    break;
-                case "MEDIUM":
-                    tntSetting = TNTSetting.MEDIUM;
-                    break;
-                case "HIGH":
-                    tntSetting = TNTSetting.HIGH;
-                    break;
-                default:
-                    tntSetting = TNTSetting.DEFAULT;
-                    break;
-            }
-        }
-        else {
-            tntSetting = TNTSetting.DEFAULT;
-        }
-
-        temp = config.getString(TNTMode.DATABASE_KEY);
-        if(temp != null) {
-            switch (temp) {
-                case "BLOCKS":
-                    tntMode = TNTMode.BLOCKS;
-                    break;
-                case "PARTICLES":
-                    tntMode = TNTMode.PARTICLES;
-                    break;
-                default:
-                    tntMode = TNTMode.DEFAULT;
-                    break;
-            }
-        }
-        else {
-            tntMode = TNTMode.DEFAULT;
-        }
-
-        temp = config.getString(MovementSetting.DATABASE_KEY);
-        if(temp != null) {
-            switch (temp) {
-                case "OFF":
-                    movementSetting = MovementSetting.OFF;
-                    break;
-                case "LOW":
-                    movementSetting = MovementSetting.LOW;
-                    break;
-                case "HIGH":
-                    movementSetting = MovementSetting.HIGH;
-                    break;
-                default:
-                    movementSetting = MovementSetting.DEFAULT;
-                    break;
-            }
-        }
-        else {
-            movementSetting = MovementSetting.DEFAULT;
-        }
-    }
-
-    public void save() {
-        config.set(TNTSetting.DATABASE_KEY, tntSetting.toString());
-        config.set(TNTMode.DATABASE_KEY, tntMode.toString());
-        config.set(MovementSetting.DATABASE_KEY, movementSetting.toString());
-    }
-
     public enum TNTSetting {
         OFF,
         LOW,
@@ -169,7 +101,6 @@ public class PlayerConfig {
         HIGH;
 
         public static final TNTSetting DEFAULT = HIGH;
-        public static final String DATABASE_KEY = "setting";
 
         @Contract(pure = true)
         public @NotNull String toString() {
@@ -181,8 +112,9 @@ public class PlayerConfig {
                 case MEDIUM:
                     return "MEDIUM";
                 case HIGH:
-                default:
                     return "HIGH";
+                default:
+                    return DEFAULT.toString();
             }
         }
     }
@@ -192,7 +124,6 @@ public class PlayerConfig {
         BLOCKS;
 
         public static final TNTMode DEFAULT = BLOCKS;
-        public static final String DATABASE_KEY = "mode";
 
         @Contract(pure = true)
         public @NotNull String toString() {
@@ -202,7 +133,7 @@ public class PlayerConfig {
                 case BLOCKS:
                     return "BLOCKS";
                 default:
-                    throw new IllegalStateException("Unknown TNTMode: " + this);
+                    return DEFAULT.toString();
             }
         }
     }
@@ -213,7 +144,6 @@ public class PlayerConfig {
         HIGH;
 
         public static final MovementSetting DEFAULT = LOW;
-        public static final String DATABASE_KEY = "movementSetting";
 
         @Contract(pure = true)
         public @NotNull String toString() {
@@ -225,7 +155,7 @@ public class PlayerConfig {
                 case HIGH:
                     return "HIGH";
                 default:
-                    throw new IllegalArgumentException("Unknown movement setting: " + this);
+                    return DEFAULT.toString();
             }
         }
     }

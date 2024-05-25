@@ -9,20 +9,30 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
 public class PlayerManager implements Listener {
     private final Map<Player, PlayerConfig> cache = new WeakHashMap<>();
 
-
-    @Nullable
+    @NotNull
     public PlayerConfig.TNTSetting getTNTSetting(Player player) {
         var config = cache.get(player);
         if (config == null)
-            return null;
+            return PlayerConfig.TNTSetting.DEFAULT;
 
         return config.getTNTSetting();
     }
@@ -30,19 +40,18 @@ public class PlayerManager implements Listener {
     public void setTNTSetting(Player player, String setting) {
         var config = cache.get(player);
         if (config == null) {
-            config = new PlayerConfig(player.getUniqueId());
-            config.load();
+            config = loadPlayer(player);
             cache.put(player, config);
         }
 
         config.setTNTSetting(setting);
     }
 
-    @Nullable
+    @NotNull
     public PlayerConfig.TNTMode getTNTMode(Player player) {
         var config = cache.get(player);
         if (config == null)
-            return null;
+            return PlayerConfig.TNTMode.DEFAULT;
 
         return config.getTNTMode();
     }
@@ -50,19 +59,18 @@ public class PlayerManager implements Listener {
     public void setTNTMode(Player player, String mode) {
         var config = cache.get(player);
         if (config == null) {
-            config = new PlayerConfig(player.getUniqueId());
-            config.load();
+            config = loadPlayer(player);
             cache.put(player, config);
         }
 
         config.setTNTMode(mode);
     }
 
-    @Nullable
+    @NotNull
     public PlayerConfig.MovementSetting getMovementSetting(Player player) {
         var config = cache.get(player);
         if (config == null)
-            return null;
+            return PlayerConfig.MovementSetting.DEFAULT;
 
         return config.getMovementSetting();
     }
@@ -70,30 +78,67 @@ public class PlayerManager implements Listener {
     public void setMovementSetting(Player player, String setting) {
         var config = cache.get(player);
         if (config == null) {
-            config = new PlayerConfig(player.getUniqueId());
-            config.load();
+            config = loadPlayer(player);
             cache.put(player, config);
         }
 
         config.setMovementSetting(setting);
     }
 
-
     private void savePlayer(Player player) {
         var config = cache.get(player);
         if (config == null)
             return;
 
-        config.save();
+        Gson gson = buildGson();
+        String str = null;
+        try {
+            str = gson.toJson(config);
+        } catch (JsonIOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        File file = getFile(player.getUniqueId());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(str);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
     }
 
     @NotNull
     private PlayerConfig loadPlayer(@NotNull Player player) {
-        var config = new PlayerConfig(player.getUniqueId());
-        config.load();
+        File file = getFile(player.getUniqueId());
+        if (!file.exists() || !file.isFile() || !file.canRead())
+            return new PlayerConfig(player.getUniqueId());
+
+        Gson gson = buildGson();
+        PlayerConfig config = null;
+        try {
+            config = gson.fromJson(new FileReader(file), new TypeToken<PlayerConfig>() {
+            }.getType());
+        } catch (FileNotFoundException ignored) {
+            return new PlayerConfig(player.getUniqueId());
+        } catch (JsonSyntaxException | JsonIOException e) {
+            e.printStackTrace();
+        }
         return config;
     }
 
+    private File getFile(UUID owner) {
+        return new File(
+                MovecraftCombat.getInstance().getDataFolder().getAbsolutePath() + "/userdata/" + owner + ".json");
+    }
+
+    private static Gson buildGson() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.serializeNulls();
+        return builder.create();
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(@NotNull PlayerJoinEvent e) {
