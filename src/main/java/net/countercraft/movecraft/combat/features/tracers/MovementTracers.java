@@ -92,7 +92,7 @@ public class MovementTracers implements Listener {
             if (p.getLocation().distanceSquared(center) > maxDistSquared)
                 continue;
             PlayerConfig.MovementSetting setting = manager.getMovementSetting(p);
-            if (setting == null || setting == PlayerConfig.MovementSetting.OFF)
+            if (setting == PlayerConfig.MovementSetting.OFF)
                 continue;
 
             // Display specific locations

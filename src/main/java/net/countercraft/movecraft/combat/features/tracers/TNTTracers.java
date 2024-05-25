@@ -94,7 +94,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         final Location tntLoc = tnt.getLocation();
         for (Player p : w.getPlayers()) {
             PlayerConfig.TNTSetting setting = manager.getTNTSetting(p);
-            if (setting == null || setting == PlayerConfig.TNTSetting.OFF || setting == PlayerConfig.TNTSetting.LOW)
+            if (setting == PlayerConfig.TNTSetting.OFF || setting == PlayerConfig.TNTSetting.LOW)
                 continue;
             else if (setting == PlayerConfig.TNTSetting.MEDIUM) {
                 long seed = (long) (tntLoc.getX() * tntLoc.getY() * tntLoc.getZ() + (System.currentTimeMillis() >> 12));
@@ -109,9 +109,6 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
             final Player fp = p;
             PlayerConfig.TNTMode mode = manager.getTNTMode(p);
-            if (mode == null)
-                return;
-
             switch (mode) {
                 case PARTICLES:
                     new BukkitRunnable() {
@@ -158,7 +155,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
 
         for (Player p : e.getEntity().getWorld().getPlayers()) {
             PlayerConfig.TNTSetting setting = manager.getTNTSetting(p);
-            if (setting == null || setting == PlayerConfig.TNTSetting.OFF)
+            if (setting == PlayerConfig.TNTSetting.OFF)
                 continue;
 
             // is the TNT within the view distance (rendered world) of the player, yet
@@ -171,9 +168,6 @@ public class TNTTracers extends BukkitRunnable implements Listener {
             final Player fp = p;
 
             PlayerConfig.TNTMode mode = manager.getTNTMode(p);
-            if (mode == null)
-                continue;
-
             switch (mode) {
                 case PARTICLES:
                     new BukkitRunnable() {
