@@ -1,12 +1,13 @@
 name: Movecraft-Combat
 version: ${project.version}
 main: net.countercraft.movecraft.combat.MovecraftCombat
-api-version: 1.13
+api-version: 1.18
 prefix: Movecraft-Combat
 depend: [Movecraft]
-authors: [TylerS1066, cccm5, a4bde, eirik1996, BaccaYarro]
+author: TylerS1066
+contributors: [cccm5, a4bde, eirik1996, BaccaYarro]
 description: Combat features of Movecraft
-website: https://github.com/TylerS1066/Movecraft-Combat
+website: https://github.com/APDevTeam/Movecraft-Combat
 commands:
   tnttracersetting:
     description: Configure tnt tracer settings

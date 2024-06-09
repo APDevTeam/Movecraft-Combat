@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import net.countercraft.movecraft.WorldHandler;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.util.Tags;
 
@@ -45,13 +46,12 @@ public class BlastResistanceOverride {
             }
         }
 
-        String packageName = Bukkit.getServer().getClass().getPackage().getName();
-        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-        int major_version = Integer.parseInt(version.split("_")[1]);
-        if (major_version < 17) {
-            nmsInterface = new BlastResistanceNMS_V1(); // Tested on 1.14.4 and 1.16.5
+        String minecraftVersion = Bukkit.getServer().getMinecraftVersion(); // TODO: Switch to the worldhandler
+        int major_version = Integer.parseInt(minecraftVersion.substring(minecraftVersion.indexOf('.') + 1, minecraftVersion.lastIndexOf('.')));
+        if (major_version < 20) {
+            nmsInterface = new BlastResistanceNMS_SpigotMappings(); // Tested on 1.18.2 and 1.19.4
         } else {
-            nmsInterface = new BlastResistanceNMS_V2(); // Tested on 1.18.2, 1.19.4, and 1.20.4
+            nmsInterface = new BlastResistanceNMS_MojangMappings(); // Tested on 1.20.6
         }
     }
 
@@ -83,6 +83,14 @@ public class BlastResistanceOverride {
             throw new NotImplementedException();
         }
 
+        protected static void writeField(Object block, String fieldName, float resistance)
+                throws IllegalAccessException {
+            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
+            FieldUtils.writeField(field, block, resistance);
+        }
+    }
+
+    private static class BlastResistanceNMS_SpigotMappings extends BlastResistanceNMS {
         protected static Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException {
             String packageName = Bukkit.getServer().getClass().getPackage().getName();
             String version = packageName.substring(packageName.lastIndexOf('.') + 1);
@@ -95,18 +103,10 @@ public class BlastResistanceOverride {
             return method.invoke(null, m);
         }
 
-        protected static void writeField(Object block, String fieldName, float resistance)
-                throws IllegalAccessException {
-            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
-            FieldUtils.writeField(field, block, resistance);
-        }
-    }
-
-    private static class BlastResistanceNMS_V1 extends BlastResistanceNMS {
         public boolean setBlastResistance(Material m, float resistance) {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
-                writeField(block, "durability", resistance);
+                writeField(block, "aH", resistance); // obfuscated explosionResistance
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
                     | SecurityException | ClassNotFoundException e) {
@@ -117,11 +117,20 @@ public class BlastResistanceOverride {
         }
     }
 
-    private static class BlastResistanceNMS_V2 extends BlastResistanceNMS {
+    private static class BlastResistanceNMS_MojangMappings extends BlastResistanceNMS {
+        protected static Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException {
+            return Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".util.CraftMagicNumbers");
+        }
+
+        protected static Object getBlockClass(Class<?> magicNumbers, Material m)
+                throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            Method method = magicNumbers.getMethod("getBlock", Material.class);
+            return method.invoke(null, m);
+        }
         public boolean setBlastResistance(Material m, float resistance) {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
-                writeField(block, "aH", resistance); // obfuscated explosionResistance
+                writeField(block, "explosionResistance", resistance);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                     | NoSuchMethodException
                     | SecurityException | ClassNotFoundException e) {
