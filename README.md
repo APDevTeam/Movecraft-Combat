@@ -1,5 +1,5 @@
 # Movecraft Combat Addon
-![Combat](https://github.com/TylerS1066/Movecraft-Combat/actions/workflows/maven.yml/badge.svg)
+![Combat](https://github.com/APDevTeam/Movecraft-Combat/actions/workflows/maven.yml/badge.svg)
 [![Codebeat](https://codebeat.co/badges/8ea3227d-0125-4cd5-896f-834f66011791)](https://codebeat.co/projects/github-com-apdevteam-movecraft-combat-main)
 
 Home of the code for the following features:
@@ -23,9 +23,11 @@ The `main` branch is coded for 1.14.4 and up with Movecraft 8.x.
 The `legacy` branch is coded for 1.10.2 to 1.12.2 and Movecraft 7.x.
 
 ## Download
-Devevlopment builds can be found on the [GitHub Actions tab](https://github.com/TylerS1066/Movecraft-Combat/actions) of this repository.
+Releases can be found on the [releases tab](https://github.com/APDevTeam/Movecraft-Combat/releases).
 
-Stable builds can be found on [our SpigotMC page](https://www.spigotmc.org/resources/movecraft-combat.81574/).
+Development builds can be found on the [GitHub Actions tab](https://github.com/APDevTeam/Movecraft-Combat/actions) of this repository.
+
+Previous builds can be found on [our SpigotMC page](https://www.spigotmc.org/resources/movecraft-combat.81574/).
 
 ## Building
 This plugin requires that the user setup their GitHub token in maven to authenticate with GitHub Packages, as described in [this wiki page](https://github.com/APDevTeam/Movecraft/wiki/Documentation).
@@ -38,7 +40,7 @@ Jars are located in `/target`.
 
 
 ## Support
-[Github Issues](https://github.com/TylerS1066/Movecraft-Combat/issues)
+[Github Issues](https://github.com/APDevTeam/Movecraft-Combat/issues)
 
 [Discord](http://bit.ly/JoinAP-Dev)
 
