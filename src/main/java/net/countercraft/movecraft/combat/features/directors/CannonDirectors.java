@@ -14,11 +14,13 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.TNT;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -33,7 +35,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
@@ -42,10 +46,10 @@ public class CannonDirectors extends Directors implements Listener {
     public static final NamespacedKey ALLOW_CANNON_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_cannon_director_sign");
     private static final String HEADER = "Cannon Director";
     public static int CannonDirectorDistance = 100;
+    public static int CannonDirectorNodeDistance = 3;
     public static int CannonDirectorRange = 120;
     private final Object2DoubleOpenHashMap<TNTPrimed> tracking = new Object2DoubleOpenHashMap<>();
     private long lastCheck = 0;
-
 
     public CannonDirectors() {
         super();
@@ -57,6 +61,7 @@ public class CannonDirectors extends Directors implements Listener {
 
     public static void load(@NotNull FileConfiguration config) {
         CannonDirectorDistance = config.getInt("CannonDirectorDistance", 100);
+        CannonDirectorNodeDistance = config.getInt("CannonDirectorNodeDistance", 3);
         CannonDirectorRange = config.getInt("CannonDirectorRange", 120);
     }
 
@@ -98,16 +103,33 @@ public class CannonDirectors extends Directors implements Listener {
         if (!(c instanceof PlayerCraft))
             return;
 
-        MovecraftLocation midpoint = c.getHitBox().getMidPoint();
-        int distX = Math.abs(midpoint.getX() - tnt.getLocation().getBlockX());
-        int distY = Math.abs(midpoint.getY() - tnt.getLocation().getBlockY());
-        int distZ = Math.abs(midpoint.getZ() - tnt.getLocation().getBlockZ());
-        if (!hasDirector((PlayerCraft) c) || distX >= CannonDirectorDistance
-                || distY >= CannonDirectorDistance || distZ >= CannonDirectorDistance)
+        // Automatically calibrate the TNT location based on its velocity to make it closer to the firing point.
+        Location correctedLocation = tnt.getLocation().clone().add(tnt.getVelocity().clone().multiply(-1.2));
+        Vector correctedPosition = correctedLocation.toVector();
+
+        HashSet<DirectorData> craftDirectors = getCraftDirectors((PlayerCraft) c);
+        Player player = null;
+        for (DirectorData data : craftDirectors) {
+            if (data.getSelectedNodes().isEmpty()) {
+                player = data.getPlayer();
+            }
+        }
+        if (player == null) {
+            player = getClosestDirectorFromProjectile(
+                    craftDirectors,
+                    correctedPosition,
+                    CannonDirectorNodeDistance
+            );
+        }
+
+        if (player == null || player.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
             return;
 
-        Player p = getDirector((PlayerCraft) c);
-        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+        MovecraftLocation midpoint = c.getHitBox().getMidPoint();
+        int distX = Math.abs(midpoint.getX() - correctedPosition.getBlockX());
+        int distY = Math.abs(midpoint.getY() - correctedPosition.getBlockY());
+        int distZ = Math.abs(midpoint.getZ() - correctedPosition.getBlockZ());
+        if (distX*distX + distY*distY + distZ*distZ >= CannonDirectorDistance*CannonDirectorDistance)
             return;
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
@@ -117,10 +139,10 @@ public class CannonDirectors extends Directors implements Listener {
         double horizontalSpeed = tntVector.length();
         tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
+        Block targetBlock = DirectorUtils.getDirectorBlock(player, CannonDirectorRange);
         Vector targetVector;
         if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
-            targetVector = p.getLocation().getDirection();
+            targetVector = player.getLocation().getDirection();
         else // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
 
@@ -205,8 +227,15 @@ public class CannonDirectors extends Directors implements Listener {
             return;
         }
 
+        Set<String> selectedLines = processSign(sign);
+        if (isNodesShared(selectedLines, foundCraft, p)) {
+            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("CannonDirector - Must Not Share Nodes"));
+            return;
+        }
+
         clearDirector(p);
-        addDirector(foundCraft, p);
+        addDirector(p, foundCraft, selectedLines);
+
         p.sendMessage(I18nSupport.getInternationalisedString("CannonDirector - Directing"));
     }
 
