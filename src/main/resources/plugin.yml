@@ -1,5 +1,5 @@
 name: Movecraft-Combat
-version: ${project.version}
+version: ${projectVersion}
 main: net.countercraft.movecraft.combat.MovecraftCombat
 api-version: 1.18
 prefix: Movecraft-Combat
