@@ -1,5 +1,5 @@
 # Movecraft Combat Addon
-![Combat](https://github.com/APDevTeam/Movecraft-Combat/actions/workflows/maven.yml/badge.svg)
+![Combat](https://github.com/APDevTeam/Movecraft-Combat/actions/workflows/gradle.yml/badge.svg)
 [![Codebeat](https://codebeat.co/badges/8ea3227d-0125-4cd5-896f-834f66011791)](https://codebeat.co/projects/github-com-apdevteam-movecraft-combat-main)
 
 Home of the code for the following features:
@@ -30,14 +30,11 @@ Development builds can be found on the [GitHub Actions tab](https://github.com/A
 Previous builds can be found on [our SpigotMC page](https://www.spigotmc.org/resources/movecraft-combat.81574/).
 
 ## Building
-This plugin requires that the user setup their GitHub token in maven to authenticate with GitHub Packages, as described in [this wiki page](https://github.com/APDevTeam/Movecraft/wiki/Documentation).
-
-Then, run the following to build Movecraft-Combat through `maven`.
+Run the following to build Movecraft-Combat:
 ```
-mvn clean install
+./gradlew clean build --parallel
 ```
-Jars are located in `/target`.
-
+Jars are located in `/build/libs` directory.
 
 ## Support
 [Github Issues](https://github.com/APDevTeam/Movecraft-Combat/issues)

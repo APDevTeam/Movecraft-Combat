@@ -56,7 +56,7 @@ public class TNTTracerSettingCommand implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String @NotNull [] strings) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String[] strings) {
         final List<String> tabCompletions = new ArrayList<>();
         if (strings.length <= 1) {
             tabCompletions.add("OFF");
