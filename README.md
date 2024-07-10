@@ -4,6 +4,7 @@
 
 Home of the code for the following features:
  - AA Directors
+ - Arrow Directors
  - Cannon Directors
  - Contact Explosives
  - Durability Override

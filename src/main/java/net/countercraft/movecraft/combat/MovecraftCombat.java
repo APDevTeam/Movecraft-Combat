@@ -10,6 +10,7 @@ import net.countercraft.movecraft.combat.features.FireballPenetration;
 import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.directors.AADirectors;
+import net.countercraft.movecraft.combat.features.directors.ArrowDirectors;
 import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
 import net.countercraft.movecraft.combat.features.directors.Directors;
 import net.countercraft.movecraft.combat.features.tracers.MovementTracers;
@@ -40,6 +41,7 @@ public final class MovecraftCombat extends JavaPlugin {
     @Override
     public void onLoad() {
         AADirectors.register();
+        ArrowDirectors.register();
         CannonDirectors.register();
         MovementTracers.register();
     }
@@ -72,8 +74,9 @@ public final class MovecraftCombat extends JavaPlugin {
         CombatRelease.load(getConfig());
 
         Directors.load(getConfig());
-        CannonDirectors.load(getConfig());
         AADirectors.load(getConfig());
+        ArrowDirectors.load(getConfig());
+        CannonDirectors.load(getConfig());
 
         MovementTracers.load(getConfig());
         TNTTracers.load(getConfig());
@@ -103,6 +106,9 @@ public final class MovecraftCombat extends JavaPlugin {
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1); // Every tick
+        var arrowDirectors = new AADirectors();
+        getServer().getPluginManager().registerEvents(arrowDirectors, this);
+        arrowDirectors.runTaskTimer(this, 0, 1); // Every tick
         var cannonDirectors = new CannonDirectors();
         getServer().getPluginManager().registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
