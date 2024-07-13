@@ -106,7 +106,7 @@ public final class MovecraftCombat extends JavaPlugin {
         var aaDirectors = new AADirectors();
         getServer().getPluginManager().registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1); // Every tick
-        var arrowDirectors = new AADirectors();
+        var arrowDirectors = new ArrowDirectors();
         getServer().getPluginManager().registerEvents(arrowDirectors, this);
         arrowDirectors.runTaskTimer(this, 0, 1); // Every tick
         var cannonDirectors = new CannonDirectors();
