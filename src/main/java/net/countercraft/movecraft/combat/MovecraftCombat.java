@@ -1,13 +1,6 @@
 package net.countercraft.movecraft.combat;
 
-import net.countercraft.movecraft.combat.features.AddFiresToHitbox;
-import net.countercraft.movecraft.combat.features.AntiRadar;
-import net.countercraft.movecraft.combat.features.BlastResistanceOverride;
-import net.countercraft.movecraft.combat.features.ContactExplosives;
-import net.countercraft.movecraft.combat.features.DurabilityOverride;
-import net.countercraft.movecraft.combat.features.FireballLifespan;
-import net.countercraft.movecraft.combat.features.FireballPenetration;
-import net.countercraft.movecraft.combat.features.ReImplementTNTTranslocation;
+import net.countercraft.movecraft.combat.features.*;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
 import net.countercraft.movecraft.combat.features.directors.AADirectors;
 import net.countercraft.movecraft.combat.features.directors.ArrowDirectors;
@@ -91,6 +84,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballPenetration.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
         BlastResistanceOverride.load(getConfig());
+        FlammableOverride.load(getConfig());
 
 
         // Register event translation listeners
@@ -147,6 +141,7 @@ public final class MovecraftCombat extends JavaPlugin {
 
         // Modify blast resistances
         BlastResistanceOverride.enable();
+        FlammableOverride.enable();
     }
 
     @Override
