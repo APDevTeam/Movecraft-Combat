@@ -59,9 +59,9 @@ public class FlammableOverride {
                 throw new IllegalArgumentException();
             int major_version = Integer.parseInt(parts[1]);
             if (major_version < 20) {
-                nmsInterface = new FlammabilityNMS_SpigotMappings(); // Tested on 1.18.2 and 1.19.4
+                nmsInterface = new FlammabilityNMS_SpigotMappings(); // Tested on 1.19.3
             } else {
-                nmsInterface = new FlammabilityNMS_MojangMappings(); // Tested on 1.20.6
+                nmsInterface = new FlammabilityNMS_MojangMappings(); // Untested, uses field names of 1.20.1, so it should work
             }
         } catch (Exception e) {
             MovecraftCombat.getInstance().getLogger().info("Failed to load FlammabilityOverride: ");
@@ -135,6 +135,7 @@ public class FlammableOverride {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
                 Object fireBlock = getBlockClass(getCraftMagicNumbersClass(), Material.FIRE);
+                // First Object2Identiy map in field list is the one for ignite odds, second one is for burn odds
                 writeField(fireBlock, block, "O", encouragement);
                 writeField(fireBlock, block, "P", flammability);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
