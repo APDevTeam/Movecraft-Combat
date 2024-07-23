@@ -112,10 +112,10 @@ public class FlammableOverride {
 
         protected static void writeField(@NotNull Object fireBlock, @NotNull Object block, String igniteOddsName, String burnOddsName, int flammability, int encouragement)
                 throws IllegalAccessException, NoSuchFieldException {
-            for(Field f : fireBlock.getClass().getDeclaredFields()) {
+            /*for(Field f : fireBlock.getClass().getDeclaredFields()) {
                 f.setAccessible(true);
                 MovecraftCombat.getInstance().getLogger().warning(f.getName() + ": " + f.getType().toString());
-            }
+            }*/
 
             Field igniteOddsField = fireBlock.getClass().getDeclaredField(igniteOddsName);
             igniteOddsField.setAccessible(true);
