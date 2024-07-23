@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class FlammableOverride {
 
@@ -71,7 +70,7 @@ public class FlammableOverride {
     }
 
     public static boolean setFlammability(Material m, int flammability, int encouragement) {
-        return nmsInterface.setBlastResistance(m, flammability, encouragement);
+        return nmsInterface.setFlammabilityProperties(m, flammability, encouragement);
     }
 
     public static boolean revertToVanilla(Material m) {
@@ -106,21 +105,15 @@ public class FlammableOverride {
 
     private static class FlammabilityNMS {
 
-        public boolean setBlastResistance(Material m, int flammability, int encouragement) {
+        public boolean setFlammabilityProperties(Material m, int flammability, int encouragement) {
             throw new NotImplementedException();
         }
 
-        protected static void writeField(@NotNull Object fireBlock, @NotNull Object block, String igniteOddsName, String burnOddsName, int flammability, int encouragement)
-                throws IllegalAccessException, NoSuchFieldException {
-            Field igniteOddsField = fireBlock.getClass().getDeclaredField(igniteOddsName);
-            igniteOddsField.setAccessible(true);
-            Object2IntMap igniteOddsMap = (Object2IntMap)igniteOddsField.get(fireBlock);
-            igniteOddsMap.put(block, encouragement);
-
-            Field burnOddsField = fireBlock.getClass().getDeclaredField(burnOddsName);
-            burnOddsField.setAccessible(true);
-            Object2IntMap burnOddsMap = (Object2IntMap)burnOddsField.get(fireBlock);
-            burnOddsMap.put(block, flammability);
+        protected static void writeField(@NotNull Object fireBlock, @NotNull Object block, String mapName, int value) throws IllegalAccessException, NoSuchFieldException {
+            Field map = fireBlock.getClass().getDeclaredField(mapName);
+            map.setAccessible(true);
+            Object2IntMap mapObj = (Object2IntMap)map.get(fireBlock);
+            mapObj.put(block, value);
         }
     }
 
@@ -138,11 +131,12 @@ public class FlammableOverride {
             return method.invoke(null, m);
         }
 
-        public boolean setBlastResistance(Material m, int flammability, int encouragement) {
+        public boolean setFlammabilityProperties(Material m, int flammability, int encouragement) {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
                 Object fireBlock = getBlockClass(getCraftMagicNumbersClass(), Material.FIRE);
-                writeField(fireBlock, block, "O", "P", flammability, encouragement); // obfuscated explosionResistance
+                writeField(fireBlock, block, "O", encouragement);
+                writeField(fireBlock, block, "P", flammability);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | NoSuchFieldException
                      | SecurityException | ClassNotFoundException e) {
@@ -164,11 +158,12 @@ public class FlammableOverride {
             Method method = magicNumbers.getMethod("getBlock", Material.class);
             return method.invoke(null, m);
         }
-        public boolean setBlastResistance(Material m, int flammability, int encouragement) {
+        public boolean setFlammabilityProperties(Material m, int flammability, int encouragement) {
             try {
                 Object block = getBlockClass(getCraftMagicNumbersClass(), m);
                 Object fireBlock = getBlockClass(getCraftMagicNumbersClass(), Material.FIRE);
-                writeField(fireBlock, block, "igniteOdds", "burnOdds", flammability, encouragement);
+                writeField(fireBlock, block, "burnOdds", flammability);
+                writeField(fireBlock, block, "igniteOdds", encouragement);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | NoSuchFieldException
                      | SecurityException | ClassNotFoundException e) {
