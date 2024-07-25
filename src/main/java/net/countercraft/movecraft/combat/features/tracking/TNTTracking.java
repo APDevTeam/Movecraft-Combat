@@ -9,6 +9,7 @@ import net.countercraft.movecraft.combat.features.tracking.types.TNTCannon;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.craft.SinkingCraft;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -81,16 +82,25 @@ public class TNTTracking implements Listener {
     }
 
     @EventHandler
-    public void onEntitySpawn (@NotNull EntitySpawnEvent e) {
+    public void onEntitySpawn(@NotNull EntitySpawnEvent e) {
         if (!DamageTracking.EnableTNTTracking)
             return;
-        if(!e.getEntityType().equals(EntityType.PRIMED_TNT))
+        if (!e.getEntityType().equals(EntityType.PRIMED_TNT))
             return;
-        TNTPrimed tnt = (TNTPrimed)e.getEntity();
+        TNTPrimed tnt = (TNTPrimed) e.getEntity();
 
         // Find nearest craft
         Craft craft = MathUtils.fastNearestCraftToLoc(CraftManager.getInstance().getCrafts(),
                 tnt.getLocation());
+        if (craft instanceof SinkingCraft && DamageTracking.DisableSinkingCraftTNT) {
+            e.setCancelled(true);
+            return;
+        }
+        else if (craft != null && craft.getDisabled() && DamageTracking.DisableDisabledCraftTNT) {
+            e.setCancelled(true);
+            return;
+        }
+
         if (!(craft instanceof PlayerCraft))
             return;
         if (!craft.getHitBox().contains(MathUtils.bukkit2MovecraftLoc(tnt.getLocation()))) {
