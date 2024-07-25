@@ -84,9 +84,17 @@ public class Directors extends BukkitRunnable {
         directors.inverse().remove(player);
     }
 
-    public void clearDirector(@NotNull Player player) {
+    public static void clearDirector(@NotNull Player player) {
         for (var instance : instances)
             instance.removeDirector(player);
+    }
+
+    public static boolean isAnyDirector(@NotNull Player player) {
+        for (var instance : instances) {
+            if (instance.isDirector(player))
+                return true;
+        }
+        return false;
     }
 
     @Nullable
