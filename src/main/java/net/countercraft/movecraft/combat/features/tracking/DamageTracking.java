@@ -24,6 +24,8 @@ public class DamageTracking implements Listener {
     public static boolean EnableFireballTracking = false;
     public static boolean EnableTNTTracking = true;
     public static boolean EnableTorpedoTracking = false;
+    public static boolean DisableSinkingCraftTNT = true;
+    public static boolean DisableDisabledCraftTNT = false;
     public static int DamageTimeout = 300;
     private final Map<PlayerCraft, List<DamageRecord>> damageRecords = new HashMap<>();
 
@@ -31,6 +33,8 @@ public class DamageTracking implements Listener {
         EnableFireballTracking = config.getBoolean("EnableFireballTracking", false);
         EnableTNTTracking = config.getBoolean("EnableTNTTracking", true);
         EnableTorpedoTracking = config.getBoolean("EnableTorpedoTracking", false);
+        DisableSinkingCraftTNT = config.getBoolean("DisableSinkingCraftTNT", true);
+        DisableDisabledCraftTNT = config.getBoolean("DisableDisabledCraftTNT", false);
         DamageTimeout = config.getInt("DamageTimeout", 300);
     }
 

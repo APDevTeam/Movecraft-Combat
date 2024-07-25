@@ -58,6 +58,8 @@ ExplosionParticles: VILLAGER_ANGRY # Particle to use for particle tracer explosi
 EnableFireballTracking: false # Enable tracking and recording of fireballs (higher lag than other tracking methods)
 EnableTNTTracking: false # Enable tracking and recording of TNT damage
 EnableTorpedoTracking: false # Enable tracking and recording of Torpedo damage
+DisableSinkingCraftTNT: true # Disable spawning of TNT from sinking crafts
+DisableDisabledCraftTNT: false # Disable spawning of TNT from disabled crafts
 DamageTimeout: 300 # Timeout for damages in seconds
 
 # Combat Release Tracking
