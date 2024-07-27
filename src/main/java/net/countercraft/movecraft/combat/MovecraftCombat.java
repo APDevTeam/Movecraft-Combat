@@ -12,6 +12,7 @@ import net.countercraft.movecraft.combat.features.tracers.commands.MovementTrace
 import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerModeCommand;
 import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerSettingCommand;
 import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
+import net.countercraft.movecraft.combat.features.tracking.BlockBehaviorOverride;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
@@ -83,8 +84,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballLifespan.load(getConfig());
         FireballPenetration.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
-        BlastResistanceOverride.load(getConfig());
-        FlammableOverride.load(getConfig());
+        BlockBehaviorOverride.load(getConfig());
 
 
         // Register event translation listeners
@@ -140,12 +140,11 @@ public final class MovecraftCombat extends JavaPlugin {
         getCommand("movementtracersetting").setExecutor(new MovementTracerSettingCommand(playerManager));
 
         // Modify blast resistances
-        BlastResistanceOverride.enable();
-        FlammableOverride.enable();
+        BlockBehaviorOverride.enable();
     }
 
     @Override
     public void onDisable() {
-        BlastResistanceOverride.disable(); // Revert to vanilla
+        BlockBehaviorOverride.disable(); // Revert to vanilla
     }
 }
