@@ -31,7 +31,7 @@ public class BlockBehaviorOverride {
 
     }
 
-    public static Map<Material, BlockOverride> BLOCK_OVERRIDES = null;
+    public static Map<Material, BlockOverride> BLOCK_OVERRIDES = new HashMap<>();
 
     protected static final NMSHelper NMS_HELPER = NMSHelper.createInstance();
 
