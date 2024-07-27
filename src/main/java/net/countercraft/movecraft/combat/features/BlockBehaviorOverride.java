@@ -287,7 +287,7 @@ public class BlockBehaviorOverride {
             try {
                 Object fireBlock = this.getBlockClass(Material.FIRE);
                 Object block = this.getBlockClass(m);
-                Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameIgniteOdds);
+                Optional<Object2IntMap<Object>> optMap = getFieldValueSafe(fireBlock, this.fieldNameIgniteOdds);
                 if (optMap.isPresent()) {
                     if (optMap.get().containsKey(block)) {
                         return Optional.of(optMap.get().getInt(block));
@@ -305,7 +305,7 @@ public class BlockBehaviorOverride {
             try {
                 final Object block = getBlockClass(m);
                 // First Object2Identiy map in field list is the one for ignite odds, second one is for burn odds
-                Consumer<Object2IntMap> func = (map) -> {
+                Consumer<Object2IntMap<Object>> func = (map) -> {
                     map.put(block, value);
                 };
                 NMSSpigotMappings.writeField(fireBlock, func, this.fieldNameBurnOdds);
@@ -321,7 +321,7 @@ public class BlockBehaviorOverride {
             try {
                 final Object block = getBlockClass(m);
                 // First Object2Identiy map in field list is the one for ignite odds, second one is for burn odds
-                Consumer<Object2IntMap> func = (map) -> {
+                Consumer<Object2IntMap<Object>> func = (map) -> {
                     map.put(block, value);
                 };
                 NMSSpigotMappings.writeField(fireBlock, func, this.fieldNameIgniteOdds);
