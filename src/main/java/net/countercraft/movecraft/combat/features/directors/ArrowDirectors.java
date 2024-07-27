@@ -1,6 +1,7 @@
 package net.countercraft.movecraft.combat.features.directors;
 
 import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.features.directors.events.CraftDirectEvent;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
 import net.countercraft.movecraft.craft.Craft;
@@ -73,6 +74,8 @@ public class ArrowDirectors extends Directors implements Listener {
             return;
 
         Player p = getDirector((PlayerCraft) c);
+        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+            return;
 
         MovecraftLocation midPoint = c.getHitBox().getMidPoint();
         int distX = Math.abs(midPoint.getX() - arrow.getLocation().getBlockX());
@@ -81,10 +84,12 @@ public class ArrowDirectors extends Directors implements Listener {
         if (distX > ArrowDirectorDistance || distY > ArrowDirectorDistance || distZ > ArrowDirectorDistance)
             return;
 
-        arrow.setShooter(p);
-
-        if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+        CraftDirectEvent event = new CraftDirectEvent(c, p, this);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
             return;
+
+        arrow.setShooter(p);
 
         Vector arrowVector = arrow.getVelocity();
         double speed = arrowVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1

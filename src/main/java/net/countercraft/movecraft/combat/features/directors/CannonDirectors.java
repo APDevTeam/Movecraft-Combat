@@ -2,6 +2,7 @@ package net.countercraft.movecraft.combat.features.directors;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.combat.features.directors.events.CraftDirectEvent;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
@@ -11,6 +12,7 @@ import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.SinkingCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
+import net.countercraft.movecraft.util.ChatUtils;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -108,6 +110,11 @@ public class CannonDirectors extends Directors implements Listener {
 
         Player p = getDirector((PlayerCraft) c);
         if (p == null || p.getInventory().getItemInMainHand().getType() != Directors.DirectorTool)
+            return;
+
+        CraftDirectEvent event = new CraftDirectEvent(c, p, this);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
             return;
 
         // Store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
