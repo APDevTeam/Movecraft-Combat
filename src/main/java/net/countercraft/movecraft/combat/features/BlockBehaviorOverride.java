@@ -261,7 +261,7 @@ public class BlockBehaviorOverride {
                 Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameBurnOdds);
                 if (optMap.isPresent()) {
                     if (optMap.get().containsKey(block)) {
-                        return Optional.ofNullable(optMap.get().getInt(block));
+                        return Optional.of(optMap.get().getInt(block));
                     }
                     return Optional.empty();
                 }
@@ -290,7 +290,7 @@ public class BlockBehaviorOverride {
                 Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameIgniteOdds);
                 if (optMap.isPresent()) {
                     if (optMap.get().containsKey(block)) {
-                        return Optional.ofNullable(optMap.get().getInt(block));
+                        return Optional.of(optMap.get().getInt(block));
                     }
                     return Optional.empty();
                 }
