@@ -21,7 +21,7 @@ dependencies {
 }
 
 group = "net.countercraft.movecraft.combat"
-version = "2.0.0_beta-5_dev-1"
+version = "2.0.0_beta-6_dev-1"
 description = "Movecraft-Combat"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
