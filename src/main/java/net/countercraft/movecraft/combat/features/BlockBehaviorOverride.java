@@ -32,9 +32,9 @@ public class BlockBehaviorOverride {
 
     }
 
-    public static Map<Material, BlockOverride> BLOCK_OVERRIDES = new HashMap<>();
+    private static Map<Material, BlockOverride> BLOCK_OVERRIDES = new HashMap<>();
 
-    protected static final NMSHelper NMS_HELPER = NMSHelper.createInstance();
+    private static final NMSHelper NMS_HELPER = NMSHelper.createInstance();
 
     public static void load(@NotNull FileConfiguration config) {
         final Set<Material> materialList = new HashSet<>();
