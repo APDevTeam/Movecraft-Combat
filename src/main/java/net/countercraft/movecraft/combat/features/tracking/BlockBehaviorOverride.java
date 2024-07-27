@@ -1,41 +1,216 @@
 package net.countercraft.movecraft.combat.features.tracking;
 
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.countercraft.movecraft.combat.MovecraftCombat;
-import net.countercraft.movecraft.combat.features.BlastResistanceOverride;
 import net.countercraft.movecraft.util.Tags;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class BlockBehaviorOverride {
 
     public record BlockOverride(
             Optional<Float> blastResistanceOverride,
             Optional<Integer> burnOddity,
-            Optional<Integer> igniteOddity
+            Optional<Integer> igniteOddity,
+            Optional<Float> vanillaBlastResistanceOverride,
+            Optional<Integer> vanillaBurnOddity,
+            Optional<Integer> vanillaIgniteOddity
     ) {
 
     }
 
     public static Map<Material, BlockOverride> BLOCK_OVERRIDES = null;
 
-    public static void load(@NotNull FileConfiguration config) {
+    protected static final NMSHelper NMS_HELPER = NMSHelper.createInstance();
 
+    public static void load(@NotNull FileConfiguration config) {
+        final Set<Material> materialList = new HashSet<>();
+        final Map<Material, Float> blastResMapping = new HashMap<>();
+        final Map<Material, Pair<Integer, Optional<Integer>>> burnOddsMapping = new HashMap<>();
+        final Map<Material, Pair<Integer, Optional<Integer>>> igniteOddsMapping = new HashMap<>();
+
+        // First: Collect them all
+        loadBlastResistanceValues(config, materialList::add, blastResMapping::put);
+        loadFlammabilityValues(config, materialList::add, burnOddsMapping::put, igniteOddsMapping::put);
+
+        // Second: Loop over and create the override objects
+        for(Material m : materialList) {
+            Optional<Float> blastResOverride = Optional.empty();
+            Optional<Float> blastResVanilla = Optional.empty();
+            Optional<Integer> burnOddsOverride = Optional.empty();
+            Optional<Integer> burnOddsVanilla = Optional.empty();
+            Optional<Integer> igniteOddsOverride = Optional.empty();
+            Optional<Integer> igniteOddsVanilla = Optional.empty();
+
+            if (blastResMapping.containsKey(m)) {
+                blastResOverride = Optional.ofNullable(blastResMapping.getOrDefault(m, null));
+                blastResVanilla = Optional.of(m.getBlastResistance());
+            }
+
+            if (burnOddsMapping.containsKey(m)) {
+                burnOddsOverride = Optional.ofNullable(burnOddsMapping.get(m).left());
+                burnOddsVanilla = burnOddsMapping.get(m).right();
+            }
+
+            if (igniteOddsMapping.containsKey(m)) {
+                igniteOddsOverride = Optional.ofNullable(igniteOddsMapping.get(m).left());
+                igniteOddsVanilla = igniteOddsMapping.get(m).right();
+            }
+
+            BlockOverride override = new BlockOverride(blastResOverride, burnOddsOverride, igniteOddsOverride, blastResVanilla, burnOddsVanilla, igniteOddsVanilla);
+            BLOCK_OVERRIDES.put(m, override);
+        }
+    }
+
+    protected static void loadFlammabilityValues(FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putBurnOddsFunction, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putIgniteOddsFunction) {
+        if (!config.contains("FlammabilityOverride"))
+            return;
+        var section = config.getConfigurationSection("FlammabilityOverride");
+        if (section == null)
+            return;
+
+        for (var entry : section.getValues(false).entrySet()) {
+            EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
+            for (Material m : materials) {
+                int burnOddOverride = -1;
+                Optional<Integer> burnOddVanilla = NMS_HELPER.getBurnOdds(m);
+                int igniteOddOverride = -1;
+                Optional<Integer> igniteOddVanilla = NMS_HELPER.getIgniteOdds(m);
+
+                String valStr = entry.getValue().toString();
+                try {
+                    String[] split = valStr.split(",");
+                    burnOddOverride = Integer.parseInt(split[0]);
+                    igniteOddOverride = burnOddOverride;
+                    if (split.length > 1) {
+                        igniteOddOverride = Integer.parseInt(split[1]);
+                    }
+                } catch (NumberFormatException | NullPointerException ex) {
+                    MovecraftCombat.getInstance().getLogger()
+                            .warning("Unable to load " + m.name() + ": " + entry.getValue());
+                    continue;
+                }
+                addToSet.apply(m);
+                if (burnOddOverride >= 0) {
+                    putBurnOddsFunction.accept(m, Pair.of(burnOddOverride, burnOddVanilla));
+                }
+                if (igniteOddOverride >= 0) {
+                    putIgniteOddsFunction.accept(m, Pair.of(igniteOddOverride, igniteOddVanilla));
+                }
+            }
+        }
+    }
+
+    protected static void loadBlastResistanceValues(FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Float> putFunction) {
+        if (!config.contains("BlastResistanceOverride"))
+            return;
+        var section = config.getConfigurationSection("BlastResistanceOverride");
+        if (section == null)
+            return;
+
+        for (var entry : section.getValues(false).entrySet()) {
+            EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
+            for (Material m : materials) {
+                float value;
+                String valStr = entry.getValue().toString();
+                try {
+                    value = Float.parseFloat(valStr);
+                } catch (NumberFormatException | NullPointerException ex) {
+                    MovecraftCombat.getInstance().getLogger()
+                            .warning("Unable to load " + m.name() + ": " + entry.getValue());
+                    continue;
+                }
+                addToSet.apply(m);
+                putFunction.accept(m, value);
+            }
+        }
+    }
+
+    public static void enable() {
+        processOverriddenEntry(BlockBehaviorOverride::set, "Failed to set block overrides!");
+    }
+
+    public static void disable() {
+        processOverriddenEntry(BlockBehaviorOverride::reset, "Failed to revert block overrides to vanilla!");
+    }
+
+    protected static void processOverriddenEntry(final BiFunction<Material, BlockOverride, Boolean> function, final String msgOnException) {
+        try {
+            for (Map.Entry<Material, BlockOverride> entry : BLOCK_OVERRIDES.entrySet()) {
+                if (!function.apply(entry.getKey(), entry.getValue()))
+                    MovecraftCombat.getInstance().getLogger().warning("Unable to reset " + entry.getKey().name());
+            }
+        } catch (Exception e) {
+            MovecraftCombat.getInstance().getLogger().info(msgOnException);
+            e.printStackTrace();
+        }
+    }
+
+    protected static boolean set(Material mat, BlockOverride override) {
+        boolean result = true;
+
+        // Blast resistance
+        if (override.blastResistanceOverride().isPresent()) {
+            result = result && NMS_HELPER.setBlastResistance(mat, override.blastResistanceOverride().get().floatValue());
+        }
+        // Burn oddity
+        if (override.burnOddity().isPresent()) {
+            result = result && NMS_HELPER.setBurnOdds(mat, override.burnOddity().get().intValue());
+        }
+        // Ignite oddity
+        if (override.igniteOddity().isPresent()) {
+            result = result && NMS_HELPER.setIgniteOdds(mat, override.igniteOddity().get().intValue());
+        }
+
+        return result;
+    }
+
+    protected static boolean reset(Material mat, BlockOverride override) {
+        boolean result = true;
+
+        // Blast resistance
+        if (override.blastResistanceOverride().isPresent() && override.vanillaBlastResistanceOverride().isPresent()) {
+            result = result && NMS_HELPER.setBlastResistance(mat, override.vanillaBlastResistanceOverride().get().floatValue());
+        }
+        // Burn oddity
+        if (override.burnOddity().isPresent() && override.vanillaBurnOddity().isPresent()) {
+            result = result && NMS_HELPER.setBurnOdds(mat, override.vanillaBlastResistanceOverride().get().intValue());
+        }
+        // Ignite oddity
+        if (override.igniteOddity().isPresent() && override.vanillaIgniteOddity().isPresent()) {
+            result = result && NMS_HELPER.setIgniteOdds(mat, override.vanillaBlastResistanceOverride().get().intValue());
+        }
+
+        return result;
     }
 
     private static abstract class NMSHelper {
+
+        public static final NMSHelper createInstance() {
+            String[] parts = Bukkit.getServer().getMinecraftVersion().split("\\.");
+            if (parts.length < 2)
+                throw new IllegalArgumentException();
+            int major_version = Integer.parseInt(parts[1]);
+            NMSHelper result;
+            if (major_version < 20) {
+                result = new NMSSpigotMappings();
+            } else {
+                result = new NMSMojangMappings();
+            }
+            return result;
+        }
 
         private final String fieldNameBlastResistance;
         private final String fieldNameBurnOdds;
@@ -60,6 +235,17 @@ public class BlockBehaviorOverride {
             }
         }
 
+        public Optional<Float> getBlastResistance(Material m) {
+            try {
+                Object block = this.getBlockClass(m);
+                return getFieldValueSafe(block, this.fieldNameBlastResistance);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                     | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return Optional.empty();
+        }
+
         public boolean setBurnOdds(Material m, int value) {
             try {
                 Object fireBlock = this.getBlockClass(Material.FIRE);
@@ -71,6 +257,24 @@ public class BlockBehaviorOverride {
             }
         }
 
+        public Optional<Integer> getBurnOdds(Material m) {
+            try {
+                Object fireBlock = this.getBlockClass(Material.FIRE);
+                Object block = this.getBlockClass(m);
+                Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameBurnOdds);
+                if (optMap.isPresent()) {
+                    if (optMap.get().containsKey(block)) {
+                        return Optional.ofNullable(optMap.get().getInt(block));
+                    }
+                    return Optional.empty();
+                }
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                     | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return Optional.empty();
+        }
+
         public boolean setIgniteOdds(Material m, int value) {
             try {
                 Object fireBlock = this.getBlockClass(Material.FIRE);
@@ -80,6 +284,24 @@ public class BlockBehaviorOverride {
                 e.printStackTrace();
                 return false;
             }
+        }
+
+        public Optional<Integer> getIgniteOdds(Material m) {
+            try {
+                Object fireBlock = this.getBlockClass(Material.FIRE);
+                Object block = this.getBlockClass(m);
+                Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameIgniteOdds);
+                if (optMap.isPresent()) {
+                    if (optMap.get().containsKey(block)) {
+                        return Optional.ofNullable(optMap.get().getInt(block));
+                    }
+                    return Optional.empty();
+                }
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                     | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return Optional.empty();
         }
 
         protected boolean setBurnOdds(Material m, int value, Object fireBlock) {
@@ -126,18 +348,32 @@ public class BlockBehaviorOverride {
             return method.invoke(null, m);
         }
 
-        protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField, String mapName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field map = block.getClass().getDeclaredField(mapName);
+        protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
+            Field map = block.getClass().getDeclaredField(fieldName);
             map.setAccessible(true);
             T obj = (T)map.get(block);
             whatToDoWithField.accept(obj);
         }
 
-        protected static <T> void writeField(@NotNull Object block, T value, String mapName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = block.getClass().getDeclaredField(mapName);
+        protected static <T> void writeField(@NotNull Object block, T value, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
+            Field field = block.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             T obj = (T)field.get(block);
             field.set(block, value);
+        }
+
+        protected static <T> Optional<T> getFieldValueSafe(@NotNull Object instance, String fieldName) {
+            try {
+                return Optional.ofNullable(getFieldValue(instance, fieldName));
+            } catch(Exception ex) {
+                return Optional.empty();
+            }
+        }
+        protected static <T> T getFieldValue(@NotNull Object instance, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
+            Field field = instance.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            T obj = (T)field.get(instance);
+            return obj;
         }
     }
 
