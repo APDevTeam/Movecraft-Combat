@@ -25,7 +25,6 @@ public class BlockBehaviorOverride {
             Optional<Float> blastResistanceOverride,
             Optional<Integer> burnOddity,
             Optional<Integer> igniteOddity,
-            Optional<Float> vanillaBlastResistanceOverride,
             Optional<Integer> vanillaBurnOddity,
             Optional<Integer> vanillaIgniteOddity
     ) {
@@ -49,7 +48,6 @@ public class BlockBehaviorOverride {
         // Second: Loop over and create the override objects
         for(Material m : materialList) {
             Optional<Float> blastResOverride = Optional.empty();
-            Optional<Float> blastResVanilla = Optional.empty();
             Optional<Integer> burnOddsOverride = Optional.empty();
             Optional<Integer> burnOddsVanilla = Optional.empty();
             Optional<Integer> igniteOddsOverride = Optional.empty();
@@ -57,12 +55,10 @@ public class BlockBehaviorOverride {
 
             if (blastResMapping.containsKey(m)) {
                 blastResOverride = Optional.ofNullable(blastResMapping.getOrDefault(m, null));
-                blastResVanilla = Optional.of(m.getBlastResistance());
             }
 
             if (burnOddsMapping.containsKey(m)) {
                 burnOddsOverride = Optional.ofNullable(burnOddsMapping.get(m).left());
-                burnOddsVanilla = burnOddsMapping.get(m).right();
             }
 
             if (igniteOddsMapping.containsKey(m)) {
@@ -70,7 +66,7 @@ public class BlockBehaviorOverride {
                 igniteOddsVanilla = igniteOddsMapping.get(m).right();
             }
 
-            BlockOverride override = new BlockOverride(blastResOverride, burnOddsOverride, igniteOddsOverride, blastResVanilla, burnOddsVanilla, igniteOddsVanilla);
+            BlockOverride override = new BlockOverride(blastResOverride, burnOddsOverride, igniteOddsOverride, burnOddsVanilla, igniteOddsVanilla);
             BLOCK_OVERRIDES.put(m, override);
         }
     }
@@ -182,16 +178,16 @@ public class BlockBehaviorOverride {
         boolean result = true;
 
         // Blast resistance
-        if (override.blastResistanceOverride().isPresent() && override.vanillaBlastResistanceOverride().isPresent()) {
-            result = result && NMS_HELPER.setBlastResistance(mat, override.vanillaBlastResistanceOverride().get().floatValue());
+        if (override.blastResistanceOverride().isPresent()) {
+            result = result && NMS_HELPER.setBlastResistance(mat, mat.getBlastResistance());
         }
         // Burn oddity
         if (override.burnOddity().isPresent() && override.vanillaBurnOddity().isPresent()) {
-            result = result && NMS_HELPER.setBurnOdds(mat, override.vanillaBlastResistanceOverride().get().intValue());
+            result = result && NMS_HELPER.setBurnOdds(mat, override.vanillaBurnOddity().get().intValue());
         }
         // Ignite oddity
         if (override.igniteOddity().isPresent() && override.vanillaIgniteOddity().isPresent()) {
-            result = result && NMS_HELPER.setIgniteOdds(mat, override.vanillaBlastResistanceOverride().get().intValue());
+            result = result && NMS_HELPER.setIgniteOdds(mat, override.vanillaIgniteOddity().get().intValue());
         }
 
         return result;
