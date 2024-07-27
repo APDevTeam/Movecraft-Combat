@@ -12,7 +12,7 @@ import net.countercraft.movecraft.combat.features.tracers.commands.MovementTrace
 import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerModeCommand;
 import net.countercraft.movecraft.combat.features.tracers.commands.TNTTracerSettingCommand;
 import net.countercraft.movecraft.combat.features.tracers.config.PlayerManager;
-import net.countercraft.movecraft.combat.features.tracking.BlockBehaviorOverride;
+import net.countercraft.movecraft.combat.features.BlockBehaviorOverride;
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.features.tracking.FireballTracking;
 import net.countercraft.movecraft.combat.features.tracking.TNTTracking;

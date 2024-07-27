@@ -1,4 +1,4 @@
-package net.countercraft.movecraft.combat.features.tracking;
+package net.countercraft.movecraft.combat.features;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
