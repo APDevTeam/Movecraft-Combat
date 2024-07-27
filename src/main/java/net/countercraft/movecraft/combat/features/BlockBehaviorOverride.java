@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -179,15 +180,15 @@ public class BlockBehaviorOverride {
 
         // Blast resistance
         if (override.blastResistanceOverride().isPresent()) {
-            result = result && NMS_HELPER.setBlastResistance(mat, mat.getBlastResistance());
+            result &= NMS_HELPER.setBlastResistance(mat, mat.getBlastResistance());
         }
         // Burn oddity
         if (override.burnOddity().isPresent() && override.vanillaBurnOddity().isPresent()) {
-            result = result && NMS_HELPER.setBurnOdds(mat, override.vanillaBurnOddity().get().intValue());
+            result &= NMS_HELPER.setBurnOdds(mat, override.vanillaBurnOddity().get());
         }
         // Ignite oddity
         if (override.igniteOddity().isPresent() && override.vanillaIgniteOddity().isPresent()) {
-            result = result && NMS_HELPER.setIgniteOdds(mat, override.vanillaIgniteOddity().get().intValue());
+            result &= NMS_HELPER.setIgniteOdds(mat, override.vanillaIgniteOddity().get());
         }
 
         return result;
@@ -209,10 +210,14 @@ public class BlockBehaviorOverride {
             return result;
         }
 
+        @Nullable
         private final String fieldNameBlastResistance;
+        @Nullable
         private final String fieldNameBurnOdds;
+        @Nullable
         private final String fieldNameIgniteOdds;
-        @NotNull Class<?> magicNumbers;
+        @Nullable
+        Class<?> magicNumbers;
 
         protected NMSHelper(String blastResField, String burnOddsField, String igniteOddsField) {
             this.fieldNameBlastResistance = blastResField;
@@ -305,10 +310,9 @@ public class BlockBehaviorOverride {
             try {
                 final Object block = getBlockClass(m);
                 // First Object2Identiy map in field list is the one for ignite odds, second one is for burn odds
-                Consumer<Object2IntMap<Object>> func = (map) -> {
+                NMSSpigotMappings.<Object2IntMap<Object>>writeField(fireBlock, (map) -> {
                     map.put(block, value);
-                };
-                NMSSpigotMappings.writeField(fireBlock, func, this.fieldNameBurnOdds);
+                }, this.fieldNameBurnOdds);
                 return true;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | NoSuchFieldException
@@ -321,10 +325,9 @@ public class BlockBehaviorOverride {
             try {
                 final Object block = getBlockClass(m);
                 // First Object2Identiy map in field list is the one for ignite odds, second one is for burn odds
-                Consumer<Object2IntMap<Object>> func = (map) -> {
+                NMSSpigotMappings.<Object2IntMap<Object>>writeField(fireBlock, (map) -> {
                     map.put(block, value);
-                };
-                NMSSpigotMappings.writeField(fireBlock, func, this.fieldNameIgniteOdds);
+                }, this.fieldNameIgniteOdds);
                 return true;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | NoSuchFieldException
@@ -373,6 +376,7 @@ public class BlockBehaviorOverride {
 
     private static class NMSSpigotMappings extends NMSHelper {
 
+        // Tested in 1.19.4
         private static final String FIELD_NAME_IGNITE_ODDS = "O";
         private static final String FIELD_NAME_BURN_ODDS = "P";
         private static final String FIELD_NAME_BLAST_RESISTANCE = "aH";
@@ -395,6 +399,7 @@ public class BlockBehaviorOverride {
 
     private static class NMSMojangMappings extends NMSHelper {
 
+        // Tested on 1.21
         private static final String FIELD_NAME_IGNITE_ODDS = "igniteOdds";
         private static final String FIELD_NAME_BURN_ODDS = "burnOdds";
         private static final String FIELD_NAME_BLAST_RESISTANCE = "explosionResistance";
