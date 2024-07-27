@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.util.Tags;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -150,7 +151,7 @@ public class BlockBehaviorOverride {
         try {
             for (Map.Entry<Material, BlockOverride> entry : BLOCK_OVERRIDES.entrySet()) {
                 if (!function.apply(entry.getKey(), entry.getValue()))
-                    MovecraftCombat.getInstance().getLogger().warning("Unable to reset " + entry.getKey().name());
+                    MovecraftCombat.getInstance().getLogger().warning("Unable to set " + entry.getKey().name());
             }
         } catch (Exception e) {
             MovecraftCombat.getInstance().getLogger().info(msgOnException);
@@ -349,15 +350,13 @@ public class BlockBehaviorOverride {
         }
 
         protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field map = block.getClass().getDeclaredField(fieldName);
-            map.setAccessible(true);
-            T obj = (T)map.get(block);
+            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
+            T obj = (T)field.get(block);
             whatToDoWithField.accept(obj);
         }
 
         protected static <T> void writeField(@NotNull Object block, T value, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = block.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
             T obj = (T)field.get(block);
             field.set(block, value);
         }
@@ -370,8 +369,7 @@ public class BlockBehaviorOverride {
             }
         }
         protected static <T> T getFieldValue(@NotNull Object instance, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = instance.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Field field = FieldUtils.getField(instance.getClass(), fieldName, true);
             T obj = (T)field.get(instance);
             return obj;
         }
