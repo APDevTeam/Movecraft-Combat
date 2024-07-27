@@ -399,7 +399,7 @@ public class BlockBehaviorOverride {
 
     private static class NMSMojangMappings extends NMSHelper {
 
-        // Tested on 1.21
+        // Tested on 1.20.4
         private static final String FIELD_NAME_IGNITE_ODDS = "igniteOdds";
         private static final String FIELD_NAME_BURN_ODDS = "burnOdds";
         private static final String FIELD_NAME_BLAST_RESISTANCE = "explosionResistance";
