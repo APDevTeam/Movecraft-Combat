@@ -80,26 +80,26 @@ public class BlockBehaviorOverride {
             return;
 
         for (var entry : section.getValues(false).entrySet()) {
+            var elementSection = config.getConfigurationSection(section.getName() + "." + entry.getKey());
+
+            // For whatever reason this can be null. WTF YAML
+            if (elementSection == null) {
+                MovecraftCombat.getInstance().getLogger()
+                        .warning("No section found within FlammabilitySection for key " + entry.getKey() + "!");
+                continue;
+            }
+
+            int burnOddOverride = elementSection.getInt("burnOddity", -1);
+            int igniteOddOverride = elementSection.getInt("igniteOddity", -1);
+
+            // Nothing set, continue
+            if (burnOddOverride < 0 && igniteOddOverride < 0)
+                continue;
+
             EnumSet<Material> materials = Tags.parseMaterials(entry.getKey());
             for (Material m : materials) {
-                int burnOddOverride = -1;
                 Optional<Integer> burnOddVanilla = NMS_HELPER.getBurnOdds(m);
-                int igniteOddOverride = -1;
                 Optional<Integer> igniteOddVanilla = NMS_HELPER.getIgniteOdds(m);
-
-                String valStr = entry.getValue().toString();
-                try {
-                    String[] split = valStr.split(",");
-                    burnOddOverride = Integer.parseInt(split[0]);
-                    igniteOddOverride = burnOddOverride;
-                    if (split.length > 1) {
-                        igniteOddOverride = Integer.parseInt(split[1]);
-                    }
-                } catch (NumberFormatException | NullPointerException ex) {
-                    MovecraftCombat.getInstance().getLogger()
-                            .warning("Unable to load " + m.name() + ": " + entry.getValue());
-                    continue;
-                }
                 addToSet.apply(m);
                 if (burnOddOverride >= 0) {
                     putBurnOddsFunction.accept(m, Pair.of(burnOddOverride, burnOddVanilla));
@@ -399,7 +399,7 @@ public class BlockBehaviorOverride {
 
     private static class NMSMojangMappings extends NMSHelper {
 
-        // Tested on 1.20.4
+        // Tested on 1.20.4 and 1.21
         private static final String FIELD_NAME_IGNITE_ODDS = "igniteOdds";
         private static final String FIELD_NAME_BURN_ODDS = "burnOdds";
         private static final String FIELD_NAME_BLAST_RESISTANCE = "explosionResistance";
