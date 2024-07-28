@@ -26,17 +26,8 @@ public class CraftCollisionExplosionListener implements Listener {
     public void collisionExplosionListener(@NotNull CraftCollisionExplosionEvent e) {
         if (!DamageTracking.EnableTorpedoTracking)
             return;
-        if (!(e.getCraft() instanceof PilotedCraft))
+        if (!(e.getCraft() instanceof PilotedCraft damaging))
             return;
-
-        PilotedCraft damaging = (PilotedCraft) e.getCraft();
-
-        //check if the craft should sink
-        CraftStatus status = Movecraft.getInstance().getAsyncManager().checkCraftStatus(e.getCraft());
-        if (status.isSinking()) {
-            e.setCancelled(true);
-            CraftManager.getInstance().sink(e.getCraft());
-        }
 
         PlayerCraft damaged = fastNearestPlayerCraftToCraft(damaging);
         if (damaged == null)
