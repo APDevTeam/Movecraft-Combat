@@ -86,6 +86,15 @@ SpecificParticle: COMPOSTER # Particle to use for specific movement tracer block
     #   You can override this by adding a list of specific blocks to the craft type as movementTracerBlocks.
 GeneralParticle: CRIT # Particle to use for general movement tracers.
 
+# Flammability overrides
+#FlammabilityOverride:
+#  obsidian:
+#    burnOddity: 20
+#    igniteOddity: 100
+#  stone:
+#    burnOddity: 20
+#    igniteOddity: 100
+
 # Blast Resistance Override
 BlastResistanceOverride:
   "#glass": 6 # Make glass as strong as stone
