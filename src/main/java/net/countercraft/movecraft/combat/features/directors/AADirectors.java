@@ -12,7 +12,6 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -35,6 +34,7 @@ public class AADirectors extends Directors implements Listener {
     private static final String HEADER = "AA Director";
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
+    public static double FireballSpeed = 1.0;
     private long lastCheck = 0;
 
     public AADirectors() {
@@ -48,6 +48,7 @@ public class AADirectors extends Directors implements Listener {
     public static void load(@NotNull FileConfiguration config) {
         AADirectorDistance = config.getInt("AADirectorDistance", 50);
         AADirectorRange = config.getInt("AADirectorRange", 120);
+        FireballSpeed = config.getDouble("FireballSpeed", 1.0);
     }
 
     @Override
@@ -95,42 +96,41 @@ public class AADirectors extends Directors implements Listener {
         fireball.setShooter(p);
 
         Vector fireballVector = fireball.getVelocity();
-        double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
+        double speed = fireballVector.length() * FireballSpeed; // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
         Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
         Vector targetVector;
-        if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
+
+        if (targetBlock == null || targetBlock.getType().isAir()) // the player is looking at nothing, shoot in that general direction
             targetVector = p.getLocation().getDirection();
         else { // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
             targetVector = targetVector.normalize();
         }
 
-        if (targetVector.getX() - fireballVector.getX() > 0.5)
-            fireballVector.setX(fireballVector.getX() + 0.5);
-        else if (targetVector.getX() - fireballVector.getX() < -0.5)
-            fireballVector.setX(fireballVector.getX() - 0.5);
-        else
-            fireballVector.setX(targetVector.getX());
+        double x = fireballVector.getX();
+        fireballVector.setX( x + adjustValue(targetVector.getX() - x) );
 
-        if (targetVector.getY() - fireballVector.getY() > 0.5)
-            fireballVector.setY(fireballVector.getY() + 0.5);
-        else if (targetVector.getY() - fireballVector.getY() < -0.5)
-            fireballVector.setY(fireballVector.getY() - 0.5);
-        else
-            fireballVector.setY(targetVector.getY());
+        double y = fireballVector.getY();
+        fireballVector.setY( y + adjustValue(targetVector.getY() - y) );
 
-        if (targetVector.getZ() - fireballVector.getZ() > 0.5)
-            fireballVector.setZ(fireballVector.getZ() + 0.5);
-        else if (targetVector.getZ() - fireballVector.getZ() < -0.5)
-            fireballVector.setZ(fireballVector.getZ() - 0.5);
-        else
-            fireballVector.setZ(targetVector.getZ());
+        double z = fireballVector.getZ();
+        fireballVector.setZ( z + adjustValue(targetVector.getZ() - z) );
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
+    }
+
+    private double adjustValue(double value) {
+        if (value > 0.5)
+            return 0.5;
+
+        if (value < -0.5)
+            return -0.5;
+
+        return 0;
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

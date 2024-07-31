@@ -40,6 +40,7 @@ DurabilityOverride: # List of block IDs: ignore percent
 
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds
+FireballSpeed: 1.0
 
 # TNT Tracers
 TracerRateTicks: 5.0 # Rate at which tracers are spawned on the path of flying TNT
