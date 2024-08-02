@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class Bleedfix implements Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {
 
         if (e.getEntityType() != EntityType.PRIMED_TNT)
