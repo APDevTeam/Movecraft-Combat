@@ -110,27 +110,26 @@ public class AADirectors extends Directors implements Listener {
         }
 
         double x = fireballVector.getX();
-        fireballVector.setX( x + adjustValue(targetVector.getX() - x) );
+        fireballVector.setX( adjustValue(targetVector.getX(), x) );
 
         double y = fireballVector.getY();
-        fireballVector.setY( y + adjustValue(targetVector.getY() - y) );
+        fireballVector.setY( adjustValue(targetVector.getY(), y) );
 
         double z = fireballVector.getZ();
-        fireballVector.setZ( z + adjustValue(targetVector.getZ() - z) );
+        fireballVector.setZ( adjustValue(targetVector.getZ(),z) );
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
     }
 
-    private double adjustValue(double value) {
-        if (value > 0.5)
-            return 0.5;
+    private double adjustValue(double target, double actual) {
+        if (target - actual > 0.5)
+            return actual + 0.5;
+        if (target - actual < 0.5)
+            return actual - 0.5;
 
-        if (value < -0.5)
-            return -0.5;
-
-        return 0;
+        return target;
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
