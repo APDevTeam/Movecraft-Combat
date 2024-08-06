@@ -109,27 +109,30 @@ public class AADirectors extends Directors implements Listener {
             targetVector = targetVector.normalize();
         }
 
-        double x = fireballVector.getX();
-        fireballVector.setX( adjustValue(targetVector.getX(), x) );
+        if (targetVector.getX() - fireballVector.getX() > 0.5)
+            fireballVector.setX(fireballVector.getX() + 0.5);
+        else if (targetVector.getX() - fireballVector.getX() < -0.5)
+            fireballVector.setX(fireballVector.getX() - 0.5);
+        else
+            fireballVector.setX(targetVector.getX());
 
-        double y = fireballVector.getY();
-        fireballVector.setY( adjustValue(targetVector.getY(), y) );
+        if (targetVector.getY() - fireballVector.getY() > 0.5)
+            fireballVector.setY(fireballVector.getY() + 0.5);
+        else if (targetVector.getY() - fireballVector.getY() < -0.5)
+            fireballVector.setY(fireballVector.getY() - 0.5);
+        else
+            fireballVector.setY(targetVector.getY());
 
-        double z = fireballVector.getZ();
-        fireballVector.setZ( adjustValue(targetVector.getZ(),z) );
+        if (targetVector.getZ() - fireballVector.getZ() > 0.5)
+            fireballVector.setZ(fireballVector.getZ() + 0.5);
+        else if (targetVector.getZ() - fireballVector.getZ() < -0.5)
+            fireballVector.setZ(fireballVector.getZ() - 0.5);
+        else
+            fireballVector.setZ(targetVector.getZ());
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
-    }
-
-    private double adjustValue(double target, double actual) {
-        if (target - actual > 0.5)
-            return actual + 0.5;
-        if (target - actual < 0.5)
-            return actual - 0.5;
-
-        return target;
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
