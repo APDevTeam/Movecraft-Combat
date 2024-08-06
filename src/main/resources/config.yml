@@ -52,7 +52,6 @@ ExplosionBlock: GLOWSTONE # Block to use to indicate tracer explosions
 TracerParticles: FIREWORKS_SPARK # Particle to use for particle tracers  See https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html for options.
 ExplosionParticles: VILLAGER_ANGRY # Particle to use for particle tracer explosions
 
-
 ### Custom features
 
 # Damage Tracking

@@ -34,7 +34,6 @@ public class AADirectors extends Directors implements Listener {
     private static final String HEADER = "AA Director";
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
-    public static double FireballSpeed = 1.0;
     private long lastCheck = 0;
 
     public AADirectors() {
@@ -48,7 +47,6 @@ public class AADirectors extends Directors implements Listener {
     public static void load(@NotNull FileConfiguration config) {
         AADirectorDistance = config.getInt("AADirectorDistance", 50);
         AADirectorRange = config.getInt("AADirectorRange", 120);
-        FireballSpeed = config.getDouble("FireballSpeed", 1.0);
     }
 
     @Override
@@ -96,7 +94,7 @@ public class AADirectors extends Directors implements Listener {
         fireball.setShooter(p);
 
         Vector fireballVector = fireball.getVelocity();
-        double speed = fireballVector.length() * FireballSpeed; // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
+        double speed = fireballVector.length() ; // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
         Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
