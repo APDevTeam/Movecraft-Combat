@@ -19,6 +19,8 @@ import net.countercraft.movecraft.combat.features.tracking.TNTTracking;
 import net.countercraft.movecraft.combat.listener.CraftCollisionExplosionListener;
 import net.countercraft.movecraft.combat.listener.ExplosionListener;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -63,76 +65,80 @@ public final class MovecraftCombat extends JavaPlugin {
 
 
         // Load localisation and features from config
-        I18nSupport.load(getConfig());
+        FileConfiguration config = getConfig();
+        I18nSupport.load(config);
 
-        CombatRelease.load(getConfig());
+        CombatRelease.load(config);
 
-        Directors.load(getConfig());
-        AADirectors.load(getConfig());
-        ArrowDirectors.load(getConfig());
-        CannonDirectors.load(getConfig());
+        Directors.load(config);
+        AADirectors.load(config);
+        ArrowDirectors.load(config);
+        CannonDirectors.load(config);
 
-        MovementTracers.load(getConfig());
-        TNTTracers.load(getConfig());
+        MovementTracers.load(config);
+        TNTTracers.load(config);
 
-        DamageTracking.load(getConfig());
+        DamageTracking.load(config);
 
-        AddFiresToHitbox.load(getConfig());
-        AntiRadar.load(getConfig());
-        ContactExplosives.load(getConfig());
-        DurabilityOverride.load(getConfig());
-        FireballBehaviour.load(getConfig());
-        FireballPenetration.load(getConfig());
-        ReImplementTNTTranslocation.load(getConfig());
-        BlockBehaviorOverride.load(getConfig());
-
-
+        AddFiresToHitbox.load(config);
+        AntiRadar.load(config);
+        ContactExplosives.load(config);
+        DurabilityOverride.load(config);
+        FireballBehaviour.load(config);
+        FireballPenetration.load(config);
+        ReImplementTNTTranslocation.load(config);
+        BlockBehaviorOverride.load(config);
+        
         // Register event translation listeners
-        getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
-        getServer().getPluginManager().registerEvents(new ExplosionListener(), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new CraftCollisionExplosionListener(), this);
+        pluginManager.registerEvents(new ExplosionListener(), this);
 
 
         // Register features
         var combatRelease = new CombatRelease();
-        getServer().getPluginManager().registerEvents(combatRelease, this);
+        pluginManager.registerEvents(combatRelease, this);
         combatRelease.runTaskTimer(this, 0, 200); // Every 10 seconds
 
         var aaDirectors = new AADirectors();
-        getServer().getPluginManager().registerEvents(aaDirectors, this);
+        pluginManager.registerEvents(aaDirectors, this);
         aaDirectors.runTaskTimer(this, 0, 1); // Every tick
         var arrowDirectors = new ArrowDirectors();
-        getServer().getPluginManager().registerEvents(arrowDirectors, this);
+        pluginManager.registerEvents(arrowDirectors, this);
         arrowDirectors.runTaskTimer(this, 0, 1); // Every tick
         var cannonDirectors = new CannonDirectors();
-        getServer().getPluginManager().registerEvents(cannonDirectors, this);
+        pluginManager.registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
 
         var playerManager = new PlayerManager();
-        getServer().getPluginManager().registerEvents(playerManager, this);
-        getServer().getPluginManager().registerEvents(new MovementTracers(playerManager), this);
+        pluginManager.registerEvents(playerManager, this);
+        pluginManager.registerEvents(new MovementTracers(playerManager), this);
         var tntTracers = new TNTTracers(playerManager);
-        getServer().getPluginManager().registerEvents(tntTracers, this);
+        pluginManager.registerEvents(tntTracers, this);
         tntTracers.runTaskTimer(this, 0, 1); // Every tick
 
         var damageTracking = new DamageTracking();
-        getServer().getPluginManager().registerEvents(damageTracking, this);
-        getServer().getPluginManager().registerEvents(new FireballTracking(damageTracking, aaDirectors), this);
-        getServer().getPluginManager().registerEvents(new TNTTracking(damageTracking, cannonDirectors), this);
+        pluginManager.registerEvents(damageTracking, this);
+        pluginManager.registerEvents(new FireballTracking(damageTracking, aaDirectors), this);
+        pluginManager.registerEvents(new TNTTracking(damageTracking, cannonDirectors), this);
 
 
-        getServer().getPluginManager().registerEvents(new AddFiresToHitbox(), this);
-        getServer().getPluginManager().registerEvents(new AntiRadar(), this);
+        pluginManager.registerEvents(new AddFiresToHitbox(), this);
+        pluginManager.registerEvents(new AntiRadar(), this);
         var contactExplosives = new ContactExplosives();
-        getServer().getPluginManager().registerEvents(contactExplosives, this);
+        pluginManager.registerEvents(contactExplosives, this);
         contactExplosives.runTaskTimer(this, 0, 1); // Every tick
-        getServer().getPluginManager().registerEvents(new DurabilityOverride(), this);
-        var fireballLifespan = new FireballBehaviour();
-        getServer().getPluginManager().registerEvents(fireballLifespan, this);
-        fireballLifespan.runTaskTimer(this, 0, 20); // Every 1 second
-        getServer().getPluginManager().registerEvents(new FireballBehaviour(), this);
-        getServer().getPluginManager().registerEvents(new FireballPenetration(), this);
-        getServer().getPluginManager().registerEvents(new ReImplementTNTTranslocation(), this);
+        pluginManager.registerEvents(new DurabilityOverride(), this);
+        var fireballBehavior = new FireballBehaviour();
+        pluginManager.registerEvents(fireballBehavior, this);
+        fireballBehavior.runTaskTimer(this, 0, 20); // Every 1 second
+        pluginManager.registerEvents(new FireballPenetration(), this);
+        pluginManager.registerEvents(new ReImplementTNTTranslocation(), this);
 
+        if (config.contains("BleedfixExplosion") && config.getBoolean("BleedfixExplosion")) {
+            // don't bother registering the event if the feature is disabled
+            pluginManager.registerEvents(new Bleedfix(), this);
+        }
 
         // Register commands
         getCommand("tnttracersetting").setExecutor(new TNTTracerSettingCommand(playerManager));
