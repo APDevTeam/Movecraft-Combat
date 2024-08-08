@@ -64,8 +64,8 @@ public final class MovecraftCombat extends JavaPlugin {
         }
 
 
-        FileConfiguration config = getConfig();
         // Load localisation and features from config
+        FileConfiguration config = getConfig();
         I18nSupport.load(config);
 
         CombatRelease.load(config);
@@ -84,13 +84,13 @@ public final class MovecraftCombat extends JavaPlugin {
         AntiRadar.load(config);
         ContactExplosives.load(config);
         DurabilityOverride.load(config);
-        FireballLifespan.load(config);
+        FireballBehaviour.load(config);
         FireballPenetration.load(config);
         ReImplementTNTTranslocation.load(config);
         BlockBehaviorOverride.load(config);
         
-        PluginManager pluginManager = getServer().getPluginManager();
         // Register event translation listeners
+        PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new CraftCollisionExplosionListener(), this);
         pluginManager.registerEvents(new ExplosionListener(), this);
 
@@ -129,10 +129,9 @@ public final class MovecraftCombat extends JavaPlugin {
         pluginManager.registerEvents(contactExplosives, this);
         contactExplosives.runTaskTimer(this, 0, 1); // Every tick
         pluginManager.registerEvents(new DurabilityOverride(), this);
-        var fireballLifespan = new FireballLifespan();
-        pluginManager.registerEvents(fireballLifespan, this);
-        fireballLifespan.runTaskTimer(this, 0, 20); // Every 1 second
-        pluginManager.registerEvents(new FireballLifespan(), this);
+        var fireballBehavior = new FireballBehaviour();
+        pluginManager.registerEvents(fireballBehavior, this);
+        fireballBehavior.runTaskTimer(this, 0, 20); // Every 1 second
         pluginManager.registerEvents(new FireballPenetration(), this);
         pluginManager.registerEvents(new ReImplementTNTTranslocation(), this);
 
