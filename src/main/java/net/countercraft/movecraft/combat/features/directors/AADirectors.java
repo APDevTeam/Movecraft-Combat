@@ -12,7 +12,6 @@ import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -95,12 +94,13 @@ public class AADirectors extends Directors implements Listener {
         fireball.setShooter(p);
 
         Vector fireballVector = fireball.getVelocity();
-        double speed = fireballVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
+        double speed = fireballVector.length() ; // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
         Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
         Vector targetVector;
-        if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
+
+        if (targetBlock == null || targetBlock.getType().isAir()) // the player is looking at nothing, shoot in that general direction
             targetVector = p.getLocation().getDirection();
         else { // shoot directly at the block the player is looking at (IE: with convergence)
             targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
@@ -129,6 +129,12 @@ public class AADirectors extends Directors implements Listener {
             fireballVector.setZ(targetVector.getZ());
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
+        try {
+            fireballVector.checkFinite();
+        }
+        catch (IllegalArgumentException ignored) {
+            return;
+        }
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
     }

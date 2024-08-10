@@ -126,6 +126,12 @@ public class ArrowDirectors extends Directors implements Listener {
             arrowVector.setZ(targetVector.getZ());
 
         arrowVector = arrowVector.multiply(speed); // put the original speed back in, but now along a different trajectory
+        try {
+            arrowVector.checkFinite();
+        }
+        catch (IllegalArgumentException ignored) {
+            return;
+        }
         arrow.setVelocity(arrowVector);
     }
 
