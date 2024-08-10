@@ -141,6 +141,12 @@ public class CannonDirectors extends Directors implements Listener {
         tntVector = tntVector.multiply(horizontalSpeed); // put the original speed back in, but now along a different trajectory
         tntVector.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
 
+        try {
+            tntVector.checkFinite();
+        }
+        catch (IllegalArgumentException ignored) {
+            return;
+        }
         tnt.setVelocity(tntVector);
     }
 

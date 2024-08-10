@@ -129,6 +129,12 @@ public class AADirectors extends Directors implements Listener {
             fireballVector.setZ(targetVector.getZ());
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
+        try {
+            fireballVector.checkFinite();
+        }
+        catch (IllegalArgumentException ignored) {
+            return;
+        }
         fireball.setVelocity(fireballVector);
         fireball.setDirection(fireballVector);
     }
