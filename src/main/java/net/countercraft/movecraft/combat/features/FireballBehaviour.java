@@ -45,10 +45,19 @@ public class FireballBehaviour extends BukkitRunnable implements Listener {
         if (!(e.getEntity() instanceof SmallFireball fireball))
             return;
 
+        fireball.setMetadata(METADATA_KEY, new FixedMetadataValue(MovecraftCombat.getInstance(), System.currentTimeMillis()));
+        queue.add(fireball);
+
         new BukkitRunnable() {
             @Override
             public void run() {
                 Vector fireballVector = fireball.getVelocity();
+                try {
+                    fireballVector.checkFinite();
+                }
+                catch (IllegalArgumentException ignored) {
+                    return;
+                }
                 double speed = fireballVector.length() * FireballSpeed;
 
                 fireballVector = fireballVector.normalize();
@@ -56,9 +65,6 @@ public class FireballBehaviour extends BukkitRunnable implements Listener {
 
                 fireball.setVelocity(fireballVector);
             }
-        }.runTaskTimer(MovecraftCombat.getInstance(), 1L, 1L);
-
-        fireball.setMetadata(METADATA_KEY, new FixedMetadataValue(MovecraftCombat.getInstance(), System.currentTimeMillis()));
-        queue.add(fireball);
+        }.runTaskLater(MovecraftCombat.getInstance(), 1L);
     }
 }
