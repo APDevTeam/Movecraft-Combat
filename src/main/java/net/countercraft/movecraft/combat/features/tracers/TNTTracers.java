@@ -72,13 +72,15 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         if (ticksElapsed < TracerRateTicks)
             return;
 
-        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
-        maxDistSquared = maxDistSquared - 16;
-        maxDistSquared = maxDistSquared * maxDistSquared;
+        //long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
 
         for (World w : Bukkit.getWorlds()) {
             if (w == null)
                 continue;
+
+            long maxDistSquared = w.getViewDistance() * 16L;
+            maxDistSquared = maxDistSquared - 16;
+            maxDistSquared = maxDistSquared * maxDistSquared;
 
             for (TNTPrimed tnt : w.getEntitiesByClass(TNTPrimed.class)) {
                 processTNT(tnt, maxDistSquared, w);
@@ -149,7 +151,8 @@ public class TNTTracers extends BukkitRunnable implements Listener {
         if (TracerRateTicks == 0)
             return;
 
-        long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
+        //long maxDistSquared = Bukkit.getServer().getViewDistance() * 16L;
+        long maxDistSquared = tnt.getWorld().getViewDistance() * 16L;
         maxDistSquared = maxDistSquared - 16;
         maxDistSquared = maxDistSquared * maxDistSquared;
 
