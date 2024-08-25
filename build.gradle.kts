@@ -21,7 +21,7 @@ dependencies {
 }
 
 group = "net.countercraft.movecraft.combat"
-version = "2.0.0_beta-6_dev-1"
+version = "2.0.0_beta-6"
 description = "Movecraft-Combat"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -69,7 +69,7 @@ hangarPublish {
         platforms {
             register(io.papermc.hangarpublishplugin.model.Platforms.PAPER) {
                 jar.set(tasks.jar.flatMap { it.archiveFile })
-                platformVersions.set(listOf("1.18.2-1.21"))
+                platformVersions.set(listOf("1.18.2-1.21.1"))
                 dependencies {
                     hangar("Movecraft") {
                         required.set(true)
