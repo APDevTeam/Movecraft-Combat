@@ -37,7 +37,6 @@ ContactExplosivesMinImpulse: 0.35 # Minimum velocity for contact explosives to t
 DurabilityOverride: # List of block IDs: ignore percent
   END_STONE: 80
   END_STONE_BRICKS: 80
-BleedfixExplosion: true
 
 # Fireball Lifespan
 FireballLifespan: 6 # Lifespan of fireballs in seconds
