@@ -3,11 +3,13 @@ package net.countercraft.movecraft.combat.utils;
 public class MathHelper {
 
     public static double clamp(double value) {
-        return clamp(Double.MIN_VALUE, Double.MAX_VALUE, value);
+        // Double.MIN_VALUE represents the lowest POSITIVE double value to match IEEE754 format
+        return clamp(-Double.MAX_VALUE, Double.MAX_VALUE, value);
     }
 
+    // Same as with doubles!
     public static float clamp(float value) {
-        return clamp(Float.MIN_VALUE, Float.MAX_VALUE, value);
+        return clamp(-Float.MAX_VALUE, Float.MAX_VALUE, value);
     }
 
     public static int clamp(int value) {
