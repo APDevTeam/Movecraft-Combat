@@ -4,6 +4,7 @@ import net.countercraft.movecraft.MovecraftLocation;
 import net.countercraft.movecraft.combat.features.directors.events.CraftDirectEvent;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
+import net.countercraft.movecraft.combat.utils.MathHelper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -128,6 +129,11 @@ public class ArrowDirectors extends Directors implements Listener {
             arrowVector.setZ(targetVector.getZ());
 
         arrowVector = arrowVector.multiply(speed); // put the original speed back in, but now along a different trajectory
+
+        arrowVector.setX(MathHelper.clamp(arrowVector.getX()));
+        arrowVector.setY(MathHelper.clamp(arrowVector.getY()));
+        arrowVector.setZ(MathHelper.clamp(arrowVector.getZ()));
+
         try {
             arrowVector.checkFinite();
         }

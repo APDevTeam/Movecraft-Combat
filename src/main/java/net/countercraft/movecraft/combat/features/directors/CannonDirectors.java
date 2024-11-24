@@ -6,6 +6,7 @@ import net.countercraft.movecraft.combat.features.directors.events.CraftDirectEv
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
+import net.countercraft.movecraft.combat.utils.MathHelper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -143,6 +144,10 @@ public class CannonDirectors extends Directors implements Listener {
         tntVector.setZ(Math.min(Math.max(targetVector.getZ(), tntVector.getZ() - 0.7), tntVector.getZ() + 0.7));
 
         tntVector = tntVector.multiply(horizontalSpeed); // put the original speed back in, but now along a different trajectory
+
+        tntVector.setX(MathHelper.clamp(tntVector.getX()));
+        tntVector.setZ(MathHelper.clamp(tntVector.getZ()));
+
         tntVector.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
 
         try {
