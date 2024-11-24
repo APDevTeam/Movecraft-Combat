@@ -124,12 +124,16 @@ public class CannonDirectors extends Directors implements Listener {
         double horizontalSpeed = tntVector.length();
         tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
-        Vector targetVector;
-        if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
-            targetVector = p.getLocation().getDirection();
-        else // shoot directly at the block the player is looking at (IE: with convergence)
-            targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
+        // the player is looking at nothing, shoot in that general direction
+        Vector targetVector = p.getLocation().getDirection();
+
+        if (CannonDirectorRange >= 0) {
+            Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
+            if (targetBlock != null && targetBlock.getType().equals(Material.AIR)) {
+                // shoot directly at the block the player is looking at (IE: with convergence)
+                targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
+            }
+        }
 
         // Remove the y-component from the TargetVector and normalize
         targetVector = (new Vector(targetVector.getX(), 0, targetVector.getZ())).normalize();
