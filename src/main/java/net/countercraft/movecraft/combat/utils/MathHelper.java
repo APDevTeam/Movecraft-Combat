@@ -1,5 +1,8 @@
 package net.countercraft.movecraft.combat.utils;
 
+import org.bukkit.Axis;
+import org.bukkit.util.Vector;
+
 public class MathHelper {
 
     public static double clamp(double value) {
@@ -44,6 +47,17 @@ public class MathHelper {
             return min;
         }
         return value;
+    }
+
+    public static void clampVectorModify(final Vector vector) {
+        vector.setX(clamp(vector.getX()));
+        vector.setY(clamp(vector.getY()));
+        vector.setZ(clamp(vector.getZ()));
+    }
+    public static Vector clampVector(final Vector vector) {
+        Vector result = vector.clone();
+        clampVector(result);
+        return result;
     }
 
 }
