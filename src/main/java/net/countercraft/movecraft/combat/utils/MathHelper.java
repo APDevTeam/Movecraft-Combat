@@ -56,7 +56,7 @@ public class MathHelper {
     }
     public static Vector clampVector(final Vector vector) {
         Vector result = vector.clone();
-        clampVector(result);
+        clampVectorModify(result);
         return result;
     }
 
