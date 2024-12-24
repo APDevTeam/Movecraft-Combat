@@ -132,9 +132,7 @@ public class AADirectors extends Directors implements Listener {
 
         fireballVector = fireballVector.multiply(speed); // put the original speed back in, but now along a different trajectory
 
-        fireballVector.setX(MathHelper.clamp(fireballVector.getX()));
-        fireballVector.setY(MathHelper.clamp(fireballVector.getY()));
-        fireballVector.setZ(MathHelper.clamp(fireballVector.getZ()));
+        MathHelper.clampVectorModify(fireballVector);
 
         try {
             fireballVector.checkFinite();
