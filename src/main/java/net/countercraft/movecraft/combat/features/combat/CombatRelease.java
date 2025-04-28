@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.errorPrefix;
 
 public class CombatRelease extends BukkitRunnable implements Listener {
     public static boolean EnableCombatReleaseTracking = false;
@@ -181,7 +181,7 @@ public class CombatRelease extends BukkitRunnable implements Listener {
             return;
 
         e.setCancelled(true);
-        cause.sendMessage(ERROR_PREFIX + " You may not scuttle while in combat!");
+        cause.sendMessage(errorPrefix() + " You may not scuttle while in combat!");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

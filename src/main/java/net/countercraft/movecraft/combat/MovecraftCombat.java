@@ -2,10 +2,7 @@ package net.countercraft.movecraft.combat;
 
 import net.countercraft.movecraft.combat.features.*;
 import net.countercraft.movecraft.combat.features.combat.CombatRelease;
-import net.countercraft.movecraft.combat.features.directors.AADirectors;
-import net.countercraft.movecraft.combat.features.directors.ArrowDirectors;
-import net.countercraft.movecraft.combat.features.directors.CannonDirectors;
-import net.countercraft.movecraft.combat.features.directors.Directors;
+import net.countercraft.movecraft.combat.features.directors.*;
 import net.countercraft.movecraft.combat.features.tracers.MovementTracers;
 import net.countercraft.movecraft.combat.features.tracers.TNTTracers;
 import net.countercraft.movecraft.combat.features.tracers.commands.MovementTracerSettingCommand;
@@ -85,6 +82,7 @@ public final class MovecraftCombat extends JavaPlugin {
         FireballPenetration.load(getConfig());
         ReImplementTNTTranslocation.load(getConfig());
         BlockBehaviorOverride.load(getConfig());
+        DirectorElytraListener.load(getConfig());
 
         // Register event translation listeners
         getServer().getPluginManager().registerEvents(new CraftCollisionExplosionListener(), this);
@@ -104,6 +102,8 @@ public final class MovecraftCombat extends JavaPlugin {
         var cannonDirectors = new CannonDirectors();
         getServer().getPluginManager().registerEvents(cannonDirectors, this);
         cannonDirectors.runTaskTimer(this, 0, 1); // Every tick
+        var DirectorElytra = new DirectorElytraListener();
+        getServer().getPluginManager().registerEvents(DirectorElytra, this);
 
         var playerManager = new PlayerManager();
         getServer().getPluginManager().registerEvents(playerManager, this);

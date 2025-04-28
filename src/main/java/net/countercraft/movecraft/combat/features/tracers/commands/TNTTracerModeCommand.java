@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.countercraft.movecraft.util.ChatUtils.MOVECRAFT_COMMAND_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.commandPrefix;
 
 public class TNTTracerModeCommand implements TabExecutor {
     @NotNull
@@ -29,28 +29,28 @@ public class TNTTracerModeCommand implements TabExecutor {
             return false;
 
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
         if (args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Mode") + ": " + manager.getTNTMode(player));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Current Mode") + ": " + manager.getTNTMode(player));
             return true;
         }
         if (args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Mode"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Specify Mode"));
             return true;
         }
 
         String mode = args[0].toUpperCase();
         try {
             manager.setTNTMode(player, mode);
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + mode);
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Tracer Set") + ": " + mode);
             return true;
         }
         catch (IllegalArgumentException e) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Mode"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Specify Valid Mode"));
             return true;
         }
     }

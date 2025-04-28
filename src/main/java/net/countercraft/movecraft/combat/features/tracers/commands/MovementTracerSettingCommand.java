@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.countercraft.movecraft.util.ChatUtils.MOVECRAFT_COMMAND_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.commandPrefix;
 
 public class MovementTracerSettingCommand implements TabExecutor {
     @NotNull
@@ -29,28 +29,28 @@ public class MovementTracerSettingCommand implements TabExecutor {
             return false;
 
         if(!(commandSender instanceof Player)) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Must Be Player"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Must Be Player"));
             return true;
         }
         Player player = (Player) commandSender;
 
         if(args.length == 0) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getMovementSetting(player));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Current Setting") + ": " + manager.getMovementSetting(player));
             return true;
         }
         if (args.length != 1) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Setting"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Specify Setting"));
             return true;
         }
 
         String setting = args[0].toUpperCase();
         try {
             manager.setMovementSetting(player, setting);
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Movement Tracer Set") + ": " + setting);
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Movement Tracer Set") + ": " + setting);
             return true;
         }
         catch (IllegalArgumentException e) {
-            commandSender.sendMessage(MOVECRAFT_COMMAND_PREFIX + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
+            commandSender.sendMessage(commandPrefix() + I18nSupport.getInternationalisedString("Command - Specify Valid Setting"));
             return true;
         }
     }
