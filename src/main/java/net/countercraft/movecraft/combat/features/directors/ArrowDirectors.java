@@ -96,12 +96,12 @@ public class ArrowDirectors extends Directors implements Listener {
         double speed = arrowVector.length(); // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         arrowVector = arrowVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        // the player is looking at nothing, shoot in that general direction
+        // shoot in that general direction
         Vector targetVector = p.getLocation().getDirection();
         if (ArrowDirectorRange >= 0) {
+            // Range is greater than zero and the player is looking at a block, direct at it (IE: with convergence)
             Block targetBlock = DirectorUtils.getDirectorBlock(p, ArrowDirectorRange);
-            if (targetBlock != null && !targetBlock.getType().equals(Material.AIR)) {
-                // shoot directly at the block the player is looking at (IE: with convergence)
+            if (targetBlock != null && !targetBlock.getType().isAir()) {
                 targetVector = targetBlock.getLocation().toVector().subtract(arrow.getLocation().toVector());
                 targetVector = targetVector.normalize();
             }
