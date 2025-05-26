@@ -6,6 +6,7 @@ import net.countercraft.movecraft.combat.features.directors.events.CraftDirectEv
 import net.countercraft.movecraft.combat.features.tracking.DamageTracking;
 import net.countercraft.movecraft.combat.localisation.I18nSupport;
 import net.countercraft.movecraft.combat.utils.DirectorUtils;
+import net.countercraft.movecraft.combat.utils.MathHelper;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.craft.PlayerCraft;
@@ -124,12 +125,16 @@ public class CannonDirectors extends Directors implements Listener {
         double horizontalSpeed = tntVector.length();
         tntVector = tntVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
-        Vector targetVector;
-        if (targetBlock == null || targetBlock.getType().equals(Material.AIR)) // the player is looking at nothing, shoot in that general direction
-            targetVector = p.getLocation().getDirection();
-        else // shoot directly at the block the player is looking at (IE: with convergence)
-            targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
+        // the player is looking at nothing, shoot in that general direction
+        Vector targetVector = p.getLocation().getDirection();
+
+        if (CannonDirectorRange >= 0) {
+            Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
+            if (targetBlock != null && targetBlock.getType().equals(Material.AIR)) {
+                // shoot directly at the block the player is looking at (IE: with convergence)
+                targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
+            }
+        }
 
         // Remove the y-component from the TargetVector and normalize
         targetVector = (new Vector(targetVector.getX(), 0, targetVector.getZ())).normalize();
@@ -139,6 +144,9 @@ public class CannonDirectors extends Directors implements Listener {
         tntVector.setZ(Math.min(Math.max(targetVector.getZ(), tntVector.getZ() - 0.7), tntVector.getZ() + 0.7));
 
         tntVector = tntVector.multiply(horizontalSpeed); // put the original speed back in, but now along a different trajectory
+
+        MathHelper.clampVectorModify(tntVector);
+
         tntVector.setY(tnt.getVelocity().getY()); // you leave the original Y (or vertical axis) trajectory as it was
 
         try {
