@@ -130,7 +130,7 @@ public class CannonDirectors extends Directors implements Listener {
 
         if (CannonDirectorRange >= 0) {
             Block targetBlock = DirectorUtils.getDirectorBlock(p, CannonDirectorRange);
-            if (targetBlock != null && targetBlock.getType().equals(Material.AIR)) {
+            if (targetBlock != null && !targetBlock.getType().isAir()) {
                 // shoot directly at the block the player is looking at (IE: with convergence)
                 targetVector = targetBlock.getLocation().toVector().subtract(tnt.getLocation().toVector());
             }
