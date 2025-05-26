@@ -98,10 +98,10 @@ public class AADirectors extends Directors implements Listener {
         double speed = fireballVector.length() ; // store the speed to add it back in later, since all the values we will be using are "normalized", IE: have a speed of 1
         fireballVector = fireballVector.normalize(); // you normalize it for comparison with the new direction to see if we are trying to steer too far
 
-        // the player is looking at nothing, shoot in that general direction
+        // shoot in that general direction
         Vector targetVector = p.getLocation().getDirection();
-
         if (AADirectorRange >= 0) {
+            // Range is greater than zero and the player is looking at a block, direct at it (IE: with convergence)
             Block targetBlock = DirectorUtils.getDirectorBlock(p, AADirectorRange);
             if (targetBlock != null && !targetBlock.getType().isAir()) {
                 targetVector = targetBlock.getLocation().toVector().subtract(fireball.getLocation().toVector());
