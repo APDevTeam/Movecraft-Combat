@@ -13,6 +13,7 @@ CannonDirectorRange: 120 # Max range at which it will direct to a block vs in th
 
 # Directors
 DirectorTool: STICK # Material name for director control.
+DisableDirectorElytra: false # Disables the ability for players with elytras equipped to use directors
 TransparentBlocks: # List of MATERIAL_NAMES which are ignored for directing.  See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for a full list.
   - "#glass"
   - IRON_BARS
