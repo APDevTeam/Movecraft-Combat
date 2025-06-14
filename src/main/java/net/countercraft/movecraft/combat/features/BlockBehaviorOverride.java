@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.countercraft.movecraft.combat.MovecraftCombat;
 import net.countercraft.movecraft.util.Tags;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -340,7 +340,8 @@ public class BlockBehaviorOverride {
         abstract Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException;
 
         protected Object getBlockClass(Material m)
-                throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+                throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+                ClassNotFoundException {
             if (this.magicNumbers == null) {
                 this.magicNumbers = this.getCraftMagicNumbersClass();
             }
@@ -348,28 +349,37 @@ public class BlockBehaviorOverride {
             return method.invoke(null, m);
         }
 
-        protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
-            T obj = (T)field.get(block);
+        protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField,
+                String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException,
+                InaccessibleObjectException, SecurityException {
+            Field field = block.getClass().getField(fieldName);
+            field.setAccessible(true);
+            T obj = (T) field.get(block);
             whatToDoWithField.accept(obj);
         }
 
-        protected static <T> void writeField(@NotNull Object block, T value, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = FieldUtils.getField(block.getClass(), fieldName, true);
-            T obj = (T)field.get(block);
+        protected static <T> void writeField(@NotNull Object block, T value, String fieldName)
+                throws IllegalAccessException, NoSuchFieldException, ClassCastException, InaccessibleObjectException,
+                SecurityException {
+            Field field = block.getClass().getField(fieldName);
+            field.setAccessible(true);
             field.set(block, value);
         }
 
         protected static <T> Optional<T> getFieldValueSafe(@NotNull Object instance, String fieldName) {
             try {
                 return Optional.ofNullable(getFieldValue(instance, fieldName));
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 return Optional.empty();
             }
         }
-        protected static <T> T getFieldValue(@NotNull Object instance, String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException {
-            Field field = FieldUtils.getField(instance.getClass(), fieldName, true);
-            T obj = (T)field.get(instance);
+
+        protected static <T> T getFieldValue(@NotNull Object instance, String fieldName)
+                throws IllegalAccessException, NoSuchFieldException, ClassCastException, InaccessibleObjectException,
+                SecurityException {
+            Field field = instance.getClass().getField(fieldName);
+            field.setAccessible(true);
+            T obj = (T) field.get(instance);
             return obj;
         }
     }
