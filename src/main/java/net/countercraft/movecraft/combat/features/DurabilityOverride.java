@@ -49,7 +49,7 @@ public class DurabilityOverride implements Listener {
     public void onEntityExplode(@NotNull EntityExplodeEvent e) {
         if (DurabilityOverride == null)
             return;
-        if (e.getEntityType() != EntityType.PRIMED_TNT)
+        if (e.getEntityType() != EntityType.TNT)
             return;
 
         Set<Block> removeList = new HashSet<>();

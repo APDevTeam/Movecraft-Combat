@@ -85,7 +85,7 @@ public class TNTTracking implements Listener {
     public void onEntitySpawn(@NotNull EntitySpawnEvent e) {
         if (!DamageTracking.EnableTNTTracking)
             return;
-        if (!e.getEntityType().equals(EntityType.PRIMED_TNT))
+        if (!e.getEntityType().equals(EntityType.TNT))
             return;
         TNTPrimed tnt = (TNTPrimed) e.getEntity();
 

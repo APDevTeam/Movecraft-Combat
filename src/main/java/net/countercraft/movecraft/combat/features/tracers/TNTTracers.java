@@ -146,7 +146,7 @@ public class TNTTracers extends BukkitRunnable implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityExplodeEvent(@NotNull EntityExplodeEvent e) {
         Entity tnt = e.getEntity();
-        if (e.getEntityType() != EntityType.PRIMED_TNT)
+        if (e.getEntityType() != EntityType.TNT)
             return;
         if (TracerRateTicks == 0)
             return;
