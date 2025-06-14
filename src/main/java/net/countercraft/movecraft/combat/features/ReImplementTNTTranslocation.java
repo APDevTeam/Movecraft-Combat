@@ -59,7 +59,7 @@ public class ReImplementTNTTranslocation implements Listener {
     private Set<SearchEntry> getTNT(@NotNull Block piston, @Nullable Block pistonHead, @NotNull BlockFace direction) {
         Set<SearchEntry> searchResults = new HashSet<>();
         for (Entity e : piston.getWorld().getEntities()) {
-            if (!e.isValid() || e.getType() != EntityType.PRIMED_TNT)
+            if (!e.isValid() || e.getType() != EntityType.TNT)
                 continue;
 
             TNTPrimed tnt = (TNTPrimed) e;
