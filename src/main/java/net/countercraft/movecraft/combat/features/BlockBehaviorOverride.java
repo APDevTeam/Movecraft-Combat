@@ -353,7 +353,17 @@ public class BlockBehaviorOverride {
         protected static <T> void writeField(@NotNull Object block, @NotNull Consumer<T> whatToDoWithField,
                 String fieldName) throws IllegalAccessException, NoSuchFieldException, ClassCastException,
                 InaccessibleObjectException, SecurityException {
-            Field field = block.getClass().getField(fieldName);
+            Class<?> clazz = block.getClass();
+            Field field = null;
+            while (clazz != null) {
+                try {
+                    field = clazz.getDeclaredField(fieldName);
+                    break;
+                } catch (NoSuchFieldException e) {
+                    clazz = clazz.getSuperclass();
+                }
+            }
+            if (field == null) throw new NoSuchFieldException(fieldName);
             field.setAccessible(true);
             T obj = (T) field.get(block);
             whatToDoWithField.accept(obj);
@@ -362,7 +372,17 @@ public class BlockBehaviorOverride {
         protected static <T> void writeField(@NotNull Object block, T value, String fieldName)
                 throws IllegalAccessException, NoSuchFieldException, ClassCastException, InaccessibleObjectException,
                 SecurityException {
-            Field field = block.getClass().getField(fieldName);
+            Class<?> clazz = block.getClass();
+            Field field = null;
+            while (clazz != null) {
+                try {
+                    field = clazz.getDeclaredField(fieldName);
+                    break;
+                } catch (NoSuchFieldException e) {
+                    clazz = clazz.getSuperclass();
+                }
+            }
+            if (field == null) throw new NoSuchFieldException(fieldName);
             field.setAccessible(true);
             field.set(block, value);
         }
@@ -378,7 +398,7 @@ public class BlockBehaviorOverride {
         protected static <T> T getFieldValue(@NotNull Object instance, String fieldName)
                 throws IllegalAccessException, NoSuchFieldException, ClassCastException, InaccessibleObjectException,
                 SecurityException {
-            Field field = instance.getClass().getField(fieldName);
+            Field field = instance.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             T obj = (T) field.get(instance);
             return obj;
