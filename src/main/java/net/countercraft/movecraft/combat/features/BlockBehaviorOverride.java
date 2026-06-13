@@ -72,7 +72,7 @@ public class BlockBehaviorOverride {
         }
     }
 
-    protected static void loadFlammabilityValues(FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putBurnOddsFunction, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putIgniteOddsFunction) {
+    protected static void loadFlammabilityValues(@NotNull FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putBurnOddsFunction, BiConsumer<Material, Pair<Integer, Optional<Integer>>> putIgniteOddsFunction) {
         if (!config.contains("FlammabilityOverride"))
             return;
         var section = config.getConfigurationSection("FlammabilityOverride");
@@ -111,7 +111,7 @@ public class BlockBehaviorOverride {
         }
     }
 
-    protected static void loadBlastResistanceValues(FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Float> putFunction) {
+    protected static void loadBlastResistanceValues(@NotNull FileConfiguration config, Function<Material, Boolean> addToSet, BiConsumer<Material, Float> putFunction) {
         if (!config.contains("BlastResistanceOverride"))
             return;
         var section = config.getConfigurationSection("BlastResistanceOverride");
@@ -156,26 +156,26 @@ public class BlockBehaviorOverride {
         }
     }
 
-    protected static boolean set(Material mat, BlockOverride override) {
+    protected static boolean set(Material mat, @NotNull BlockOverride override) {
         boolean result = true;
 
         // Blast resistance
         if (override.blastResistanceOverride().isPresent()) {
-            result = result && NMS_HELPER.setBlastResistance(mat, override.blastResistanceOverride().get().floatValue());
+            result &= NMS_HELPER.setBlastResistance(mat, override.blastResistanceOverride().get());
         }
         // Burn oddity
         if (override.burnOddity().isPresent()) {
-            result = result && NMS_HELPER.setBurnOdds(mat, override.burnOddity().get().intValue());
+            result &= NMS_HELPER.setBurnOdds(mat, override.burnOddity().get());
         }
         // Ignite oddity
         if (override.igniteOddity().isPresent()) {
-            result = result && NMS_HELPER.setIgniteOdds(mat, override.igniteOddity().get().intValue());
+            result &= NMS_HELPER.setIgniteOdds(mat, override.igniteOddity().get());
         }
 
         return result;
     }
 
-    protected static boolean reset(Material mat, BlockOverride override) {
+    protected static boolean reset(Material mat, @NotNull BlockOverride override) {
         boolean result = true;
 
         // Blast resistance
@@ -195,14 +195,15 @@ public class BlockBehaviorOverride {
     }
 
     private static abstract class NMSHelper {
-
-        public static final NMSHelper createInstance() {
+        @NotNull
+        public static NMSHelper createInstance() {
             String[] parts = Bukkit.getServer().getMinecraftVersion().split("\\.");
             if (parts.length < 2)
                 throw new IllegalArgumentException();
-            int major_version = Integer.parseInt(parts[1]);
+            int major_version = Integer.parseInt(parts[0]);
+            int minor_version = Integer.parseInt(parts[1]);
             NMSHelper result;
-            if (major_version < 20) {
+            if ((major_version < 2) && (minor_version < 20)) {
                 result = new NMSSpigotMappings();
             } else {
                 result = new NMSMojangMappings();
@@ -219,16 +220,16 @@ public class BlockBehaviorOverride {
         @Nullable
         Class<?> magicNumbers;
 
-        protected NMSHelper(String blastResField, String burnOddsField, String igniteOddsField) {
-            this.fieldNameBlastResistance = blastResField;
-            this.fieldNameBurnOdds = burnOddsField;
-            this.fieldNameIgniteOdds = igniteOddsField;
+        protected NMSHelper(@Nullable String blastResField, @Nullable String burnOddsField, @Nullable String igniteOddsField) {
+            fieldNameBlastResistance = blastResField;
+            fieldNameBurnOdds = burnOddsField;
+            fieldNameIgniteOdds = igniteOddsField;
         }
 
         public boolean setBlastResistance(Material m, float value) {
             try {
-                Object block = this.getBlockClass(m);
-                writeField(block, value, this.fieldNameBlastResistance);
+                Object block = getBlockClass(m);
+                writeField(block, value, fieldNameBlastResistance);
                 return true;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | SecurityException | NoSuchFieldException | ClassNotFoundException e) {
@@ -239,8 +240,8 @@ public class BlockBehaviorOverride {
 
         public Optional<Float> getBlastResistance(Material m) {
             try {
-                Object block = this.getBlockClass(m);
-                return getFieldValueSafe(block, this.fieldNameBlastResistance);
+                Object block = getBlockClass(m);
+                return getFieldValueSafe(block, fieldNameBlastResistance);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -250,7 +251,7 @@ public class BlockBehaviorOverride {
 
         public boolean setBurnOdds(Material m, int value) {
             try {
-                Object fireBlock = this.getBlockClass(Material.FIRE);
+                Object fireBlock = getBlockClass(Material.FIRE);
                 return setBurnOdds(m, value, fireBlock);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -261,9 +262,9 @@ public class BlockBehaviorOverride {
 
         public Optional<Integer> getBurnOdds(Material m) {
             try {
-                Object fireBlock = this.getBlockClass(Material.FIRE);
-                Object block = this.getBlockClass(m);
-                Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, this.fieldNameBurnOdds);
+                Object fireBlock = getBlockClass(Material.FIRE);
+                Object block = getBlockClass(m);
+                Optional<Object2IntMap> optMap = getFieldValueSafe(fireBlock, fieldNameBurnOdds);
                 if (optMap.isPresent()) {
                     if (optMap.get().containsKey(block)) {
                         return Optional.of(optMap.get().getInt(block));
@@ -279,7 +280,7 @@ public class BlockBehaviorOverride {
 
         public boolean setIgniteOdds(Material m, int value) {
             try {
-                Object fireBlock = this.getBlockClass(Material.FIRE);
+                Object fireBlock = getBlockClass(Material.FIRE);
                 return setIgniteOdds(m, value, fireBlock);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
                      | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -290,9 +291,9 @@ public class BlockBehaviorOverride {
 
         public Optional<Integer> getIgniteOdds(Material m) {
             try {
-                Object fireBlock = this.getBlockClass(Material.FIRE);
-                Object block = this.getBlockClass(m);
-                Optional<Object2IntMap<Object>> optMap = getFieldValueSafe(fireBlock, this.fieldNameIgniteOdds);
+                Object fireBlock = getBlockClass(Material.FIRE);
+                Object block = getBlockClass(m);
+                Optional<Object2IntMap<Object>> optMap = getFieldValueSafe(fireBlock, fieldNameIgniteOdds);
                 if (optMap.isPresent()) {
                     if (optMap.get().containsKey(block)) {
                         return Optional.of(optMap.get().getInt(block));
@@ -342,8 +343,8 @@ public class BlockBehaviorOverride {
         protected Object getBlockClass(Material m)
                 throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
                 ClassNotFoundException {
-            if (this.magicNumbers == null) {
-                this.magicNumbers = this.getCraftMagicNumbersClass();
+            if (magicNumbers == null) {
+                magicNumbers = getCraftMagicNumbersClass();
             }
             Method method = magicNumbers.getMethod("getBlock", Material.class);
             return method.invoke(null, m);
@@ -385,7 +386,6 @@ public class BlockBehaviorOverride {
     }
 
     private static class NMSSpigotMappings extends NMSHelper {
-
         // Tested in 1.19.4
         private static final String FIELD_NAME_IGNITE_ODDS = "O";
         private static final String FIELD_NAME_BURN_ODDS = "P";
@@ -399,6 +399,7 @@ public class BlockBehaviorOverride {
             super(blastResField, burnOddsField, igniteOddsField);
         }
 
+        @NotNull
         @Override
         Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException {
             String packageName = Bukkit.getServer().getClass().getPackage().getName();
@@ -408,7 +409,6 @@ public class BlockBehaviorOverride {
     }
 
     private static class NMSMojangMappings extends NMSHelper {
-
         // Tested on 1.20.4 and 1.21
         private static final String FIELD_NAME_IGNITE_ODDS = "igniteOdds";
         private static final String FIELD_NAME_BURN_ODDS = "burnOdds";
@@ -422,10 +422,10 @@ public class BlockBehaviorOverride {
             super(blastResField, burnOddsField, igniteOddsField);
         }
 
+        @NotNull
         @Override
         Class<?> getCraftMagicNumbersClass() throws ClassNotFoundException {
             return Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".util.CraftMagicNumbers");
         }
     }
-
 }
