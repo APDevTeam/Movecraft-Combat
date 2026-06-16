@@ -11,10 +11,7 @@ import net.countercraft.movecraft.craft.PlayerCraft;
 import net.countercraft.movecraft.craft.type.CraftType;
 import net.countercraft.movecraft.craft.type.property.BooleanProperty;
 import net.countercraft.movecraft.util.MathUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,11 +25,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import static net.countercraft.movecraft.util.ChatUtils.ERROR_PREFIX;
+import static net.countercraft.movecraft.util.ChatUtils.errorPrefix;
 
 public class AADirectors extends Directors implements Listener {
     public static final NamespacedKey ALLOW_AA_DIRECTOR_SIGN = new NamespacedKey("movecraft-combat", "allow_aa_director_sign");
     private static final String HEADER = "AA Director";
+    private static boolean DisableDirectorElytra = false;
     public static int AADirectorDistance = 50;
     public static int AADirectorRange = 120;
     private long lastCheck = 0;
@@ -48,6 +46,7 @@ public class AADirectors extends Directors implements Listener {
     public static void load(@NotNull FileConfiguration config) {
         AADirectorDistance = config.getInt("AADirectorDistance", 50);
         AADirectorRange = config.getInt("AADirectorRange", 120);
+        DisableDirectorElytra = config.getBoolean("DisableDirectorElytra", false);
     }
 
     @Override
@@ -174,12 +173,12 @@ public class AADirectors extends Directors implements Listener {
 
         Player p = e.getPlayer();
         if (foundCraft == null) {
-            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
+            p.sendMessage(errorPrefix() + " " + I18nSupport.getInternationalisedString("Sign - Must Be Part Of Craft"));
             return;
         }
 
         if (!foundCraft.getType().getBoolProperty(ALLOW_AA_DIRECTOR_SIGN)) {
-            p.sendMessage(ERROR_PREFIX + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
+            p.sendMessage(errorPrefix() + " " + I18nSupport.getInternationalisedString("AADirector - Not Allowed On Craft"));
             return;
         }
 
@@ -190,6 +189,17 @@ public class AADirectors extends Directors implements Listener {
             removeDirector(p);
             p.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Longer Directing"));
             return;
+        }
+
+        // check if the player has an elytra on
+        if (DisableDirectorElytra) {
+            if (p.getInventory().getChestplate() != null) {
+                if (p.getInventory().getChestplate().getType().equals(Material.ELYTRA)) {
+                    p.sendMessage(I18nSupport.getInternationalisedString("AADirector - No Elytra While Directing"));
+                    clearDirector(p);
+                    return;
+                }
+            }
         }
 
         clearDirector(p);
